@@ -1,3 +1,6 @@
 [submodule "user-profile"]
 	path = user-profile
 	url = git@github.com:Walkername/user-profile.git
+[submodule "movie-catalog"]
+	path = movie-catalog
+	url = git@github.com:Walkername/movie-catalog.git
