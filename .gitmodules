@@ -4,3 +4,6 @@
 [submodule "movie-catalog"]
 	path = movie-catalog
 	url = git@github.com:Walkername/movie-catalog.git
+[submodule "frontend"]
+	path = frontend
+	url = git@github.com:Walkername/movie-rating-frontend.git
