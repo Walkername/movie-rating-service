@@ -7,3 +7,6 @@
 [submodule "frontend"]
 	path = frontend
 	url = git@github.com:Walkername/movie-rating-frontend.git
+[submodule "rating-system"]
+	path = rating-system
+	url = git@github.com:Walkername/rating-system.git
