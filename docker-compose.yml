@@ -132,7 +132,7 @@ services:
             - movie-rating-service
     
     zookeeper:
-        image: bitnami/zookeeper
+        image: bitnami/zookeeper:3.8.4
         container_name: zookeeper
         environment:
             ZOOKEEPER_CLIENT_PORT: 2181
@@ -144,7 +144,7 @@ services:
             - movie-rating-service
     
     kafka:
-        image: bitnami/kafka
+        image: bitnami/kafka:3.9.0
         container_name: kafka
         environment:
             KAFKA_BROKER_ID: 1
