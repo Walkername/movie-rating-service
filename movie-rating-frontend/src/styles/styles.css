@@ -1,0 +1,206 @@
+h1 {
+    display: flex; /* Use Flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    /*height: 100vh; /* Full viewport height */
+    /*background-color: #f0f0f0; /* Optional: Add a background color */
+    
+}
+
+div {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.page-content-container {
+    display: flex; /* Use Flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.page-content {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f0f0f0;
+    max-width: 400px;
+    padding-left: 250px;
+    padding-right: 250px;
+    padding-top: 10px;
+    padding-bottom: 40px;
+}
+
+.user-data-content {
+    flex-grow: 1;  /* Makes UserData take as much space as possible */
+}
+
+.user-edit-div {
+    margin-top: 30px;
+    margin-left: 50px;
+}
+
+.user-edit-button {
+    width: 60px;
+}
+
+nav {
+    position: sticky;
+    display: flex;
+    top: 0;
+    min-height: 50px;
+    width: 100%;
+    /*justify-content: space-between;*/
+    align-items: center;
+    background-color: rgb(20, 20, 20);
+}
+
+.nav-element {
+    font-size: 22px;
+    padding-left: 50px;
+    padding-right: 50px;
+    align-content: center;
+    color: rgb(161, 161, 161);
+    font-family: 'PT Sans', sans-serif;
+    font-weight: bold;
+}
+
+.search-field {
+    height: 30px;
+    align-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 10px;
+    background-color: rgb(161, 161, 161);
+}
+
+.search-field:focus {
+    background-color: white;
+}
+
+.popup {
+    position: absolute; /* Fixed position relative to the viewport */
+    display: flex;
+    justify-content: center;
+    top: 100%; /* Move down by 50% of the viewport height */
+    left: 50%; /* Move right by 50% of the viewport width */
+    transform: translateX(-50%); /* Center the popup */
+    width: 400px; /* Set a fixed width */
+    max-width: 50%; /* Ensure it doesn't overflow on small screens */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    margin-top: 5px;
+    padding: 20px;
+}
+
+/* Popup content styling */
+.popup-content {
+    padding: 10px;
+}
+
+/* Close button styling */
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: red;
+}
+
+.nav-bar-right {
+    display: flex;
+    justify-content: left; /* Center the elements inside this container */
+    align-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.nav-bar-left {
+    display: flex;
+    justify-content: right; /* Center the elements inside this container */
+    align-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.auth-buttons {
+    min-height: 26px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-left: auto;
+}
+
+.auth-button {
+    height: 100%;
+    font-size: 15px;
+    border: 1px solid transparent;
+    color: white;
+    display: inline-block; /* Make the element wrap around the text */
+    padding: 6px 10px; /* Add padding for spacing around the text */
+    transition: all 0.5s ease; /* Smooth transition for hover effects */
+}
+
+.auth-button:hover {
+    cursor: pointer;
+    border: 1px solid;
+    border-radius: 20px;
+    text-decoration: underline;
+}
+
+.nav-element:hover {
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+}
+
+.input-description {
+    height: 40px;
+}
+
+textarea {
+    resize: none;
+}
+
+.movie-div {
+    padding: 10px;
+}
+
+.movie-div:hover {
+    cursor: pointer;
+    background-color: #d4d4d4;
+}
+
+.page-button {
+    text-align: center;
+    margin: 5px;
+}
+
+td {
+    text-align: center;
+}
+
+tr:nth-child(even) {
+	background-color: #dadada;
+}
+
+th {
+    border-bottom: 3px solid;  
+}
+
+tr:hover {
+	background-color: #e8ffff !important;
+    cursor: pointer;
+}
+
+table {
+    width: 500px;
+    border: 1px solid;
+}
