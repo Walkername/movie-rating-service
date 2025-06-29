@@ -6,11 +6,6 @@ h1 {
     
 }
 
-div {
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
 .page-content-container {
     display: flex; /* Use Flexbox to center content */
     justify-content: center; /* Center horizontally */
@@ -21,9 +16,9 @@ div {
     display: flex;
     justify-content: space-between;
     background-color: #f0f0f0;
-    max-width: 400px;
-    padding-left: 250px;
-    padding-right: 250px;
+    max-width: auto;
+    padding-left: 200px;
+    padding-right: 200px;
     padding-top: 10px;
     padding-bottom: 40px;
 }
@@ -167,15 +162,6 @@ nav {
 
 textarea {
     resize: none;
-}
-
-.movie-div {
-    padding: 10px;
-}
-
-.movie-div:hover {
-    cursor: pointer;
-    background-color: #d4d4d4;
 }
 
 .page-button {

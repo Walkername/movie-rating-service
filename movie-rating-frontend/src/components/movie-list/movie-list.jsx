@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import MOVIES from "../../props/props";
+import '../../styles/movie-card.css';
+import MovieCard from "../movie-card/movie-card";
 
 function MovieList() {
 
-    const [movies, setMovies] = useState([]); // State to store the list of movies
-    const [loading, setLoading] = useState(true); // State to manage loading
-    const [error, setError] = useState(null); // State to handle errors
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -36,7 +39,11 @@ function MovieList() {
     }
 
     useEffect(() => {
-        const url = `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`; // Replace with your API endpoint
+        const url = `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`;
+
+        // Movie props
+        // TODO: comment if need movies from backend
+        setMovies(MOVIES);
 
         fetch(url, {
             method: "GET",
@@ -48,18 +55,18 @@ function MovieList() {
                 if (!response.ok) {
                     throw new Error("Failed to fetch movies");
                 }
-                return response.json(); // Parse JSON response
+                return response.json();
             })
             .then((data) => {
-                setMovies(data); // Update movies state with the fetched data
-                setLoading(false); // Set loading to false
+                setMovies(data);
+                setLoading(false);
             })
             .catch((error) => {
                 console.error("Error fetching movies:", error);
-                setError(error.message); // Set error message
-                setLoading(false); // Set loading to false
+                setError(error.message);
+                setLoading(false);
             });
-    }, [page, limit, sort]); // Empty dependency array ensures this runs once when the component mounts
+    }, [page, limit, sort]);
 
     const navigate = useNavigate();
 
@@ -98,24 +105,24 @@ function MovieList() {
     });
 
     return (
-        <div>
-            <h2 style={{ textAlign: "center" }}>Movie List</h2>
-            <div>
+        <div className="movie-list-container">
+            <h2 style={{ textAlign: "center" }}>Catalog</h2>
+            <div className="movie-card-container">
                 {
-                    loading ? (
-                        <div>Loading movies...</div>
-                    ) : error ? (
-                        <div>Error: {error}</div>
-                    ) :
-                        movies.map((movie, index) => {
-                            let href = "/movies/" + movie.id;
-                            return (
-                                <div key={index} className="movie-div" onClick={() => handleNavigate(href)}>
-                                    {(parseInt(page)) * limit + index + 1}: {movie.title} ({movie.releaseYear}):
-                                    <span style={{ color: "#FF0000" }}> {movie.averageRating}</span>
-                                </div>
-                            );
-                        })
+                    // loading ? (
+                    //     <div>Loading movies...</div>
+                    // ) : error ? (
+                    //     <div>Error: {error}</div>
+                    // ) :
+                    movies.map((movie, index) => {
+                        return (
+                            <MovieCard
+                                movie={movie}
+                                index={index}
+                                handleNavigate={handleNavigate}
+                            />
+                        );
+                    })
                 }
             </div>
             <div>
