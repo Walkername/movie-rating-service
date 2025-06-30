@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import MOVIES from "../../props/props";
 import '../../styles/movie-card.css';
 import MovieCard from "../movie-card/movie-card";
+import MovieViewToggle from "../movie-view-toggle/movie-view-toggle";
 
 function MovieList() {
 
@@ -21,6 +22,8 @@ function MovieList() {
     const [sort, setSort] = useState(sortPar);
 
     const [sortBtText, setSortBtText] = useState("Sort ↓");
+
+    const [displayMovies, setDisplayMovies] = useState(false);
 
     const handlePageButton = (value) => {
         setPage(value);
@@ -107,21 +110,38 @@ function MovieList() {
     return (
         <div className="movie-list-container">
             <h2 style={{ textAlign: "center" }}>Catalog</h2>
-            <div className="movie-card-container">
+            <MovieViewToggle setDisplayMovies={setDisplayMovies} />
+            <div className="movie-card-container" style={{ display: displayMovies ? 'block' : 'grid' }}>
                 {
                     // loading ? (
                     //     <div>Loading movies...</div>
                     // ) : error ? (
                     //     <div>Error: {error}</div>
                     // ) :
+                    displayMovies ? 
                     movies.map((movie, index) => {
-                        return (
-                            <MovieCard
-                                movie={movie}
-                                index={index}
-                                handleNavigate={handleNavigate}
-                            />
-                        );
+                        if (index < limit) {
+                            return (
+                                <div className="movie-card-bar">
+                                    <span>{index + 1}</span>
+                                    <span>{movie.title}</span>
+                                    <span>({movie.releaseYear})</span>
+                                    <span>{movie.averageRating}</span>
+                                    <span>{movie.scores}</span>
+                                </div>
+                            );
+                        }
+                    })
+                    : movies.map((movie, index) => {
+                        if (index < limit) {
+                            return (
+                                <MovieCard
+                                    movie={movie}
+                                    index={index}
+                                    handleNavigate={handleNavigate}
+                                />
+                            );
+                        }
                     })
                 }
             </div>

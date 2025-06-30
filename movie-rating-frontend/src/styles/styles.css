@@ -1,15 +1,20 @@
 h1 {
-    display: flex; /* Use Flexbox to center content */
-    justify-content: center; /* Center horizontally */
+    display: flex;
+    /* Use Flexbox to center content */
+    justify-content: center;
+    /* Center horizontally */
     /*height: 100vh; /* Full viewport height */
     /*background-color: #f0f0f0; /* Optional: Add a background color */
-    
+
 }
 
 .page-content-container {
-    display: flex; /* Use Flexbox to center content */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    display: flex;
+    /* Use Flexbox to center content */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
 }
 
 .page-content {
@@ -24,7 +29,8 @@ h1 {
 }
 
 .user-data-content {
-    flex-grow: 1;  /* Makes UserData take as much space as possible */
+    flex-grow: 1;
+    /* Makes UserData take as much space as possible */
 }
 
 .user-edit-div {
@@ -71,14 +77,20 @@ nav {
 }
 
 .popup {
-    position: absolute; /* Fixed position relative to the viewport */
+    position: absolute;
+    /* Fixed position relative to the viewport */
     display: flex;
     justify-content: center;
-    top: 100%; /* Move down by 50% of the viewport height */
-    left: 50%; /* Move right by 50% of the viewport width */
-    transform: translateX(-50%); /* Center the popup */
-    width: 400px; /* Set a fixed width */
-    max-width: 50%; /* Ensure it doesn't overflow on small screens */
+    top: 100%;
+    /* Move down by 50% of the viewport height */
+    left: 50%;
+    /* Move right by 50% of the viewport width */
+    transform: translateX(-50%);
+    /* Center the popup */
+    width: 400px;
+    /* Set a fixed width */
+    max-width: 50%;
+    /* Ensure it doesn't overflow on small screens */
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -110,7 +122,8 @@ nav {
 
 .nav-bar-right {
     display: flex;
-    justify-content: left; /* Center the elements inside this container */
+    justify-content: left;
+    /* Center the elements inside this container */
     align-content: center;
     align-items: center;
     width: 100%;
@@ -119,7 +132,8 @@ nav {
 
 .nav-bar-left {
     display: flex;
-    justify-content: right; /* Center the elements inside this container */
+    justify-content: right;
+    /* Center the elements inside this container */
     align-content: center;
     align-items: center;
     width: 100%;
@@ -139,9 +153,12 @@ nav {
     font-size: 15px;
     border: 1px solid transparent;
     color: white;
-    display: inline-block; /* Make the element wrap around the text */
-    padding: 6px 10px; /* Add padding for spacing around the text */
-    transition: all 0.5s ease; /* Smooth transition for hover effects */
+    display: inline-block;
+    /* Make the element wrap around the text */
+    padding: 6px 10px;
+    /* Add padding for spacing around the text */
+    transition: all 0.5s ease;
+    /* Smooth transition for hover effects */
 }
 
 .auth-button:hover {
@@ -174,19 +191,58 @@ td {
 }
 
 tr:nth-child(even) {
-	background-color: #dadada;
+    background-color: #dadada;
 }
 
 th {
-    border-bottom: 3px solid;  
+    border-bottom: 3px solid;
 }
 
 tr:hover {
-	background-color: #e8ffff !important;
+    background-color: #e8ffff !important;
     cursor: pointer;
 }
 
 table {
     width: 500px;
     border: 1px solid;
+}
+
+/* Movie View Toggle Icon */
+
+.toggle-view-mode {
+    display: flex;
+    margin-left: 20px;
+    border: 0px;
+    border-radius: 5px;
+    gap: 10px;
+    padding: 5px;
+}
+
+.toggle-view-mode:hover {
+    background-color: #e6e6e6;
+}
+
+.movie-tiles-icon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+}
+
+.movie-tile {
+    background-color: gray;
+    width: 12px;
+    height: 12px;
+}
+
+.movie-bars-icon {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5px;
+}
+
+.movie-bar {
+    background-color: gray;
+    width: 27px;
+    height: 8px;
 }
