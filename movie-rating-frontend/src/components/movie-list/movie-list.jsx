@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import MOVIES from "../../props/props";
 import '../../styles/movie-card.css';
+import '../../styles/movie-card-bar.css';
 import MovieCard from "../movie-card/movie-card";
 import MovieViewToggle from "../movie-view-toggle/movie-view-toggle";
+import MovieCardBar from "../movie-card-bar/movie-card-bar";
 
 function MovieList() {
 
@@ -118,29 +120,24 @@ function MovieList() {
                     // ) : error ? (
                     //     <div>Error: {error}</div>
                     // ) :
-                    displayMovies ? 
                     movies.map((movie, index) => {
                         if (index < limit) {
-                            return (
-                                <div className="movie-card-bar">
-                                    <span>{index + 1}</span>
-                                    <span>{movie.title}</span>
-                                    <span>({movie.releaseYear})</span>
-                                    <span>{movie.averageRating}</span>
-                                    <span>{movie.scores}</span>
-                                </div>
-                            );
-                        }
-                    })
-                    : movies.map((movie, index) => {
-                        if (index < limit) {
-                            return (
-                                <MovieCard
-                                    movie={movie}
-                                    index={index}
-                                    handleNavigate={handleNavigate}
-                                />
-                            );
+                            return displayMovies ?
+                                (
+                                    <MovieCardBar
+                                        movie={movie}
+                                        index={index}
+                                        handleNavigate={handleNavigate}
+                                    />
+                                )
+                                :
+                                (
+                                    <MovieCard
+                                        movie={movie}
+                                        index={index}
+                                        handleNavigate={handleNavigate}
+                                    />
+                                )
                         }
                     })
                 }
