@@ -1,0 +1,41 @@
+
+.movie-card-bar {
+    display: grid;
+    grid-template-columns: 1fr 5fr 2fr 2fr 1fr;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #d4d4d4;
+    border-radius: 10px;
+}
+
+.movie-card-bar:hover {
+    background-color: #d4d4d4;
+}
+
+.movie-card-bar-index {
+    text-align: center;
+    align-content: center;
+}
+
+.movie-card-bar-description {
+    padding-top: 5px;
+    padding-right: 15px;
+    font-size: 10px;
+    height: auto;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
+
+.movie-card-bar-rating {
+    text-align: center;
+    align-content: center;
+}
+
+.movie-card-bar-scores {
+    text-align: center;
+    align-content: center;
+    font-size: 12px;
+}
