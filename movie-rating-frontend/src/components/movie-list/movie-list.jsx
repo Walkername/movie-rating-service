@@ -25,7 +25,7 @@ function MovieList() {
 
     const [sortBtText, setSortBtText] = useState("Sort ↓");
 
-    const [displayMovies, setDisplayMovies] = useState(false);
+    const [viewMode, setViewMode] = useState(false);
 
     const handlePageButton = (value) => {
         setPage(value);
@@ -111,8 +111,9 @@ function MovieList() {
     return (
         <div className="movie-list-container">
             <h2 style={{ textAlign: "center" }}>Catalog</h2>
-            <MovieViewToggle setDisplayMovies={setDisplayMovies} />
-            <div className="movie-card-container" style={{ display: displayMovies ? 'block' : 'grid' }}>
+            <MovieViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+
+            <div className="movie-card-container" style={{ display: viewMode ? 'block' : 'grid' }}>
                 {
                     loading ? (
                         <div>Loading movies...</div>
@@ -121,7 +122,7 @@ function MovieList() {
                     ) :
                         movies.map((movie, index) => {
                             if (index < limit) {
-                                return displayMovies ?
+                                return viewMode ?
                                     (
                                         <MovieCardBar
                                             movie={movie}

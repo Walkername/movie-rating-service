@@ -210,39 +210,43 @@ table {
 
 /* Movie View Toggle Icon */
 
-.toggle-view-mode {
+.view-toggle {
     display: flex;
-    margin-left: 20px;
-    border: 0px;
-    border-radius: 5px;
+    justify-content: flex-end;
+    margin-bottom: 20px;
     gap: 10px;
-    padding: 5px;
 }
 
-.toggle-view-mode:hover {
-    background-color: #e6e6e6;
+.view-toggle button {
+    font-size: 16px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
 }
 
-.movie-tiles-icon {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3px;
+.view-toggle button.active {
+    background-color: #007bff;
+    color: white;
 }
 
-.movie-tile {
-    background-color: gray;
-    width: 12px;
-    height: 12px;
+.view-toggle button:hover {
+    background-color: #ddd;
 }
 
-.movie-bars-icon {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5px;
-}
-
-.movie-bar {
-    background-color: gray;
-    width: 27px;
-    height: 8px;
+.movie-description {
+    width: 500px;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 1px;
+    height: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
 }

@@ -9,7 +9,7 @@ const MOVIES = [
     },
     {
         title: "Inception",
-        description: "People run in dreams while trying not to die and find out all secrets. ",
+        description: "People run in dreams while trying not to die and find out all secrets.",
         releaseYear: 2010,
         averageRating: 9.2,
         scores: 82

@@ -38,12 +38,12 @@
     color: gold;
     background-color: black;
     border-radius: 10px;
-    padding: 3px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 3px 10px;
+    display: flex;
+    align-items: center;
 }
 
-.movie-description {
+.movie-card-description {
     width: 200px;
     margin: 1px;
     height: auto;

@@ -8,7 +8,7 @@ function MovieCard({ movie, index, handleNavigate }) {
                 <span className="movie-card-rating">{movie.averageRating}</span>
             </div>
             <span style={{ color: "#FF0000" }}></span>
-            <p className="movie-description">{movie.description}</p>
+            <p className="movie-card-description">{movie.description}</p>
         </div>
     );
 }
