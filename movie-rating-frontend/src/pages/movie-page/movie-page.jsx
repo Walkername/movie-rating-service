@@ -16,7 +16,7 @@ function MoviePage() {
     if (token != null) {
         const tokenId = getClaimFromToken(token, "id");
         const tokenRole = getClaimFromToken(token, "role");
-        isAccessToEdit = parseInt(id) === parseInt(tokenId) || tokenRole === "ADMIN";
+        isAccessToEdit = tokenRole === "ADMIN";
     }
 
     useEffect(() => {

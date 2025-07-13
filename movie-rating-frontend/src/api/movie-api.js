@@ -5,7 +5,7 @@ export const addMovie = async (formData) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formData)
     });
@@ -16,10 +16,12 @@ export const addMovie = async (formData) => {
 }
 
 export const updateMovie = async (id, formData) => {
+    const token = localStorage.getItem("token");
     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/edit/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formData)
     });

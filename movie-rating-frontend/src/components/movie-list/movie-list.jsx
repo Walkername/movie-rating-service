@@ -46,10 +46,6 @@ function MovieList() {
     useEffect(() => {
         const url = `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`;
 
-        // Movie props
-        // TODO: comment if need movies from backend
-        setMovies(MOVIES);
-
         fetch(url, {
             method: "GET",
             headers: {
@@ -65,6 +61,9 @@ function MovieList() {
             .then((data) => {
                 setMovies(data);
                 setLoading(false);
+                // Movie props
+                // TODO: comment if need movies from backend
+                // setMovies(MOVIES);
             })
             .catch((error) => {
                 console.error("Error fetching movies:", error);
@@ -115,31 +114,31 @@ function MovieList() {
             <MovieViewToggle setDisplayMovies={setDisplayMovies} />
             <div className="movie-card-container" style={{ display: displayMovies ? 'block' : 'grid' }}>
                 {
-                    // loading ? (
-                    //     <div>Loading movies...</div>
-                    // ) : error ? (
-                    //     <div>Error: {error}</div>
-                    // ) :
-                    movies.map((movie, index) => {
-                        if (index < limit) {
-                            return displayMovies ?
-                                (
-                                    <MovieCardBar
-                                        movie={movie}
-                                        index={index}
-                                        handleNavigate={handleNavigate}
-                                    />
-                                )
-                                :
-                                (
-                                    <MovieCard
-                                        movie={movie}
-                                        index={index}
-                                        handleNavigate={handleNavigate}
-                                    />
-                                )
-                        }
-                    })
+                    loading ? (
+                        <div>Loading movies...</div>
+                    ) : error ? (
+                        <div>Error: {error}</div>
+                    ) :
+                        movies.map((movie, index) => {
+                            if (index < limit) {
+                                return displayMovies ?
+                                    (
+                                        <MovieCardBar
+                                            movie={movie}
+                                            index={index}
+                                            handleNavigate={handleNavigate}
+                                        />
+                                    )
+                                    :
+                                    (
+                                        <MovieCard
+                                            movie={movie}
+                                            index={index}
+                                            handleNavigate={handleNavigate}
+                                        />
+                                    )
+                            }
+                        })
                 }
             </div>
             <div>

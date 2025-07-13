@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
-import { getUsersRatedMovie } from "../../api/user-api";
 import { addRating, getRating, updateRating } from "../../api/rating-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import AuthPopup from "../auth-popup/auth-popup";
 
-function RateMovie({ movieId, isAccessToEdit }) {
+function RateMovie({ movieId }) {
     const token = localStorage.getItem("token");
     const userId = getClaimFromToken(token, "id");
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // CURRENT RATING
+    const [ratingInfo, setRatingInfo] = useState(null);
     const [rating, setRating] = useState(null);
 
     useEffect(() => {
         getRating(userId, movieId)
             .then((data) => {
                 console.log("Rating got successfully:", data);
+                setRatingInfo(data);
                 setRating(data.rating);
             })
             .catch((error) => {
                 console.error("Error:", error);
             })
-    }, [movieId, userId]);
+    }, [movieId, userId, rating]);
 
     // SEND RATING
     const handleSubmit = (rateValue) => {
-        if (!isAccessToEdit) {
+        if (token == null) {
             setIsModalOpen(true);
             return;
         }
-
-        setRating(rateValue);
 
         const formData = {
             userId: userId,
@@ -39,11 +38,12 @@ function RateMovie({ movieId, isAccessToEdit }) {
             rating: rateValue
         }
 
-        if (usersR.some(user => user.userId === parseInt(formData.userId))) {
-            const ratingId = usersR.find(user => user.userId === parseInt(formData.userId)).ratingId;
+        if (rating != null) {
+            const ratingId = ratingInfo.ratingId;
             updateRating(ratingId, formData)
                 .then((data) => {
                     console.log("Rating updated successfully:", data);
+                    setRating(rateValue);
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -53,6 +53,7 @@ function RateMovie({ movieId, isAccessToEdit }) {
             addRating(formData)
                 .then((data) => {
                     console.log("Rating added successfully:", data);
+                    setRating(rateValue);
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -60,19 +61,6 @@ function RateMovie({ movieId, isAccessToEdit }) {
                 });
         }
     };
-
-    // ALL USERS THAT RATED THIS MOVIE
-    const [usersR, setUsersR] = useState([]); // State for the movie data
-
-    useEffect(() => {
-        getUsersRatedMovie(movieId)
-            .then((data) => {
-                setUsersR(data); // Set the movie data
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [movieId]);
 
     return (
         <div>
@@ -101,15 +89,6 @@ function RateMovie({ movieId, isAccessToEdit }) {
                     })
                 }
             </div>
-
-            <h3>Users that rated the movie:</h3>
-            {
-                usersR.map((user, index) => {
-                    return (
-                        <div key={index}>{user.username} : {user.rating}</div>
-                    )
-                })
-            }
         </div>
     )
 }
