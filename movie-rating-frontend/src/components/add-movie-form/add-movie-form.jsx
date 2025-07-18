@@ -54,7 +54,7 @@ function AddMovieForm() {
             addMovie(formData)
                 .then((data) => {
                     console.log("Movie added successfully:", data);
-                    alert("Movie added successfully!");
+                    setErrorDescription("Movie added successfully!");
                 })
                 .catch((error) => {
                     console.error("Error:", error);

@@ -49,10 +49,13 @@ export const updateUsername = async (id, formData) => {
         },
         body: JSON.stringify(formData)
     });
+
     if (!response.ok) {
-        throw new Error('Failed to update the username');
+        const data = await response.json();
+        throw new Error(data.message || "Update username failed");
     }
-    return response.json();
+    
+    return response;
 }
 
 export const updateUserData = async (id, formData) => {
@@ -68,7 +71,7 @@ export const updateUserData = async (id, formData) => {
     if (!response.ok) {
         throw new Error('Failed to update the user');
     }
-    return response.json();
+    return response;
 }
 
 export const getTopUser = async () => {

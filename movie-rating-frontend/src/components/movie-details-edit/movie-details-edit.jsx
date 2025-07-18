@@ -6,7 +6,6 @@ function MovieDetailsEdit({ movie }) {
     const [errorDescription, setErrorDescription] = useState("");
     const [errorReleaseYear, setErrorReleaseYear] = useState("");
 
-
     const [formData, setFormData] = useState({
         title: movie.title,
         releaseYear: movie.releaseYear,
@@ -57,23 +56,20 @@ function MovieDetailsEdit({ movie }) {
             && validateReleaseYear()
         ) {
             updateMovie(movie.id, formData)
-                .then((data) => {
-                    console.log("Movie updated successfully:", data);
+                .then(() => {
+                    setErrorTitle("");
+                    setErrorDescription("");
+                    setErrorReleaseYear("");
+                    window.location.reload();
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
+                    setErrorDescription("Some error has occured");
                 })
-
-            setErrorTitle("");
-            setErrorDescription("");
-            setErrorReleaseYear("");
-            
-            window.location.reload();
         }
     }
 
     return (
-        <form>
+        <form onSubmit={handleUpdate}>
             <label>Title:</label>
             <br />
             <input type="text" min="1" max="50" name="title" placeholder="title" value={formData.title}
@@ -118,7 +114,7 @@ function MovieDetailsEdit({ movie }) {
             }
             <br />
 
-            <input type="submit" value="Update" onClick={handleUpdate} />
+            <input type="submit" value="Update" />
         </form>
     )
 }

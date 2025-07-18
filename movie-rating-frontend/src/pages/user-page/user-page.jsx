@@ -55,6 +55,8 @@ function UserPage() {
                                                 (
                                                     <UserDataEdit
                                                         user={user}
+                                                        setUser={setUser}
+                                                        setIsEditing={setIsEditing}
                                                     />
                                                 )
                                                 :

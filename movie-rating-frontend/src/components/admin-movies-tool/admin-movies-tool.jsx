@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { getUser, getUserByUsername } from "../../api/user-api";
 import NavigationBar from "../navigation/navigation";
 import { useNavigate } from "react-router-dom";
 import AddMovieForm from "../add-movie-form/add-movie-form";

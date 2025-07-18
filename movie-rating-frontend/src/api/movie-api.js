@@ -28,7 +28,7 @@ export const updateMovie = async (id, formData) => {
     if (!response.ok) {
         throw new Error('Failed to update the movie');
     }
-    return response.json();
+    return response;
 }
 
 export const getMoviesWithPagination = async (page, limit, sort) => {
