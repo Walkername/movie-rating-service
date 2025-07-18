@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { getUser, getUserByUsername } from "../../api/user-api";
-import NavigationBar from "../../components/navigation/navigation";
-import UserData from "../../components/user-data/user-data";
+import NavigationBar from "../navigation/navigation";
 import { useNavigate } from "react-router-dom";
+import AddMovieForm from "../add-movie-form/add-movie-form";
 
-export default function AdminPage() {
+function AdminMoviesTool() {
     const navigate = useNavigate();
 
     const handleNavigate = (target) => {
@@ -22,14 +22,14 @@ export default function AdminPage() {
                     <div className="admin-content">
                         <div className="admin-toolbar">
                             <button
-                                onClick={() => handleNavigate("./users-tool")}
+                                onClick={() => handleNavigate("/admin/users-tool")}
                             >Users</button>
                             <button
-                                onClick={() => handleNavigate("./movies-tool")}
+                                onClick={() => handleNavigate("/admin/movies-tool")}
                             >Movies</button>
                         </div>
                         <div>
-                            
+                            <AddMovieForm />
                         </div>
                     </div>
                 </div>
@@ -38,3 +38,5 @@ export default function AdminPage() {
         </>
     );
 }
+
+export default AdminMoviesTool;

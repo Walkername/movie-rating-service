@@ -9,6 +9,8 @@ import Register from './pages/register/register';
 import Login from './pages/login/login';
 import AdminRoute from './utils/admin-route/admin-route';
 import AdminPage from './pages/admin-page/admin-page';
+import AdminUsersTool from './components/admin-users-tool/admin-users-tool';
+import AdminMoviesTool from './components/admin-movies-tool/admin-movies-tool';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/movies/add" element={<AddMoviePage />} />
           <Route path="/users/add" element={<AddUserPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/users-tool" element={<AdminUsersTool />} />
+          <Route path="/admin/movies-tool" element={<AdminMoviesTool />} />
         </Route>
         <Route path="/user/:id" element={<UserPage />} />
         <Route path="/" element={<MainPage />} />
