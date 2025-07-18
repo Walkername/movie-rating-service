@@ -5,7 +5,7 @@ import getClaimFromToken from "../../utils/token-validation/token-validation";
 
 export default function LoginForm() {
     const navigate = useNavigate();
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessages, setErrorMessages] = useState([]);
 
     const [formData, setFormData] = useState({
         username: "",
@@ -23,16 +23,15 @@ export default function LoginForm() {
         login(formData)
             .then((data) => {
                 console.log("Login successfully:", data);
-                setErrorMessage("");
+                setErrorMessages([]);
                 localStorage.setItem("token", data.token);
                 const id = getClaimFromToken(data.token, "id");
                 navigate(`/user/${id}`);
             })
             .catch((error) => {
                 console.error("Error:", error);
-                setErrorMessage("Wrong username or password!");
+                setErrorMessages(["Wrong username or password!"]);
             });
-
     }
 
     return (
@@ -47,12 +46,14 @@ export default function LoginForm() {
             <input name="password" type="password" min="5" value={formData.title} onChange={handleChange} required />
             <br></br>
             {
-                errorMessage
-                    ? <>
-                        <span style={{ color: "red" }}>{errorMessage}</span>
-                        <br></br>
-                    </>
-                    : <></>
+                errorMessages.map((message, index) => {
+                    return message != "" && (
+                        <>
+                            <span key={index} style={{ color: "red" }}>{message}</span>
+                            <br></br>
+                        </>
+                    );
+                })
             }
 
             <input type="submit" value="Login" />

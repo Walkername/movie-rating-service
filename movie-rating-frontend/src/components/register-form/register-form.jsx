@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function RegisterForm() {
     const navigate = useNavigate();
 
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessages, setErrorMessages] = useState([]);
 
     const [clientForm, setClientForm] = useState({
         username: "",
@@ -30,14 +30,15 @@ export default function RegisterForm() {
             register(formData)
                 .then(() => {
                     console.log("Register successfully");
-                    setErrorMessage("");
+                    setErrorMessages([]);
                     navigate("/login");
                 })
                 .catch((error) => {
-                    setErrorMessage(error.message.replace(';', " "));
+                    setErrorMessages(error.message.split(';'));
+                    console.log(errorMessages);
                 })
         } else {
-            setErrorMessage("Password Confirmation failed!")
+            setErrorMessages(["Password Confirmation failed!"])
         }
     }
 
@@ -58,12 +59,14 @@ export default function RegisterForm() {
             <input name="passwordConfirmation" type="password" value={clientForm.passwordConfirmation} onChange={handleChange} required />
             <br></br>
             {
-                errorMessage
-                    ? <>
-                        <span style={{ color: "red" }}>{errorMessage}</span>
-                        <br></br>
-                    </>
-                    : <></>
+                errorMessages.map((message, index) => {
+                    return message != "" && (
+                        <>
+                            <span key={index} style={{ color: "red" }}>{message}</span>
+                            <br></br>
+                        </>
+                    );
+                })
             }
 
             <input type="submit" value="Register" />
