@@ -10,11 +10,6 @@ function UserData({ user }) {
                 {user.description}
             </div>
 
-            <h3>Favourite movie</h3>
-            <div>
-                {user.favouriteMovie}
-            </div>
-
             <h3>Average rating</h3>
             <div>
                 {user.averageRating}

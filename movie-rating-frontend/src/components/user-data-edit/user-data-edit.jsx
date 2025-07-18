@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import { updateUserData, updateUsername } from "../../api/user-api";
 
-function UserDataEdit({ user }) {
+function UserDataEdit({ user, setUser }) {
     const token = localStorage.getItem("token");
     const id = getClaimFromToken(token, "id");
 
@@ -16,6 +16,11 @@ function UserDataEdit({ user }) {
     const [formUserData, setFormUserData] = useState({
         description: user.description
     });
+
+    useEffect(() => {
+        setFormUsername({ username: user.username });
+        setFormUserData({ description: user.description });
+    }, [user]);
 
     const handleChangeUsername = (e) => {
         const { name, value } = e.target;
@@ -54,10 +59,11 @@ function UserDataEdit({ user }) {
         evt.preventDefault();
 
         if (validateUsername()) {
-            updateUsername(id, formUsername)
+            updateUsername(user.id, formUsername)
                 .then(() => {
                     setErrorUsername("");
-                    window.location.reload();
+                    setUser({...user, username: formUsername.username});
+                    //window.location.reload();
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -73,7 +79,8 @@ function UserDataEdit({ user }) {
             updateUserData(user.id, formUserData)
                 .then(() => {
                     setErrorDescription("");
-                    window.location.reload();
+                    setUser({...user, description: formUserData.description});
+                    //window.location.reload();
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -106,6 +113,7 @@ function UserDataEdit({ user }) {
                 <br></br>
                 <textarea name="description" max="500" type="text" rows="5" placeholder="..." value={formUserData.description}
                     onChange={handleChangeUserData}
+                    style={{ width: "300px", resize: "vertical" }}
                     >
                 </textarea>
                 {

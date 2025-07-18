@@ -2,7 +2,7 @@ import { useState } from "react";
 import { getUser, getUserByUsername } from "../../api/user-api";
 import NavigationBar from "../navigation/navigation";
 import { useNavigate } from "react-router-dom";
-import UserData from "../user-data/user-data";
+import UserDataEdit from "../user-data-edit/user-data-edit";
 
 function AdminUsersTool() {
     const navigate = useNavigate();
@@ -91,7 +91,15 @@ function AdminUsersTool() {
                                 {
                                     user
                                         ?
-                                        <UserData user={user} />
+                                        <div className="user-info-fa">
+                                            <div>
+                                                <h2 className="username-link" onClick={() => handleNavigate(`/user/${user.id}`)}>{user.username}</h2>
+                                                <p className="user-info-fa-description">{user.description}</p>
+                                                <p>Average rating: {user.averageRating}</p>
+                                                <p>Scores: {user.scores}</p>
+                                            </div>
+                                            <UserDataEdit user={user} setUser={setUser} />
+                                        </div>
                                         :
                                         <div>{statusMessage}</div>
                                 }

@@ -266,3 +266,20 @@ table {
 .admin-toolbar button {
     width: 80px;
 }
+
+.username-link {
+    cursor: pointer;
+}
+
+.username-link:hover {
+    color: rgb(117, 117, 255);
+}
+
+.user-info-fa {
+    display: flex;
+}
+
+.user-info-fa-description {
+    overflow: auto;
+    width: 300px;
+}
