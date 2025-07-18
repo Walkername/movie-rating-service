@@ -19,11 +19,11 @@ h1 {
 
 .page-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     background-color: #f0f0f0;
-    max-width: auto;
-    padding-left: 200px;
-    padding-right: 200px;
+    width: 960px;
+    padding-left: 100px;
+    padding-right: 100px;
     padding-top: 10px;
     padding-bottom: 40px;
 }
@@ -249,4 +249,8 @@ table {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 12px;
+}
+
+.movie-list-container {
+    width: 960px;
 }
