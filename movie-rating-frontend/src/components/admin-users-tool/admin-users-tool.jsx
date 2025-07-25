@@ -86,7 +86,7 @@ function AdminUsersTool() {
                             <hr></hr>
 
                             <br></br>
-                            <button>Delete account</button>
+                            
                             <div>
                                 {
                                     user
