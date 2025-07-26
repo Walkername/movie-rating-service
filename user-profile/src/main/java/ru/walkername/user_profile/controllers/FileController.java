@@ -32,8 +32,8 @@ public class FileController {
                 .body(file);
     }
 
-    @GetMapping("/download/signed-url/{filename}")
-    public String downloadSignedUrl(@PathVariable("filename") String filename) {
+    @GetMapping("/download/signed-url")
+    public String downloadSignedUrl(@RequestParam("filename") String filename) {
         return minioService.generatePresignedUrl(filename, 10);
     }
 

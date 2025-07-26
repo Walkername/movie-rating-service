@@ -22,6 +22,7 @@ import ru.walkername.user_profile.util.UserValidator;
 import ru.walkername.user_profile.util.UserWrongAverageRatingException;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 @RestController
@@ -69,22 +70,25 @@ public class UsersController {
             @PathVariable("id") int id,
             @RequestParam("file") MultipartFile file
     ) {
-        try {
-            String token = authorization.substring(7);
-            DecodedJWT decodedJWT = tokenService.validateToken(token);
-            int tokenId = decodedJWT.getClaim("id").asInt();
-            String role = decodedJWT.getClaim("role").asString();
-            if (tokenId != id && !role.equals("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-        } catch (JWTVerificationException e) {
-            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
+        // Check if the user who requested and updated user are the same
+        // Or if the admin, then he can do what he wants
+        ResponseEntity<String> response = checkRoles(authorization, id);
+        if (response != null) {
+            return response;
         }
 
-        String fileName = file.getOriginalFilename();
-        minioService.uploadFile(fileName, file);
-        usersService.saveProfilePicture(id, fileName);
-        return new ResponseEntity<>(fileName, HttpStatus.OK);
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        String uniqueFilename = "user-" + id + "/" + UUID.randomUUID() + extension;
+
+        minioService.uploadFile(uniqueFilename, file);
+        usersService.saveProfilePicture(id, uniqueFilename);
+        return new ResponseEntity<>(uniqueFilename, HttpStatus.OK);
     }
 
     @PatchMapping("/edit/{id}")
@@ -96,16 +100,11 @@ public class UsersController {
     ) {
         validateUser(bindingResult, UserNotCreatedException::new);
 
-        try {
-            String token = authorization.substring(7);
-            DecodedJWT jwt = tokenService.validateToken(token);
-            int requestId = jwt.getClaim("id").asInt();
-            String role = jwt.getClaim("role").asString();
-            if (requestId != id && !role.equals("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-        } catch (JWTVerificationException e) {
-            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
+        // Check if the user who requested and updated user are the same
+        // Or if the admin, then he can do what he wants
+        ResponseEntity<String> response = checkRoles(authorization, id);
+        if (response != null) {
+            return response;
         }
 
         // Getting an existing user and setting fields from dto for them
@@ -129,16 +128,11 @@ public class UsersController {
         userValidator.validate(userToValidate, bindingResult);
         validateUser(bindingResult, UserNotCreatedException::new);
 
-        try {
-            String token = authorization.substring(7);
-            DecodedJWT jwt = tokenService.validateToken(token);
-            int requestId = jwt.getClaim("id").asInt();
-            String role = jwt.getClaim("role").asString();
-            if (requestId != id && !role.equals("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-        } catch (JWTVerificationException e) {
-            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
+        // Check if the user who requested and updated user are the same
+        // Or if the admin, then he can do what he wants
+        ResponseEntity<String> response = checkRoles(authorization, id);
+        if (response != null) {
+            return response;
         }
 
         // Getting an existing user and setting fields from dto for them
@@ -229,6 +223,21 @@ public class UsersController {
             return null;
         }
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    public ResponseEntity<String> checkRoles(String authorization, int id) {
+        try {
+            String token = authorization.substring(7);
+            DecodedJWT jwt = tokenService.validateToken(token);
+            int requestId = jwt.getClaim("id").asInt();
+            String role = jwt.getClaim("role").asString();
+            if (requestId != id && !role.equals("ADMIN")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (JWTVerificationException e) {
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
+        }
+        return null;
     }
 
 }
