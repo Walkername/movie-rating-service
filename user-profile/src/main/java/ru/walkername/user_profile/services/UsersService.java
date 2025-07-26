@@ -58,6 +58,12 @@ public class UsersService {
         usersRepository.save(user);
     }
 
+    @Transactional
+    public void saveProfilePicture(int id, String url) {
+        Optional<User> currentUser = usersRepository.findById(id);
+        currentUser.ifPresent(user -> user.setProfilePicUrl(url));
+    }
+
     public List<User> getAll() {
         return usersRepository.findAll();
     }

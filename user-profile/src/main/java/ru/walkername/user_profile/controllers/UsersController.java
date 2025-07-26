@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.user_profile.dto.*;
 import ru.walkername.user_profile.models.User;
+import ru.walkername.user_profile.services.MinioService;
 import ru.walkername.user_profile.services.TokenService;
 import ru.walkername.user_profile.services.UsersService;
 import ru.walkername.user_profile.util.UserErrorResponse;
@@ -31,13 +33,15 @@ public class UsersController {
     private final UserValidator userValidator;
     private final ModelMapper modelMapper;
     private final TokenService tokenService;
+    private final MinioService minioService;
 
     @Autowired
-    public UsersController(UsersService usersService, UserValidator userValidator, ModelMapper modelMapper, TokenService tokenService) {
+    public UsersController(UsersService usersService, UserValidator userValidator, ModelMapper modelMapper, TokenService tokenService, MinioService minioService) {
         this.usersService = usersService;
         this.userValidator = userValidator;
         this.modelMapper = modelMapper;
         this.tokenService = tokenService;
+        this.minioService = minioService;
     }
 
     @GetMapping("/{id}")
@@ -59,17 +63,29 @@ public class UsersController {
         return usersService.getAll().stream().map(this::convertToUserResponse).toList();
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<HttpStatus> add(
-//            @RequestBody @Valid UserDTO userDTO,
-//            BindingResult bindingResult
-//    ) {
-//        User user = convertToUser(userDTO);
-//        userValidator.validate(user, bindingResult);
-//        validateUser(bindingResult, UserNotCreatedException::new);
-//        usersService.save(user);
-//        return ResponseEntity.ok(HttpStatus.OK);
-//    }
+    @PatchMapping("/profile-pic/{id}")
+    public ResponseEntity<String> uploadProfilePic(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable("id") int id,
+            @RequestParam("file") MultipartFile file
+    ) {
+        try {
+            String token = authorization.substring(7);
+            DecodedJWT decodedJWT = tokenService.validateToken(token);
+            int tokenId = decodedJWT.getClaim("id").asInt();
+            String role = decodedJWT.getClaim("role").asString();
+            if (tokenId != id && !role.equals("ADMIN")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (JWTVerificationException e) {
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
+        }
+
+        String fileName = file.getOriginalFilename();
+        minioService.uploadFile(fileName, file);
+        usersService.saveProfilePicture(id, fileName);
+        return new ResponseEntity<>(fileName, HttpStatus.OK);
+    }
 
     @PatchMapping("/edit/{id}")
     public ResponseEntity<String> update(
@@ -98,7 +114,7 @@ public class UsersController {
             modelMapper.map(userDTO, user);
             usersService.save(user);
         }
-        return ResponseEntity.ok(HttpStatus.OK + "");
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @PatchMapping("/edit/username/{id}")
@@ -131,7 +147,7 @@ public class UsersController {
             modelMapper.map(usernameDTO, user);
             usersService.save(user);
         }
-        return ResponseEntity.ok(HttpStatus.OK + "");
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

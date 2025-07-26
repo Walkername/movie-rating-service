@@ -32,6 +32,11 @@ public class FileController {
                 .body(file);
     }
 
+    @GetMapping("/download/signed-url/{filename}")
+    public String downloadSignedUrl(@PathVariable("filename") String filename) {
+        return minioService.generatePresignedUrl(filename, 10);
+    }
+
     @DeleteMapping("/delete/{filename}")
     public ResponseEntity<String> deleteFile(@PathVariable String filename) {
         minioService.deleteFile(filename);

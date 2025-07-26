@@ -1,6 +1,7 @@
 package ru.walkername.user_profile.services;
 
 import io.minio.*;
+import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class MinioService {
@@ -16,6 +18,9 @@ public class MinioService {
 
     @Value("${minio.bucket-name}")
     private String bucketName;
+
+    @Value("${minio.url}")
+    private String minioUrl;
 
     @Autowired
     public MinioService(MinioClient minioClient) {
@@ -50,6 +55,21 @@ public class MinioService {
             );
         } catch (Exception e) {
             throw new RuntimeException("Error uploading file", e);
+        }
+    }
+
+    public String generatePresignedUrl(String objectName, int expirationMinutes) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .expiry(expirationMinutes, TimeUnit.MINUTES)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating signed URL", e);
         }
     }
 
