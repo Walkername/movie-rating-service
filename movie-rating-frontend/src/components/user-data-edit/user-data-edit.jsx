@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
-import { updateUserData, updateUsername } from "../../api/user-api";
+import { updateProfilePicture, updateUserData, updateUsername } from "../../api/user-api";
 
 function UserDataEdit({ user, setUser }) {
     const token = localStorage.getItem("token");
@@ -62,7 +62,7 @@ function UserDataEdit({ user, setUser }) {
             updateUsername(user.id, formUsername)
                 .then(() => {
                     setErrorUsername("");
-                    setUser({...user, username: formUsername.username});
+                    setUser({ ...user, username: formUsername.username });
                     //window.location.reload();
                 })
                 .catch((error) => {
@@ -79,7 +79,7 @@ function UserDataEdit({ user, setUser }) {
             updateUserData(user.id, formUserData)
                 .then(() => {
                     setErrorDescription("");
-                    setUser({...user, description: formUserData.description});
+                    setUser({ ...user, description: formUserData.description });
                     //window.location.reload();
                 })
                 .catch((error) => {
@@ -88,8 +88,49 @@ function UserDataEdit({ user, setUser }) {
         }
     };
 
+    // PROFILE PICTURE
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploadedUrl, setUploadedUrl] = useState(null);
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+        }
+    };
+
+    const handleUploadProfilePicture = (evt) => {
+        evt.preventDefault();
+
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        updateProfilePicture(user.id, formData)
+            .then((data) => {
+                setUploadedUrl(data);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+
     return (
         <div>
+            {
+                selectedFile && (
+                    <img className="uploaded-profile-pic" src={URL.createObjectURL(selectedFile)} alt={selectedFile.name} />
+                )
+            }
+            <form method="PATCH" onSubmit={handleUploadProfilePicture} >
+                <input id="profile-pic" type="file" onChange={handleFileChange} />
+                <br></br>
+                <input type="submit" value="Upload" />
+            </form>
+
+            <br></br>
+
             <form method="PATCH" onSubmit={handleUpdateUsername}>
                 <label>Username:</label>
                 <br></br>
@@ -114,7 +155,7 @@ function UserDataEdit({ user, setUser }) {
                 <textarea name="description" max="500" type="text" rows="5" placeholder="..." value={formUserData.description}
                     onChange={handleChangeUserData}
                     style={{ width: "300px", resize: "vertical" }}
-                    >
+                >
                 </textarea>
                 {
                     errorDescription !== ""

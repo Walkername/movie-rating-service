@@ -23,8 +23,7 @@ function UserPage() {
     useEffect(() => {
         getUser(id)
             .then((data) => {
-                setUser(data); // Set the user data
-                console.log(data);
+                setUser(data);
             })
             .catch((error) => {
                 console.error(error);

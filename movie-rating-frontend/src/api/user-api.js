@@ -54,8 +54,25 @@ export const updateUsername = async (id, formData) => {
         const data = await response.json();
         throw new Error(data.message || "Update username failed");
     }
-    
+
     return response;
+}
+
+export const updateProfilePicture = async (id, formData) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/users/profile-pic/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        },
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to update the profile picture');
+    }
+    
+    return response.text();
 }
 
 export const updateUserData = async (id, formData) => {

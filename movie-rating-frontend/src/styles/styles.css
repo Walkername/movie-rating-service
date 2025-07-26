@@ -283,3 +283,12 @@ table {
     overflow: auto;
     width: 300px;
 }
+
+.profile-pic {
+    width: 200px;
+    height: min-content;
+}
+
+.uploaded-profile-pic {
+    width: 200px;
+}
