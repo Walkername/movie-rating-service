@@ -1,7 +1,7 @@
 
 export const downloadFile = async (filename) => {
     const token = localStorage.getItem("token");
-    const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/files/download/signed-url/${filename}`, {
+    const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/files/download/signed-url?filename=${filename}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
