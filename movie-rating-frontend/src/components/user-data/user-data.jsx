@@ -7,8 +7,8 @@ function UserData({ user }) {
     const [profilePicUrl, setProfilePicUrl] = useState(null);
 
     useEffect(() => {
-        if (!user.profilePicUrl) return;
-        downloadFile(user.profilePicUrl)
+        if (!user.profilePicId) return;
+        downloadFile(user.profilePicId)
             .then((data) => {
                 setProfilePicUrl(data);
             })

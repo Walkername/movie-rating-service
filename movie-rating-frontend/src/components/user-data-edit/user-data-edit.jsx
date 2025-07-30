@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
-import { updateProfilePicture, updateUserData, updateUsername } from "../../api/user-api";
+import { updateProfilePicture, updateProfilePictureId, updateUserData, updateUsername } from "../../api/user-api";
+import { uploadFile } from "../../api/file-api";
 
 function UserDataEdit({ user, setUser }) {
     const token = localStorage.getItem("token");
@@ -91,7 +92,7 @@ function UserDataEdit({ user, setUser }) {
     // PROFILE PICTURE
 
     const [selectedFile, setSelectedFile] = useState(null);
-    const [uploadedUrl, setUploadedUrl] = useState(null);
+    const [uploadedFileId, setUploadedFileId] = useState(null);
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -107,13 +108,21 @@ function UserDataEdit({ user, setUser }) {
         const formData = new FormData();
         formData.append("file", selectedFile);
 
-        updateProfilePicture(user.id, formData)
+        // Uploading file
+        uploadFile(formData, "user", user.id)
             .then((data) => {
-                setUploadedUrl(data);
+                setUploadedFileId(data);
+                // Update profile picture ID
+                updateProfilePictureId(user.id, data)
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.log(error);
             });
+
+
     }
 
     return (
@@ -123,7 +132,7 @@ function UserDataEdit({ user, setUser }) {
                     <img className="uploaded-profile-pic" src={URL.createObjectURL(selectedFile)} alt={selectedFile.name} />
                 )
             }
-            <form method="PATCH" onSubmit={handleUploadProfilePicture} >
+            <form onSubmit={handleUploadProfilePicture} >
                 <input id="profile-pic" type="file" onChange={handleFileChange} />
                 <br></br>
                 <input type="submit" value="Upload" />
