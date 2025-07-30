@@ -59,9 +59,9 @@ public class UsersService {
     }
 
     @Transactional
-    public void saveProfilePicture(int id, String url) {
-        Optional<User> currentUser = usersRepository.findById(id);
-        currentUser.ifPresent(user -> user.setProfilePicUrl(url));
+    public void saveProfilePicture(int userId, int fileId) {
+        Optional<User> currentUser = usersRepository.findById(userId);
+        currentUser.ifPresent(user -> user.setProfilePicId(fileId));
     }
 
     public List<User> getAll() {

@@ -8,7 +8,7 @@ public class UserResponse {
 
     private String description;
 
-    private String profilePicUrl;
+    private Integer profilePicId;
 
     private double averageRating;
 
@@ -54,11 +54,11 @@ public class UserResponse {
         this.scores = scores;
     }
 
-    public String getProfilePicUrl() {
-        return profilePicUrl;
+    public Integer getProfilePicId() {
+        return profilePicId;
     }
 
-    public void setProfilePicUrl(String profilePicUrl) {
-        this.profilePicUrl = profilePicUrl;
+    public void setProfilePicId(Integer profilePicId) {
+        this.profilePicId = profilePicId;
     }
 }
