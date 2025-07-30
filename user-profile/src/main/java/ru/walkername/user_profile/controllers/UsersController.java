@@ -10,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.user_profile.dto.*;
 import ru.walkername.user_profile.models.User;
-import ru.walkername.user_profile.services.MinioService;
 import ru.walkername.user_profile.services.TokenService;
 import ru.walkername.user_profile.services.UsersService;
 import ru.walkername.user_profile.util.UserErrorResponse;
@@ -22,7 +20,6 @@ import ru.walkername.user_profile.util.UserValidator;
 import ru.walkername.user_profile.util.UserWrongAverageRatingException;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 
 @RestController
@@ -34,15 +31,13 @@ public class UsersController {
     private final UserValidator userValidator;
     private final ModelMapper modelMapper;
     private final TokenService tokenService;
-    private final MinioService minioService;
 
     @Autowired
-    public UsersController(UsersService usersService, UserValidator userValidator, ModelMapper modelMapper, TokenService tokenService, MinioService minioService) {
+    public UsersController(UsersService usersService, UserValidator userValidator, ModelMapper modelMapper, TokenService tokenService) {
         this.usersService = usersService;
         this.userValidator = userValidator;
         this.modelMapper = modelMapper;
         this.tokenService = tokenService;
-        this.minioService = minioService;
     }
 
     @GetMapping("/{id}")
@@ -68,7 +63,7 @@ public class UsersController {
     public ResponseEntity<String> uploadProfilePic(
             @RequestHeader("Authorization") String authorization,
             @PathVariable("id") int id,
-            @RequestParam("file") MultipartFile file
+            @RequestParam("fileId") int fileId
     ) {
         // Check if the user who requested and updated user are the same
         // Or if the admin, then he can do what he wants
@@ -77,18 +72,8 @@ public class UsersController {
             return response;
         }
 
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
-
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-
-        String uniqueFilename = "user-" + id + "/" + UUID.randomUUID() + extension;
-
-        minioService.uploadFile(uniqueFilename, file);
-        usersService.saveProfilePicture(id, uniqueFilename);
-        return new ResponseEntity<>(uniqueFilename, HttpStatus.OK);
+        usersService.saveProfilePicture(id, fileId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("/edit/{id}")

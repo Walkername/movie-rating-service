@@ -1,4 +1,4 @@
-package ru.walkername.user_profile.config;
+package ru.walkername.file_service.config;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +20,8 @@ public class MinioConfig {
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
-                . endpoint(url)
+                .endpoint(url)
                 .credentials(accessKey, secretKey)
                 .build();
     }
-
 }

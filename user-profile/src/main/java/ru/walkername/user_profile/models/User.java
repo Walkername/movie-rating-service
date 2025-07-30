@@ -27,8 +27,8 @@ public class User {
     @Size(max = 500, message = "Description should be less than 500 characters")
     private String description;
 
-    @Column(name = "profile_pic_url")
-    private String profilePicUrl;
+    @Column(name = "profile_pic_id")
+    private Integer profilePicId;
 
     @Column(name = "average_rating")
     private double averageRating;
@@ -43,11 +43,11 @@ public class User {
 
     }
 
-    public User(String username, String password, String description, String profilePicUrl, double averageRating, int scores, String role) {
+    public User(String username, String password, String description, Integer profilePicId, double averageRating, int scores, String role) {
         this.username = username;
         this.password = password;
         this.description = description;
-        this.profilePicUrl = profilePicUrl;
+        this.profilePicId = profilePicId;
         this.averageRating = averageRating;
         this.scores = scores;
         this.role = role;
@@ -109,11 +109,11 @@ public class User {
         this.role = role;
     }
 
-    public String getProfilePicUrl() {
-        return profilePicUrl;
+    public Integer getProfilePicId() {
+        return profilePicId;
     }
 
-    public void setProfilePicUrl(String profilePicUrl) {
-        this.profilePicUrl = profilePicUrl;
+    public void setProfilePicId(Integer profilePicId) {
+        this.profilePicId = profilePicId;
     }
 }
