@@ -1,6 +1,5 @@
 package ru.walkername.file_service.controllers;
 
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.file_service.services.FileService;
 import ru.walkername.file_service.services.TokenService;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -43,7 +41,7 @@ public class FileController {
             @RequestParam("filename") String filename
     ) {
         return new ResponseEntity<>(
-                fileService.generatePresignedUrl(filename, 10),
+                fileService.generatePreSignedUrl(filename, 10),
                 HttpStatus.OK
         );
     }
@@ -65,7 +63,7 @@ public class FileController {
             @RequestParam(value = "id") int id,
             @RequestHeader("Authorization") String authorization
     ) {
-        String uniqueUrl = "";
+        String uniqueUrl;
         String originalFilename = file.getOriginalFilename();
         String extension = "";
 

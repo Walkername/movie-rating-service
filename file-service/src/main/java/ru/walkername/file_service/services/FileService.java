@@ -69,7 +69,7 @@ public class FileService {
         }
     }
 
-    public String generatePresignedUrl(String objectName, int expirationMinutes) {
+    public String generatePreSignedUrl(String objectName, int expirationMinutes) {
         try {
             return minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
@@ -88,7 +88,7 @@ public class FileService {
         Optional<File> file = fileRepository.findById(fileId);
         if (file.isPresent()) {
             String fileUrl = file.get().getUrl();
-            return generatePresignedUrl(fileUrl, 10);
+            return generatePreSignedUrl(fileUrl, 10);
         }
         return null;
     }
