@@ -18,19 +18,29 @@ export default function SearchField() {
             inputRef.current.blur();
         }
         navigate(target);
-    }
+    };
 
-    const handleSearch = (e) => {
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    };
+
+    const handleSearch = debounce((e) => {
         const query = e.target.value;
         searchMovieByTitle(query)
             .then((data) => {
                 setFoundMovies(data);
-            })
-    }
+            });
+    }, 500);
 
     const handleClosePopup = () => {
         setIsPopupVisible(false);
-    }
+    };
 
     const handleInputBlur = (e) => {
         // Check if the related target (the element receiving focus) is inside the popup
