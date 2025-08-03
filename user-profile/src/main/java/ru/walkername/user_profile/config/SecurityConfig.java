@@ -32,17 +32,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/delete/{id}", "/users/add").hasAuthority("ADMIN")
-                        .requestMatchers("/auth/login", "/auth/register", "/error", "/users",
-                                "/users/{id}", "/users/movie/{id}", "/users/update-avg-rating/{id}",
+                        .requestMatchers(
+                                "/auth/login", "/auth/register", "/auth/refresh",
+                                "/users", "/users/{id}", "/users/movie/{id}", "/users/update-avg-rating/{id}",
                                 "/users/username/{username}"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                });
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

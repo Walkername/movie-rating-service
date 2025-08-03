@@ -213,7 +213,7 @@ public class UsersController {
     public ResponseEntity<String> checkRoles(String authorization, int id) {
         try {
             String token = authorization.substring(7);
-            DecodedJWT jwt = tokenService.validateToken(token);
+            DecodedJWT jwt = tokenService.validateAccessToken(token);
             int requestId = jwt.getClaim("id").asInt();
             String role = jwt.getClaim("role").asString();
             if (requestId != id && !role.equals("ADMIN")) {

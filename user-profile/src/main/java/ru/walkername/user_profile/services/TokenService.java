@@ -5,58 +5,65 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.walkername.user_profile.models.User;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class TokenService {
 
-    private final UsersService usersService;
+    @Value("${auth.jwt.access}")
+    private String accessToken;
 
-    @Value("${auth.jwt.secret}")
-    private String secret;
+    @Value("${auth.jwt.refresh}")
+    private String refreshToken;
 
-    @Autowired
-    public TokenService(UsersService usersService) {
-        this.usersService = usersService;
-    }
-
-    public String generateToken(String username) {
-        Date expirationDate = Date.from(ZonedDateTime.now().plusMinutes(60).toInstant());
-
-        Optional<User> user = usersService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found!");
-        }
-        String role = user.get().getRole();
+    public String generateAccessToken(User user) {
+        Date expiresAt = Date.from(ZonedDateTime.now().plusSeconds(15).toInstant());
 
         return JWT.create()
                 .withSubject("User details")
-                .withClaim("id", user.get().getId())
-                .withClaim("username", username)
-                .withClaim("role", role)
+                .withClaim("id", user.getId())
+                .withClaim("username", user.getUsername())
+                .withClaim("role", user.getRole())
                 .withIssuedAt(new Date())
                 .withIssuer("auth-service")
-                .withExpiresAt(expirationDate)
-                .sign(Algorithm.HMAC256(secret));
+                .withExpiresAt(expiresAt)
+                .sign(Algorithm.HMAC256(accessToken));
     }
 
-    public DecodedJWT validateToken(String token) throws JWTVerificationException {
+    public String generateRefreshToken(User user) {
+        Date expiresAt = Date.from(ZonedDateTime.now().plusDays(30).toInstant());
+
+        return JWT.create()
+                .withSubject("User details")
+                .withClaim("id", user.getId())
+                .withClaim("username", user.getUsername())
+                .withClaim("role", user.getRole())
+                .withIssuedAt(new Date())
+                .withIssuer("auth-service")
+                .withExpiresAt(expiresAt)
+                .sign(Algorithm.HMAC256(refreshToken));
+    }
+
+    public DecodedJWT validateAccessToken(String token) {
+        return validateToken(token, accessToken);
+    }
+
+    public DecodedJWT validateRefreshToken(String token) {
+        return validateToken(token, refreshToken);
+    }
+
+    public DecodedJWT validateToken(String token, String secret) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
                 .withSubject("User details")
                 .withIssuer("auth-service")
                 .build();
 
-        DecodedJWT jwt = verifier.verify(token);
-//        return jwt.getClaim("username").asString();
-        return jwt;
+        return verifier.verify(token);
     }
 
 }

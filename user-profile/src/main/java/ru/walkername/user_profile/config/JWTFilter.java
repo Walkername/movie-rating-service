@@ -47,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 return;
             } else {
                 try {
-                    DecodedJWT jwt = tokenService.validateToken(token);
+                    DecodedJWT jwt = tokenService.validateAccessToken(token);
                     String role = jwt.getClaim("role").asString();
                     String username = jwt.getClaim("username").asString();
 
