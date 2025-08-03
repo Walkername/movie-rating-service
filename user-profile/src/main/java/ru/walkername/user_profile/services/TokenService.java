@@ -22,7 +22,7 @@ public class TokenService {
     private String refreshToken;
 
     public String generateAccessToken(User user) {
-        Date expiresAt = Date.from(ZonedDateTime.now().plusSeconds(15).toInstant());
+        Date expiresAt = Date.from(ZonedDateTime.now().plusMinutes(15).toInstant());
 
         return JWT.create()
                 .withSubject("User details")
