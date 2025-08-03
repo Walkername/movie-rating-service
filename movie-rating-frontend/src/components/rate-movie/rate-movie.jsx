@@ -4,7 +4,7 @@ import getClaimFromToken from "../../utils/token-validation/token-validation";
 import AuthPopup from "../auth-popup/auth-popup";
 
 function RateMovie({ movieId }) {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const userId = getClaimFromToken(token, "id");
 
     const [isModalOpen, setIsModalOpen] = useState(false);

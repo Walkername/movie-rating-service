@@ -1,11 +1,7 @@
 
 export const downloadFile = async (fileId) => {
-    const token = localStorage.getItem("token");
     const response = await fetch(`${process.env.REACT_APP_FILE_SERVICE_URL}/files/download-by-id/signed-url/${fileId}`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
+        method: "GET"
     });
 
     if (!response.ok) {
@@ -16,7 +12,7 @@ export const downloadFile = async (fileId) => {
 }
 
 export const uploadFile = async (formData, context, contextId) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_FILE_SERVICE_URL}/files/upload?context=${context}&id=${contextId}`, {
         method: "POST",
         headers: {

@@ -4,7 +4,7 @@ import { updateProfilePicture, updateProfilePictureId, updateUserData, updateUse
 import { uploadFile } from "../../api/file-api";
 
 function UserDataEdit({ user, setUser }) {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const id = getClaimFromToken(token, "id");
 
     const [errorUsername, setErrorUsername] = useState("");

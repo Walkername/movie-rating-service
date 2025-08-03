@@ -1,6 +1,7 @@
+import privateRequest from "./fetch-client";
 
 export const addMovie = async (formData) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/add`, {
         method: "POST",
         headers: {
@@ -16,7 +17,7 @@ export const addMovie = async (formData) => {
 }
 
 export const updateMovie = async (id, formData) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/edit/${id}`, {
         method: "PATCH",
         headers: {
@@ -31,13 +32,20 @@ export const updateMovie = async (id, formData) => {
     return response;
 }
 
-export const getMoviesWithPagination = async (page, limit, sort) => {
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`);
-    if (!response.ok) {
-        throw new Error('Failed to get movies with pagination');
+// export const getMoviesWithPagination = async (page, limit, sort) => {
+//     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`);
+//     if (!response.ok) {
+//         throw new Error('Failed to get movies with pagination');
+//     }
+//     return response.json();
+// }
+
+export const getMoviesWithPagination = async (page, limit, sort) => privateRequest(
+    `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`,
+    {
+        method: "GET"
     }
-    return response.json();
-}
+)
 
 export const getMoviesNumber = async () => {
     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/count`);
@@ -56,7 +64,7 @@ export const getMovie = async (id) => {
 }
 
 export const deleteMovie = async (id) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/delete/${id}`, {
         method: "DELETE",
         headers: {

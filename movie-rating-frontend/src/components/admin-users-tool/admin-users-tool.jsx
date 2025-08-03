@@ -11,7 +11,7 @@ function AdminUsersTool() {
         navigate(target);
     }
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const [idToSend, setIdToSend] = useState("");
     const [usernameToSend, setUsernameToSend] = useState("");
 

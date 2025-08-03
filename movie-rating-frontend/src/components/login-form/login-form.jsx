@@ -24,8 +24,9 @@ export default function LoginForm() {
             .then((data) => {
                 console.log("Login successfully:", data);
                 setErrorMessages([]);
-                localStorage.setItem("token", data.token);
-                const id = getClaimFromToken(data.token, "id");
+                localStorage.setItem("accessToken", data.accessToken);
+                localStorage.setItem("refreshToken", data.refreshToken);
+                const id = getClaimFromToken(data.accessToken, "id");
                 navigate(`/user/${id}`);
             })
             .catch((error) => {

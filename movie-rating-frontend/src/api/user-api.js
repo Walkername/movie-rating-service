@@ -40,7 +40,7 @@ export const getUserByUsername = async (username) => {
 }
 
 export const updateUsername = async (id, formData) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/users/edit/username/${id}`, {
         method: "PATCH",
         headers: {
@@ -59,7 +59,7 @@ export const updateUsername = async (id, formData) => {
 }
 
 export const updateProfilePictureId = async (userId, fileId) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/users/profile-pic/${userId}?fileId=${fileId}`, {
         method: "PATCH",
         headers: {
@@ -75,7 +75,7 @@ export const updateProfilePictureId = async (userId, fileId) => {
 }
 
 export const updateUserData = async (id, formData) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/users/edit/${id}`, {
         method: "PATCH",
         headers: {

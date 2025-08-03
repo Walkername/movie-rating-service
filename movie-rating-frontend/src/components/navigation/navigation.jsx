@@ -4,11 +4,11 @@ import SearchField from "../search-field/search-field";
 
 function NavigationBar() {
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    const exp = getClaimFromToken(token, "exp");
+    const token = localStorage.getItem("accessToken");
+    // const exp = getClaimFromToken(token, "exp");
     const id = getClaimFromToken(token, "id");
     const role = getClaimFromToken(token, "role");
-    const authStatus = Date.now() / 1000 <= exp;
+    // const authStatus = Date.now() / 1000 <= exp;
     const adminStatus = role === "ADMIN";
 
     const handleClick = (target) => {
@@ -16,7 +16,8 @@ function NavigationBar() {
     }
 
     const handleLogout = (e) => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         navigate("/login");
     }
 
@@ -41,7 +42,7 @@ function NavigationBar() {
             <SearchField />
             <span className="nav-bar-right">
                 {
-                    authStatus ?
+                    token ?
                         <span
                             className="nav-element"
                             onClick={() => navigate(`/user/${id}`)}
@@ -50,7 +51,7 @@ function NavigationBar() {
                 }
                 <span className="auth-buttons">
                     {
-                        authStatus ?
+                        token ?
                             <>
                                 {
                                     adminStatus 

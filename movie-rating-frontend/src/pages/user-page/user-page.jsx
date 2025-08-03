@@ -10,7 +10,7 @@ function UserPage() {
     const { id } = useParams();
 
     const [isEditing, setIsEditing] = useState(false);
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     let isAccessToEdit = false;
     if (token != null) {
         const tokenId = getClaimFromToken(token, "id");

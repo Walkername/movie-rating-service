@@ -11,7 +11,7 @@ import getClaimFromToken from "../../utils/token-validation/token-validation";
 function MoviePage() {
     const { id } = useParams(); // Get the movie ID from the URL parameters
     const [movie, setMovie] = useState(null); // State for the movie data
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     let isAccessToEdit = false;
     if (token != null) {
         const tokenId = getClaimFromToken(token, "id");

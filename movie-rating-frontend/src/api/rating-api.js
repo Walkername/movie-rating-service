@@ -1,6 +1,7 @@
+import privateRequest from "./fetch-client";
 
 export const addRating = async (formData) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const response = await fetch(`${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/add`, {
         method: "POST",
         headers: {
@@ -15,21 +16,33 @@ export const addRating = async (formData) => {
     return response.json();
 }
 
-export const updateRating = async (ratingId, formData) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(`${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/edit/${ratingId}`, {
+// export const updateRating = async (ratingId, formData) => {
+//     const token = localStorage.getItem("accessToken");
+//     const response = await fetch(`${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/edit/${ratingId}`, {
+//         method: "PATCH",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${token}`
+//         },
+//         body: JSON.stringify(formData)
+//     });
+//     if (!response.ok) {
+//         throw new Error('Failed to update the rating of the movie');
+//     }
+//     return response.json();
+// }
+
+export const updateRating = async (ratingId, formData) => privateRequest(
+    `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/edit/${ratingId}`,
+    {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
         },
         body: JSON.stringify(formData)
-    });
-    if (!response.ok) {
-        throw new Error('Failed to update the rating of the movie');
     }
-    return response.json();
-}
+);
 
 export const getRating = async (userId, movieId) => {
     const response = await fetch(`${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/${userId}/${movieId}`, {

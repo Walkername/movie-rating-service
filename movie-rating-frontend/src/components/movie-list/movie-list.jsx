@@ -6,6 +6,7 @@ import '../../styles/movie-card-bar.css';
 import MovieCard from "../movie-card/movie-card";
 import MovieViewToggle from "../movie-view-toggle/movie-view-toggle";
 import MovieCardBar from "../movie-card-bar/movie-card-bar";
+import { getMoviesWithPagination } from "../../api/movie-api";
 
 function MovieList() {
 
@@ -44,18 +45,8 @@ function MovieList() {
     }
 
     useEffect(() => {
-        const url = `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`;
-
-        fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
+        getMoviesWithPagination(page, limit, sort)
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch movies");
-                }
                 return response.json();
             })
             .then((data) => {
@@ -126,7 +117,7 @@ function MovieList() {
                                     (
                                         <MovieCardBar
                                             movie={movie}
-                                            index={index}
+                                            key={index}
                                             handleNavigate={handleNavigate}
                                         />
                                     )
@@ -134,7 +125,7 @@ function MovieList() {
                                     (
                                         <MovieCard
                                             movie={movie}
-                                            index={index}
+                                            key={index}
                                             handleNavigate={handleNavigate}
                                         />
                                     )
