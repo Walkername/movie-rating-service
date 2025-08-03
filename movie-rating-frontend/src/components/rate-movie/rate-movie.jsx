@@ -16,7 +16,6 @@ function RateMovie({ movieId }) {
     useEffect(() => {
         getRating(userId, movieId)
             .then((data) => {
-                console.log("Rating got successfully:", data);
                 setRatingInfo(data);
                 setRating(data.rating);
             })

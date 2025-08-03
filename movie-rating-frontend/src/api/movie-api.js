@@ -1,99 +1,102 @@
-import privateRequest from "./fetch-client";
+import customRequest from "./fetch-client";
 
 export const addMovie = async (formData) => {
-    const token = localStorage.getItem("accessToken");
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/add`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-    });
-    if (!response.ok) {
-        throw new Error('Failed to add new movie');
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/add`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            }
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
+};
 
 export const updateMovie = async (id, formData) => {
-    const token = localStorage.getItem("accessToken");
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/edit/${id}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-    });
-    if (!response.ok) {
-        throw new Error('Failed to update the movie');
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/edit/${id}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
     }
-    return response;
-}
+};
 
-// export const getMoviesWithPagination = async (page, limit, sort) => {
-//     const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`);
-//     if (!response.ok) {
-//         throw new Error('Failed to get movies with pagination');
-//     }
-//     return response.json();
-// }
-
-export const getMoviesWithPagination = async (page, limit, sort) => privateRequest(
-    `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`,
-    {
-        method: "GET"
+export const getMoviesWithPagination = async (page, limit, sort) => {
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies?page=${page}&limit=${limit}&down=${sort}`
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-)
+};
 
 export const getMoviesNumber = async () => {
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/count`);
-    if (!response.ok) {
-        throw new Error('Failed to get number of movies');
+    try {
+        const response = await customRequest(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/count`);
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
+};
 
 export const getMovie = async (id) => {
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/${id}`);
-    if (!response.ok) {
-        throw new Error(`Failed to get movie with this id:${id}`);
+    try {
+        const response = await customRequest(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/${id}`);
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
+};
 
 export const deleteMovie = async (id) => {
-    const token = localStorage.getItem("accessToken");
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    });
-    if (!response.ok) {
-        throw new Error(`Failed to delete movie with this id:${id}`);
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/delete/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
+};
 
 export const getMoviesByUser = async (id, page, limit, sort) => {
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/user/${id}?page=${page}&limit=${limit}&byDate=${sort}`, {
-        method: "GET",
-    });
-    if (!response.ok) {
-        throw new Error(`Failed to get movies by this user_id:${id}`);
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/user/${id}?page=${page}&limit=${limit}&byDate=${sort}`
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
+};
 
 export const searchMovieByTitle = async (query) => {
-    const response = await fetch(`${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/search?query=${query}`, {
-        method: "GET",
-    });
-    if (!response.ok) {
-        throw new Error(`Failed to get movies by this query: ${query}`);
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/search?query=${query}`
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
-
+};

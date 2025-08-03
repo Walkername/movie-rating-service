@@ -46,9 +46,6 @@ function MovieList() {
 
     useEffect(() => {
         getMoviesWithPagination(page, limit, sort)
-            .then((response) => {
-                return response.json();
-            })
             .then((data) => {
                 setMovies(data);
                 setLoading(false);

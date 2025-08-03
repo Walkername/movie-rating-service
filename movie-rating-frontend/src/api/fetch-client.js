@@ -1,5 +1,5 @@
 
-export default async function privateRequest(path, options = {}) {
+export default async function customRequest(path, options = {}) {
     // Adding authorization token
     const requestOptions = { ...options };
     requestOptions.headers = requestOptions.headers || {};
@@ -37,7 +37,7 @@ export default async function privateRequest(path, options = {}) {
             }
         };
 
-        // Repeating initial request with the same rawBody
+        // Repeating initial request
         response = await fetch(path, retryOptions);
     }
 
@@ -47,4 +47,4 @@ export default async function privateRequest(path, options = {}) {
     }
 
     return response;
-}
+};

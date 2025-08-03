@@ -1,31 +1,35 @@
+import customRequest from "./fetch-client";
 
 export const login = async (formData) => {
-    const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    });
-    if (!response.ok) {
-        throw new Error('Failed to login');
+    try {
+        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/auth/login`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            }
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
     }
-    return response.json();
-}
+};
 
 export const register = async (formData) => {
-    const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-    });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Registration failed");
+    try {
+        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/auth/register`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
     }
-
-    return response;
-}
+};

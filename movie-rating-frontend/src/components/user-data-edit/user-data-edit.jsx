@@ -121,8 +121,6 @@ function UserDataEdit({ user, setUser }) {
             .catch((error) => {
                 console.log(error);
             });
-
-
     }
 
     return (
