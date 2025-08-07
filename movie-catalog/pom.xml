@@ -71,6 +71,13 @@
 			<version>4.5.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>4.0.0-M3</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

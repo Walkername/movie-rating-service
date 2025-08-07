@@ -2,9 +2,11 @@ package ru.walkername.user_profile.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import ru.walkername.user_profile.dto.NewRatingDTO;
 import ru.walkername.user_profile.dto.RatingsResponse;
 import ru.walkername.user_profile.dto.UserDetails;
 import ru.walkername.user_profile.models.Rating;
@@ -102,9 +104,19 @@ public class UsersService {
     }
 
     @Transactional
-    public void updateAverageRating(int id, double newRating, boolean isUpdate, double oldRating) {
-        Optional<User> movie = usersRepository.findById(id);
-        movie.ifPresent(value -> {
+    @KafkaListener(
+            topics = "ratings-topic",
+            groupId = "user-service-group",
+            containerFactory = "kafkaListenerContainerFactory"
+    )
+    public void updateAverageRating(NewRatingDTO ratingDTO) {
+        System.out.println(ratingDTO);
+        Optional<User> user = usersRepository.findById(ratingDTO.getUserId());
+        user.ifPresent(value -> {
+            double newRating = ratingDTO.getRating();
+            double oldRating = ratingDTO.getOldRating();
+            boolean isUpdate = ratingDTO.isUpdate();
+
             int scores = value.getScores();
             double averageRating = value.getAverageRating();
             double newAverageRating;

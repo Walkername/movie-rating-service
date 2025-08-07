@@ -84,17 +84,6 @@ public class MoviesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PatchMapping("/update-avg-rating/{id}")
-    public ResponseEntity<HttpStatus> updateAvgRating(
-            @PathVariable("id") int id,
-            @RequestBody @Valid NewRatingDTO ratingDTO,
-            BindingResult bindingResult
-    ) {
-        validateMovie(bindingResult);
-        moviesService.updateAverageRating(id, ratingDTO);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> delete(
             @PathVariable("id") int id

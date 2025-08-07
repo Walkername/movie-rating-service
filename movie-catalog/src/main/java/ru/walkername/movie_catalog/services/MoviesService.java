@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -60,18 +61,14 @@ public class MoviesService {
         moviesRepository.deleteById(id);
     }
 
-    /**
-     * Method to update field of average rating of specific movie
-     * @param id indicates the movie that will be updated
-     * @param ratingDTO new rating to update average rating
-     *                  <br><b>Structure:</b>
-     *                  <br>rating - indicates new rating
-     *                  <br>oldRating - indicates old rating
-     *                  <br>update - indicates whether this is a new rating or a replacement for the old one
-     */
     @Transactional
-    public void updateAverageRating(int id, NewRatingDTO ratingDTO) {
-        Optional<Movie> movie = moviesRepository.findById(id);
+    @KafkaListener(
+            topics = "ratings-topic",
+            groupId = "movie-service-group",
+            containerFactory = "kafkaListenerContainerFactory"
+    )
+    public void updateAverageRating(NewRatingDTO ratingDTO) {
+        Optional<Movie> movie = moviesRepository.findById(ratingDTO.getMovieId());
         movie.ifPresent(value -> {
             double newRating = ratingDTO.getRating();
             double oldRating = ratingDTO.getOldRating();

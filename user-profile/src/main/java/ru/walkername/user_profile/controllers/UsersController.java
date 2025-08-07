@@ -144,17 +144,6 @@ public class UsersController {
         return usersService.getUsersByMovie(id);
     }
 
-    @PatchMapping("/update-avg-rating/{id}")
-    public ResponseEntity<HttpStatus> updateAvgRating(
-            @PathVariable("id") int id,
-            @RequestBody @Valid NewRatingDTO ratingDTO,
-            BindingResult bindingResult
-    ) {
-        validateUser(bindingResult, UserWrongAverageRatingException::new);
-        usersService.updateAverageRating(id, ratingDTO.getRating(), ratingDTO.isUpdate(), ratingDTO.getOldRating());
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
     @GetMapping("/top-user")
     public User getTopUser() {
         return usersService.getTopUser();

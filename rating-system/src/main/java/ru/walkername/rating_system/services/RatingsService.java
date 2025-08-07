@@ -1,18 +1,14 @@
 package ru.walkername.rating_system.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import ru.walkername.rating_system.dto.NewRatingDTO;
 import ru.walkername.rating_system.models.Rating;
 import ru.walkername.rating_system.repositories.RatingsRepository;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,20 +18,14 @@ import java.util.Optional;
 public class RatingsService {
 
     private final RatingsRepository ratingsRepository;
-    private final String MOVIE_SERVICE_API;
-    private final String USER_SERVICE_API;
-    private final RestTemplate restTemplate;
+    private final KafkaProducerService kafkaProducerService;
 
     @Autowired
     public RatingsService(
             RatingsRepository ratingsRepository,
-            @Value("${movie.service.url}") String MOVIE_SERVICE_API,
-            @Value("${user.service.url}") String USER_SERVICE_API,
-            RestTemplate restTemplate) {
+            KafkaProducerService kafkaProducerService) {
         this.ratingsRepository = ratingsRepository;
-        this.MOVIE_SERVICE_API = MOVIE_SERVICE_API;
-        this.USER_SERVICE_API = USER_SERVICE_API;
-        this.restTemplate = restTemplate;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     public Rating findOne(int userId, int movieId) {
@@ -46,14 +36,16 @@ public class RatingsService {
     @Transactional
     public void save(Rating rating) {
         try {
-            NewRatingDTO newRatingDTO = new NewRatingDTO(rating.getRating(), 0.0, false);
+            NewRatingDTO newRatingDTO = new NewRatingDTO(
+                    rating.getUserId(),
+                    rating.getMovieId(),
+                    rating.getRating(),
+                    0.0,
+                    false
+            );
 
-            // Send to User and Movie Services
-            // TODO: do it with message broker, just send to Movie and User services and don't wait
-            String urlToMovie = MOVIE_SERVICE_API + "/movies/update-avg-rating/" + rating.getMovieId();
-            String urlToUser = USER_SERVICE_API + "/users/update-avg-rating/" + rating.getUserId();
-            sendTo(urlToMovie, newRatingDTO);
-            sendTo(urlToUser, newRatingDTO);
+            // Kafka: send to User and Movie services
+            kafkaProducerService.sendRating(newRatingDTO);
 
             // Save to db new added rating
             rating.setDate(new Date());
@@ -68,14 +60,16 @@ public class RatingsService {
         Optional<Rating> oldRating = ratingsRepository.findById(id);
         oldRating.ifPresent(value -> {
             try {
-                NewRatingDTO newRatingDTO = new NewRatingDTO(updatedRating.getRating(), value.getRating(), true);
+                NewRatingDTO newRatingDTO = new NewRatingDTO(
+                        updatedRating.getUserId(),
+                        updatedRating.getMovieId(),
+                        updatedRating.getRating(),
+                        value.getRating(),
+                        true
+                );
 
-                // Send to User and Movie Services
-                // TODO: do it with message broker, just send to Movie and User services and don't wait
-                String urlToMovie = MOVIE_SERVICE_API + "/movies/update-avg-rating/" + value.getMovieId();
-                String urlToUser = USER_SERVICE_API + "/users/update-avg-rating/" + value.getUserId();
-                sendTo(urlToMovie, newRatingDTO);
-                sendTo(urlToUser, newRatingDTO);
+                // Kafka: send to User and Movie services
+                kafkaProducerService.sendRating(newRatingDTO);
 
                 // Save to DB updated rating
                 updatedRating.setRatingId(id);
@@ -101,11 +95,6 @@ public class RatingsService {
 
     public List<Rating> getRatingsByMovie(int id) {
         return ratingsRepository.findByMovieId(id);
-    }
-
-    private void sendTo(String url, NewRatingDTO newRatingDTO) throws URISyntaxException {
-        URI uri = new URI(url);
-        restTemplate.patchForObject(uri, newRatingDTO, String.class);
     }
 
 }
