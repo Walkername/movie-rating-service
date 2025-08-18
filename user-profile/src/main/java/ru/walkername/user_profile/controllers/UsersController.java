@@ -184,10 +184,6 @@ public class UsersController {
         }
     }
 
-    private User convertToUser(UserDTO userDTO) {
-        return modelMapper.map(userDTO, User.class);
-    }
-
     private User convertToUser(UsernameDTO usernameDTO) {
         return modelMapper.map(usernameDTO, User.class);
     }
@@ -206,7 +202,7 @@ public class UsersController {
             int requestId = jwt.getClaim("id").asInt();
             String role = jwt.getClaim("role").asString();
             if (requestId != id && !role.equals("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         } catch (JWTVerificationException e) {
             return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
