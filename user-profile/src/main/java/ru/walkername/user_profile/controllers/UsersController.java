@@ -124,7 +124,7 @@ public class UsersController {
         User user = usersService.findOne(id);
         if (user != null) {
             modelMapper.map(usernameDTO, user);
-            usersService.save(user);
+            usersService.update(id, user);
         }
         return new ResponseEntity<>("", HttpStatus.OK);
     }

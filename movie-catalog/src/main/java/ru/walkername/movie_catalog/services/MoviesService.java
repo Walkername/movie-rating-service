@@ -2,6 +2,10 @@ package ru.walkername.movie_catalog.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,6 +26,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@CacheConfig(cacheNames = "movie-cache")
 public class MoviesService {
 
     private final MoviesRepository moviesRepository;
@@ -40,27 +45,42 @@ public class MoviesService {
         this.restTemplate = restTemplate;
     }
 
+    @CacheEvict(cacheNames = "movies-number", allEntries = true)
     @Transactional
     public void save(Movie movie) {
         moviesRepository.save(movie);
     }
 
+    @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
     public Movie findOne(int id) {
         Optional<Movie> movie = moviesRepository.findById(id);
         return movie.orElse(null);
     }
 
+    @CacheEvict(cacheNames = "movie", key = "#id")
     @Transactional
     public void update(int id, Movie updatedMovie) {
         updatedMovie.setId(id);
         moviesRepository.save(updatedMovie);
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "movie", key = "#id"),
+            @CacheEvict(cacheNames = "movies-number", allEntries = true),
+    })
     @Transactional
     public void delete(int id) {
         moviesRepository.deleteById(id);
     }
 
+    @Caching(evict = {
+            // delete cache findOne()
+            @CacheEvict(cacheNames = "movie", key = "#ratingDTO.getMovieId()", condition = "#ratingDTO.getMovieId() != null"),
+            // delete cache getMoviesByUser()
+            @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
+            // delete cache getMoviesWithPagination()
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+    })
     @Transactional
     @KafkaListener(
             topics = "ratings-topic",
@@ -89,6 +109,7 @@ public class MoviesService {
         });
     }
 
+    @Cacheable(cacheNames = "movies-number")
     public long getMoviesNumber() {
         return moviesRepository.count();
     }
@@ -110,6 +131,7 @@ public class MoviesService {
      * @param down default 'true' -> descending rating order; 'false' -> ascending.
      * @return list of movies
      */
+    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' + #down")
     public List<Movie> getAllMoviesWithPagination(int page, int moviesPerPage, boolean down) {
         Sort sort = down
                 ? Sort.by("averageRating").descending()
@@ -123,6 +145,7 @@ public class MoviesService {
      * @param id indicates the user ID whose rated movies you want to get
      * @return list of movies with details of rating
      */
+    @Cacheable(cacheNames = "movies-by-user", key = "#id + '-' + #page + '-' + #moviesPerPage + '-' + #byDate")
     public List<MovieDetails> getMoviesByUser(int id, int page, int moviesPerPage, boolean byDate) {
         String url = RATING_SERVICE_API + "/ratings/user/" + id + "?page=" + page + "&limit=" + moviesPerPage + "&byDate=" + byDate;
 

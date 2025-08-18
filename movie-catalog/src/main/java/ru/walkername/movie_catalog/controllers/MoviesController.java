@@ -10,7 +10,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.walkername.movie_catalog.dto.MovieDTO;
 import ru.walkername.movie_catalog.dto.MovieDetails;
-import ru.walkername.movie_catalog.dto.NewRatingDTO;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.services.MoviesService;
 import ru.walkername.movie_catalog.util.MovieErrorResponse;
@@ -79,7 +78,7 @@ public class MoviesController {
         Movie movie = moviesService.findOne(id);
         if (movie != null) {
             modelMapper.map(movieDTO, movie);
-            moviesService.save(movie);
+            moviesService.update(id, movie);
         }
         return ResponseEntity.ok(HttpStatus.OK);
     }

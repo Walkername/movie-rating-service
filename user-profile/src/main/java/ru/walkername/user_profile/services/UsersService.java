@@ -2,6 +2,9 @@ package ru.walkername.user_profile.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,7 @@ public class UsersService {
         this.restTemplate = restTemplate;
     }
 
+    @Cacheable(cacheNames = "user", key = "#id", unless = "#result == null")
     public User findOne(int id) {
         Optional<User> user = usersRepository.findById(id);
         return user.orElse(null);
@@ -49,11 +53,13 @@ public class UsersService {
         usersRepository.save(user);
     }
 
+    @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
     public void delete(int id) {
         usersRepository.deleteById(id);
     }
 
+    @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
     public void update(int id, User user) {
         user.setId(id);
@@ -103,6 +109,12 @@ public class UsersService {
         return usersByMovie;
     }
 
+    @Caching(evict = {
+            // delete cache getTopUser()
+            @CacheEvict(cacheNames = "top-user", allEntries = true),
+            // delete cache findOne()
+            @CacheEvict(cacheNames = "user", key = "#ratingDTO.getUserId()", condition = "#ratingDTO.getUserId() != null")
+    })
     @Transactional
     @KafkaListener(
             topics = "ratings-topic",
@@ -132,6 +144,7 @@ public class UsersService {
         });
     }
 
+    @Cacheable(cacheNames = "top-user")
     public User getTopUser() {
         Optional<User> user = usersRepository.findUserWithHighestScores();
         return user.orElse(null);
