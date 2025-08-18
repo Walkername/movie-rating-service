@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import { updateProfilePicture, updateProfilePictureId, updateUserData, updateUsername } from "../../api/user-api";
 import { uploadFile } from "../../api/file-api";
+import "../../styles/user-data-edit.css";
 
 function UserDataEdit({ user, setUser }) {
     const token = localStorage.getItem("accessToken");
@@ -121,63 +122,60 @@ function UserDataEdit({ user, setUser }) {
             .catch((error) => {
                 console.log(error);
             });
-    }
+    };
 
     return (
-        <div>
-            {
-                selectedFile && (
-                    <img className="uploaded-profile-pic" src={URL.createObjectURL(selectedFile)} alt={selectedFile.name} />
-                )
-            }
-            <form onSubmit={handleUploadProfilePicture} >
-                <input id="profile-pic" type="file" onChange={handleFileChange} />
-                <br></br>
-                <input type="submit" value="Upload" />
-            </form>
+        <div className="edit-container">
+            {/* Фото профиля */}
+            <div className="edit-card">
+                <h3>Profile Picture</h3>
+                {selectedFile && (
+                    <img
+                        className="edit-avatar"
+                        src={URL.createObjectURL(selectedFile)}
+                        alt={selectedFile.name}
+                    />
+                )}
+                <form onSubmit={handleUploadProfilePicture}>
+                    <input id="profile-pic" type="file" onChange={handleFileChange} />
+                    <button type="submit" className="edit-btn">Upload</button>
+                </form>
+            </div>
 
-            <br></br>
+            {/* Имя пользователя */}
+            <div className="edit-card">
+                <h3>Username</h3>
+                <form onSubmit={handleUpdateUsername}>
+                    <input
+                        name="username"
+                        type="text"
+                        placeholder="username"
+                        value={formUsername.username}
+                        onChange={handleChangeUsername}
+                        required
+                    />
+                    <button type="submit" className="edit-btn">Update</button>
+                    {errorUsername && <p className="error-text">{errorUsername}</p>}
+                </form>
+            </div>
 
-            <form method="PATCH" onSubmit={handleUpdateUsername}>
-                <label>Username:</label>
-                <br></br>
-                <input name="username" min="5" max="20" type="text" placeholder="username" value={formUsername.username}
-                    onChange={handleChangeUsername}
-                    required
-                />
-                <input type="submit" value="Update" />
-                {
-                    errorUsername !== ""
-                        ? <>
-                            <br />
-                            <span style={{ color: "red" }}>{errorUsername}</span>
-                        </>
-                        : <></>
-                }
-            </form>
-
-            <form method="PATCH" onSubmit={handleUpdateUserData}>
-                <label>Description:</label>
-                <br></br>
-                <textarea name="description" max="500" type="text" rows="5" placeholder="..." value={formUserData.description}
-                    onChange={handleChangeUserData}
-                    style={{ width: "300px", resize: "vertical" }}
-                >
-                </textarea>
-                {
-                    errorDescription !== ""
-                        ? <>
-                            <br />
-                            <span style={{ color: "red" }}>{errorDescription}</span>
-                        </>
-                        : <></>
-                }
-                <br></br>
-
-                <input type="submit" value="Update" />
-            </form>
+            {/* Описание */}
+            <div className="edit-card">
+                <h3>Description</h3>
+                <form onSubmit={handleUpdateUserData}>
+                    <textarea
+                        name="description"
+                        rows="5"
+                        placeholder="..."
+                        value={formUserData.description}
+                        onChange={handleChangeUserData}
+                    ></textarea>
+                    <button type="submit" className="edit-btn">Update</button>
+                    {errorDescription && <p className="error-text">{errorDescription}</p>}
+                </form>
+            </div>
         </div>
-    )
+    );
 }
 
 export default UserDataEdit;

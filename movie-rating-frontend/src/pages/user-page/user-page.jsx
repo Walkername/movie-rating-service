@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import { getUser } from "../../api/user-api";
 import { useParams } from "react-router-dom";
+import "../../styles/user-page.css";
 
 function UserPage() {
     const { id } = useParams();
@@ -37,52 +38,34 @@ function UserPage() {
     return (
         <>
             <NavigationBar />
-            <div>
-                <h1>Profile</h1>
-            </div>
-            <div className="page-content-container">
-                <div className="page-content">
+            <div className="profile-page">
+                <h1 className="profile-title">User Profile</h1>
+                <div className="profile-card">
                     {
                         user == null
-                            ? <h1>Error: Data was not found</h1>
+                            ? <h1 className="error-text">Error: Data was not found</h1>
                             : <>
-                                {
-                                    isEditing ?
-                                        (
-                                            isAccessToEdit
-                                                ?
-                                                (
-                                                    <UserDataEdit
-                                                        user={user}
-                                                        setUser={setUser}
-                                                    />
-                                                )
-                                                :
-                                                <></>
-                                        )
-                                        :
-                                        (
-                                            <UserData className="user-data-content"
-                                                user={user}
-                                            />
-                                        )
+                                {isEditing
+                                    ? (isAccessToEdit && (
+                                        <UserDataEdit
+                                            user={user}
+                                            setUser={setUser}
+                                        />
+                                    ))
+                                    : <UserData user={user} />
                                 }
                             </>
                     }
-                    {
-                        isAccessToEdit
-                            ?
-                            <div className="user-edit-div">
-                                <button
-                                    className="user-edit-button"
-                                    onClick={handleEditButton}>
-                                    {isEditing ? 'Back' : 'Edit'}
-                                </button>
-                            </div>
-                            :
-                            <></>
-                    }
-
+                    {isAccessToEdit && (
+                        <div className="button-container">
+                            <button
+                                className="edit-button"
+                                onClick={handleEditButton}
+                            >
+                                {isEditing ? 'Back' : 'Edit'}
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </>

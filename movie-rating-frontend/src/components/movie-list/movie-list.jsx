@@ -115,6 +115,7 @@ function MovieList() {
                                         <MovieCardBar
                                             movie={movie}
                                             key={index}
+                                            index={index}
                                             handleNavigate={handleNavigate}
                                         />
                                     )
@@ -123,6 +124,7 @@ function MovieList() {
                                         <MovieCard
                                             movie={movie}
                                             key={index}
+                                            index={index}
                                             handleNavigate={handleNavigate}
                                         />
                                     )

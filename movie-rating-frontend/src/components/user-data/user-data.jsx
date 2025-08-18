@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import RatedMoviesList from "../rated-movies-list/rated-movies-list";
 import { downloadFile } from "../../api/file-api";
+import "../../styles/user-data.css";
 
 function UserData({ user }) {
 
@@ -19,34 +20,31 @@ function UserData({ user }) {
 
     return (
         <div>
-            <div style={{
-                display: "flex",
-                gap: "20px"
-            }}>
-                <img className="profile-pic" src={profilePicUrl} />
-
+            <div className="user-info">
+                <img
+                    className="profile-pic"
+                    src={profilePicUrl || "/default-avatar.png"}
+                    alt="Profile"
+                />
                 <div>
-                    <h2 style={{
-                        margin: "0px"
-                    }}>{user.username}</h2>
+                    <h2 className="username">{user.username}</h2>
 
-                    <h3>Description</h3>
-                    <div>
-                        {user.description}
-                    </div>
+                    <h3 className="section-title">Description</h3>
+                    <p className="section-text">{user.description || "No description provided"}</p>
 
-                    <h3>Average rating</h3>
-                    <div>
-                        {user.averageRating}
-                    </div>
+                    <h3 className="section-title">Average rating</h3>
+                    <p className="section-text">{user.averageRating ?? "N/A"}</p>
 
-                    <h3>Scores: {user.scores}</h3>
+                    <h3 className="section-title">Scores</h3>
+                    <p className="section-text">{user.scores}</p>
                 </div>
             </div>
 
-            <RatedMoviesList userId={user.id} />
+            <div className="rated-movies">
+                <RatedMoviesList userId={user.id} />
+            </div>
         </div>
-    )
+    );
 }
 
 export default UserData;

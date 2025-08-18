@@ -1,0 +1,77 @@
+.edit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.edit-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.edit-avatar {
+    width: 200px;
+    border-radius: 8px; /* вместо 50% для круга */
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 10px;
+    border: 2px solid #ddd;
+}
+
+.edit-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-card input[type="text"],
+.edit-card textarea,
+.edit-card input[type="file"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.edit-card textarea {
+    resize: vertical;
+}
+
+.edit-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    align-self: flex-start;
+}
+
+.edit-btn:hover {
+    background-color: #2980b9;
+}
+
+.error-text {
+    color: red;
+    font-size: 0.9rem;
+}
+
+.edit-card select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}

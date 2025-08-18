@@ -1,0 +1,51 @@
+.rated-movies-container {
+    margin-top: 20px;
+}
+
+.rated-movies-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.movies-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.movies-table th {
+    background-color: #3498db;
+    color: white;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.movies-table th:nth-child(1) {
+    text-align: left;
+}
+
+.movies-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.movies-table td:nth-child(1) {
+    text-align: left;
+}
+
+.movies-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.movie-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.movie-row:hover {
+    background-color: #e8f4ff;
+}
