@@ -166,6 +166,7 @@ function MovieList() {
                 <select onChange={handleSortButton}>
                     <option value="averageRating">Rating</option>
                     <option value="releaseYear">Release Year</option>
+                    <option value="createdAt">Date added</option>
                 </select>
                 <button className={`sort-order-button sort-order-${sortOrder}`} onClick={handleSortOrderButton}>
                     <span className="sort-order-icon"></span>
