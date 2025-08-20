@@ -15,7 +15,8 @@ create table movie(
     description varchar(500) not null default '',  
     average_rating numeric(4, 2) not null check (average_rating <= 10.00)  
         default 0,  
-    scores int not null default 0  
+    scores int not null default 0,
+    created_at timestamp with time zone default current_timestamp
 );
 
 create table rating(  

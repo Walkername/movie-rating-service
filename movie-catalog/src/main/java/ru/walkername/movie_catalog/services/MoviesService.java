@@ -44,9 +44,15 @@ public class MoviesService {
         this.restTemplate = restTemplate;
     }
 
-    @CacheEvict(cacheNames = "movies-number", allEntries = true)
+    @Caching(evict = {
+            // delete cache getMoviesNumber()
+            @CacheEvict(cacheNames = "movies-number", allEntries = true),
+            // delete cache getMoviesWithPagination()
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+    })
     @Transactional
     public void save(Movie movie) {
+        movie.setCreatedAt(new Date());
         moviesRepository.save(movie);
     }
 
@@ -66,6 +72,7 @@ public class MoviesService {
     @Caching(evict = {
             @CacheEvict(cacheNames = "movie", key = "#id"),
             @CacheEvict(cacheNames = "movies-number", allEntries = true),
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
     })
     @Transactional
     public void delete(int id) {

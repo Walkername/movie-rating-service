@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "movie")
 public class Movie {
@@ -33,16 +35,20 @@ public class Movie {
     @Column(name = "scores")
     private int scores;
 
+    @Column(name = "created_at")
+    private Date createdAt;
+
     public Movie() {
 
     }
 
-    public Movie(String title, int releaseYear, String description, double averageRating, int scores) {
+    public Movie(String title, int releaseYear, String description, double averageRating, int scores, Date createdAt) {
         this.title = title;
         this.releaseYear = releaseYear;
         this.description = description;
         this.averageRating = averageRating;
         this.scores = scores;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -91,6 +97,14 @@ public class Movie {
 
     public void setScores(int scores) {
         this.scores = scores;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

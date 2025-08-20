@@ -1,3 +1,4 @@
+import validateDate from "../../utils/date-validation/date-validation";
 
 function MovieDetails({ movie }) {
     return (
@@ -19,6 +20,13 @@ function MovieDetails({ movie }) {
             </div>
             <div>
                 <b>Scores:</b> {movie.scores}
+            </div>
+            <div
+                style={{
+                    fontSize: "12px",
+                }}
+            >
+                Created at: {validateDate(movie.createdAt)}
             </div>
         </>
     )
