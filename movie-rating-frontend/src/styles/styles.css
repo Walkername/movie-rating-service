@@ -60,6 +60,7 @@ nav {
     color: rgb(161, 161, 161);
     font-family: 'PT Sans', sans-serif;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .search-field {
@@ -69,6 +70,7 @@ nav {
     padding-right: 15px;
     border-radius: 10px;
     background-color: rgb(161, 161, 161);
+    transition: all 0.5s ease;
 }
 
 .search-field:focus {
@@ -97,11 +99,36 @@ nav {
     z-index: 10;
     margin-top: 5px;
     padding: 20px;
+    transition: all 0.5s ease;
+}
+
+.popup-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+.popup-hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+    pointer-events: none;
 }
 
 /* Popup content styling */
 .popup-content {
     padding: 10px;
+}
+
+.movie-div {
+    padding: 10px;
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+}
+
+.movie-div:hover {
+    color: #3498db;
+    cursor: pointer;
 }
 
 /* Close button styling */
