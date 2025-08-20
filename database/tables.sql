@@ -23,7 +23,7 @@ create table rating(
     user_id int not null,  
     movie_id int not null,  
     rating int not null check (rating >= 1 and rating <= 10),  
-    date timestamp not null  
+    ratedAt timestamp not null
 );
 
 create table file (

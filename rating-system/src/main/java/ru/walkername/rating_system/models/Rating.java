@@ -28,8 +28,8 @@ public class Rating {
     @Column(name = "rating")
     private int rating;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "rated_at")
+    private Date ratedAt;
 
     public Rating() {
 
@@ -73,12 +73,12 @@ public class Rating {
         this.rating = rating;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getRatedAt() {
+        return ratedAt;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setRatedAt(Date ratedAt) {
+        this.ratedAt = ratedAt;
     }
 
     @Override
@@ -88,6 +88,7 @@ public class Rating {
                 ", userId=" + userId +
                 ", movieId=" + movieId +
                 ", rating=" + rating +
+                ", ratedAt=" + ratedAt +
                 '}';
     }
 }

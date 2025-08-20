@@ -2,6 +2,7 @@ package ru.walkername.rating_system.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import ru.walkername.rating_system.dto.NewRatingDTO;
 import ru.walkername.rating_system.models.Rating;
 import ru.walkername.rating_system.repositories.RatingsRepository;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +50,7 @@ public class RatingsService {
             kafkaProducerService.sendRating(newRatingDTO);
 
             // Save to db new added rating
-            rating.setDate(new Date());
+            rating.setRatedAt(new Date());
             ratingsRepository.save(rating);
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,7 +75,7 @@ public class RatingsService {
 
                 // Save to DB updated rating
                 updatedRating.setRatingId(id);
-                updatedRating.setDate(new Date());
+                updatedRating.setRatedAt(new Date());
                 ratingsRepository.save(updatedRating);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -86,11 +88,21 @@ public class RatingsService {
         ratingsRepository.deleteById(id);
     }
 
-    public List<Rating> getRatingsByUser(int id, int page, int moviesPerPage, boolean byDate) {
-        Sort sort = byDate
-                ? Sort.by("date").descending()
-                : Sort.by("date").ascending();
-        return ratingsRepository.findAllByUserId(id, PageRequest.of(page, moviesPerPage, sort)).getContent();
+    public List<Rating> getRatingsByUser(int id, int page, int moviesPerPage, String[] sort) {
+        Sort sorting = Sort.by(createOrders(sort));
+        Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
+        return ratingsRepository.findAllByUserId(id, pageable).getContent();
+    }
+
+    private List<Sort.Order> createOrders(String[] sort) {
+        return Arrays.stream(sort).map(this::parseSort).toList();
+    }
+
+    private Sort.Order parseSort(String sortParam) {
+        String[] parts = sortParam.split(":");
+        String property = parts[0];
+        Sort.Direction direction = parts.length > 1 ? Sort.Direction.fromString(parts[1]) : Sort.Direction.DESC;
+        return new Sort.Order(direction, property);
     }
 
     public List<Rating> getRatingsByMovie(int id) {
