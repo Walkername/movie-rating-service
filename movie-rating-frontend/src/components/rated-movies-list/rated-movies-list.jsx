@@ -11,7 +11,7 @@ function RatedMoviesList({ userId }) {
 
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(10);
-    const [sort, setSort] = useState(true);
+    const [sort, setSort] = useState("ratedAt:desc");
 
     useEffect(() => {
         getMoviesByUser(userId, page, limit, sort)
@@ -47,7 +47,7 @@ function RatedMoviesList({ userId }) {
                             <td>{element.title}</td>
                             <td>{element.releaseYear}</td>
                             <td>{element.rating}</td>
-                            <td>{validateDate(element.date)}</td>
+                            <td>{validateDate(element.ratedAt)}</td>
                         </tr>
                     ))}
                 </tbody>

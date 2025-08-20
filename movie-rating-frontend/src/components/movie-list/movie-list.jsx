@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import MOVIES from "../../props/props";
 import '../../styles/movie-card.css';
 import '../../styles/movie-card-bar.css';
+import '../../styles/sort-button.css';
 import MovieCard from "../movie-card/movie-card";
 import MovieViewToggle from "../movie-view-toggle/movie-view-toggle";
 import MovieCardBar from "../movie-card-bar/movie-card-bar";
@@ -18,11 +19,13 @@ function MovieList() {
 
     const pagePar = searchParams.get("page") ? searchParams.get("page") : 0;
     const limitPar = searchParams.get("limit") ? searchParams.get("limit") : 10;
-    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : true;
+    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "averageRating";
 
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(sortPar);
+    const [sortField, setSortField] = useState("averageRating");
+    const [sortOrder, setSortOrder] = useState("desc");
 
     const [sortBtText, setSortBtText] = useState("Sort ↓");
 
@@ -30,19 +33,26 @@ function MovieList() {
 
     const handlePageButton = (value) => {
         setPage(value);
-    }
+    };
 
     const handleSortButton = (e) => {
-        setSort(!sort);
-        setSortBtText((prevText) => (prevText === "Sort ↓" ? "Sort ↑" : "Sort ↓"));
-    }
+        const field = e.target.value;
+        setSortField(field);
+        setSort(`${field}:${sortOrder}`);
+    };
+
+    const handleSortOrderButton = (e) => {
+        const order = sortOrder === "desc" ? "asc" : "desc";
+        setSortOrder(order);
+        setSort(`${sortField}:${order}`);
+    };
 
     const handleLimitButton = (e) => {
         const limitValue = e.target.value;
         const newPage = Math.floor((limit * page + 1) / limitValue);
         setPage(newPage);
         setLimit(e.target.value);
-    }
+    };
 
     useEffect(() => {
         getMoviesWithPagination(page, limit, sort)
@@ -63,12 +73,13 @@ function MovieList() {
     const navigate = useNavigate();
 
     const handleNavigate = (target) => {
+        window.open(target, "_blank");
         navigate(target);
-    }
+    };
 
     // NUMBER OF MOVIES IN DB
 
-    const [moviesNumber, setMoviesNumber] = useState(0)
+    const [moviesNumber, setMoviesNumber] = useState(0);
 
     useEffect(() => {
         const url = `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/count`;
@@ -94,7 +105,7 @@ function MovieList() {
                 setError(error.message); // Set error message
                 setLoading(false); // Set loading to false
             });
-    });
+    }, []);
 
     return (
         <div className="movie-list-container">
@@ -145,14 +156,26 @@ function MovieList() {
                     ))
                 }
             </div>
-            <button onClick={handleSortButton}>
-                {sortBtText}
-            </button>
-            <select onChange={handleLimitButton}>
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-            </select>
+            <div
+                style={{
+                    display: "flex",
+                    gap: "5px",
+                    margin: "5px"
+                }}
+            >
+                <select onChange={handleSortButton}>
+                    <option value="averageRating">Rating</option>
+                    <option value="releaseYear">Release Year</option>
+                </select>
+                <button className={`sort-order-button sort-order-${sortOrder}`} onClick={handleSortOrderButton}>
+                    <span className="sort-order-icon"></span>
+                </button>
+                <select onChange={handleLimitButton}>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                </select>
+            </div>
         </div>
     )
 }
