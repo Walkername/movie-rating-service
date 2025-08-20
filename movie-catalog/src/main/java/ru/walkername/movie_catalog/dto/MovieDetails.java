@@ -21,7 +21,7 @@ public class MovieDetails {
 
     private int scores;
 
-    private Date date;
+    private Date ratedAt;
 
     public MovieDetails() {
 
@@ -35,7 +35,7 @@ public class MovieDetails {
         this.releaseYear = movie.getReleaseYear();
         this.averageRating = movie.getAverageRating();
         this.scores = movie.getScores();
-        this.date = rating.getDate();
+        this.ratedAt = rating.getRatedAt();
     }
 
     public int getUserId() {
@@ -94,11 +94,11 @@ public class MovieDetails {
         this.scores = scores;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setRatedAt(Date ratedAt) {
+        this.ratedAt = ratedAt;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getRatedAt() {
+        return ratedAt;
     }
 }

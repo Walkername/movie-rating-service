@@ -7,11 +7,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.MovieDetails;
 import ru.walkername.movie_catalog.dto.NewRatingDTO;
 import ru.walkername.movie_catalog.dto.RatingsResponse;
@@ -19,10 +21,7 @@ import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.models.Rating;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -128,15 +127,26 @@ public class MoviesService {
      * @param page number of page
      * @param moviesPerPage number of movies that will be in the list
      *                      (all movies are split by this number, you give only part by page number)
-     * @param down default 'true' -> descending rating order; 'false' -> ascending.
+     * @param sort defines what field will be used in order to sort movies list
      * @return list of movies
      */
-    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' + #down")
-    public List<Movie> getAllMoviesWithPagination(int page, int moviesPerPage, boolean down) {
-        Sort sort = down
-                ? Sort.by("averageRating").descending()
-                : Sort.by("averageRating").ascending();
-        return moviesRepository.findAll(PageRequest.of(page, moviesPerPage, sort)).getContent();
+    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
+            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
+    public List<Movie> getAllMoviesWithPagination(int page, int moviesPerPage, String[] sort) {
+        Sort sorting = Sort.by(createOrders(sort));
+        Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
+        return moviesRepository.findAll(pageable).getContent();
+    }
+
+    private List<Sort.Order> createOrders(String[] sort) {
+        return Arrays.stream(sort).map(this::parseSort).toList();
+    }
+
+    private Sort.Order parseSort(String sortParam) {
+        String[] parts = sortParam.split(":");
+        String property = parts[0];
+        Sort.Direction direction = parts.length > 1 ? Sort.Direction.fromString(parts[1]) : Sort.Direction.DESC;
+        return new Sort.Order(direction, property);
     }
 
     /**
@@ -145,12 +155,21 @@ public class MoviesService {
      * @param id indicates the user ID whose rated movies you want to get
      * @return list of movies with details of rating
      */
-    @Cacheable(cacheNames = "movies-by-user", key = "#id + '-' + #page + '-' + #moviesPerPage + '-' + #byDate")
-    public List<MovieDetails> getMoviesByUser(int id, int page, int moviesPerPage, boolean byDate) {
-        String url = RATING_SERVICE_API + "/ratings/user/" + id + "?page=" + page + "&limit=" + moviesPerPage + "&byDate=" + byDate;
+    @Cacheable(cacheNames = "movies-by-user", key = "#id + '-' + #page + '-' + #moviesPerPage + '-' " +
+            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
+    public List<MovieDetails> getMoviesByUser(int id, int page, int moviesPerPage, String[] sort) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(RATING_SERVICE_API + "/ratings/user/" + id)
+                .queryParam("page", page)
+                .queryParam("limit", moviesPerPage);
+
+        if (sort != null) {
+            for (String s : sort) {
+                builder.queryParam("sort", s);
+            }
+        }
 
         // Getting Rating list by user_id
-        RatingsResponse ratingsResponse = restTemplate.getForObject(url, RatingsResponse.class);
+        RatingsResponse ratingsResponse = restTemplate.getForObject(builder.toUriString(), RatingsResponse.class);
         if (ratingsResponse == null) {
             return new ArrayList<>();
         }

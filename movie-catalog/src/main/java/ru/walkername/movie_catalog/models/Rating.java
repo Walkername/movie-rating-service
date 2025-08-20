@@ -12,7 +12,7 @@ public class Rating {
 
     private double rating;
 
-    private Date date;
+    private Date ratedAt;
 
     public Rating() {
 
@@ -56,11 +56,11 @@ public class Rating {
         this.rating = rating;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getRatedAt() {
+        return ratedAt;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setRatedAt(Date ratedAt) {
+        this.ratedAt = ratedAt;
     }
 }

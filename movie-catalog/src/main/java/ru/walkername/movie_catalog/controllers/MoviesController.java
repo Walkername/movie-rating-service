@@ -45,10 +45,10 @@ public class MoviesController {
     @GetMapping()
     public List<Movie> index(
             @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-            @RequestParam(value = "down", required = false, defaultValue = "true") boolean down
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(value = "sort", defaultValue = "averageRating:desc") String[] sort
     ) {
-        return moviesService.getAllMoviesWithPagination(page, limit, down);
+        return moviesService.getAllMoviesWithPagination(page, limit, sort);
     }
 
     @GetMapping("/{id}")
@@ -62,10 +62,10 @@ public class MoviesController {
     public List<MovieDetails> getMoviesByUserId(
             @PathVariable("id") int id,
             @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-            @RequestParam(value = "down", required = false, defaultValue = "true") boolean byDate
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(value = "sort", defaultValue = "ratedAt:desc") String[] sort
     ) {
-        return moviesService.getMoviesByUser(id, page, limit, byDate);
+        return moviesService.getMoviesByUser(id, page, limit, sort);
     }
 
     @PatchMapping("/edit/{id}")
