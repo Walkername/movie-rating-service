@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import SearchField from "../search-field/search-field";
 
@@ -29,24 +29,23 @@ function NavigationBar() {
         <nav>
             <span className="nav-bar-left">
                 {links.map((link, index) => (
-                    <span
+                    <Link
                         className="nav-element"
                         key={index}
-                        onClick={
-                            () => handleClick(link.path)}
+                        to={link.path}
                     >
                         {link.text}
-                    </span>
+                    </Link>
                 ))}
             </span>
             <SearchField />
             <span className="nav-bar-right">
                 {
                     token ?
-                        <span
+                        <Link
                             className="nav-element"
-                            onClick={() => navigate(`/user/${id}`)}
-                        >Profile</span>
+                            to={`/user/${id}`}
+                        >Profile</Link>
                         : <></>
                 }
                 <span className="auth-buttons">
@@ -54,13 +53,13 @@ function NavigationBar() {
                         token ?
                             <>
                                 {
-                                    adminStatus 
-                                    ?
-                                    <span className="auth-button" onClick={() => navigate("/admin")}>Admin</span>
-                                    :
-                                    <></>
+                                    adminStatus
+                                        ?
+                                        <Link className="auth-button" to={"/admin"}>Admin</Link>
+                                        :
+                                        <></>
                                 }
-                                
+
                                 <span className="auth-button" onClick={handleLogout}>Log out</span>
                             </>
                             :

@@ -6,6 +6,8 @@
     margin: 5px;
     border: 1px solid #d4d4d4;
     border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .movie-card-bar:hover {

@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 
 function MovieCardBar({ movie, index, handleNavigate }) {
     let href = "/movies/" + movie.id;
     return (
-        <div className="movie-card-bar" onClick={() => handleNavigate(href)}>
+        <Link className="movie-card-bar" to={href}>
             <span className="movie-card-bar-index">{index + 1}</span>
             <div className="movie-card-bar-header">
                 <span>
@@ -14,7 +15,7 @@ function MovieCardBar({ movie, index, handleNavigate }) {
 
             <span className="movie-card-bar-rating">{movie.averageRating}</span>
             <span className="movie-card-bar-scores">Scores: {movie.scores}</span>
-        </div>
+        </Link>
     );
 }
 
