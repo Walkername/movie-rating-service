@@ -9,9 +9,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import ru.walkername.user_profile.dto.NewRatingDTO;
 import ru.walkername.user_profile.dto.RatingsResponse;
 import ru.walkername.user_profile.dto.UserDetails;
+import ru.walkername.user_profile.events.RatingCreated;
+import ru.walkername.user_profile.events.RatingDeleted;
+import ru.walkername.user_profile.events.RatingUpdated;
 import ru.walkername.user_profile.models.Rating;
 import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.UsersRepository;
@@ -113,34 +115,82 @@ public class UsersService {
             // delete cache getTopUser()
             @CacheEvict(cacheNames = "top-user", allEntries = true),
             // delete cache findOne()
-            @CacheEvict(cacheNames = "user", key = "#ratingDTO.getUserId()", condition = "#ratingDTO.getUserId() != null")
+            @CacheEvict(cacheNames = "user", key = "#ratingCreated.getUserId()", condition = "#ratingCreated.getUserId() != null")
     })
     @Transactional
     @KafkaListener(
-            topics = "ratings-topic",
+            topics = "ratings-created",
             groupId = "user-service-group",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "ratingCreatedContainerFactory"
     )
-    public void updateAverageRating(NewRatingDTO ratingDTO) {
-        System.out.println(ratingDTO);
-        Optional<User> user = usersRepository.findById(ratingDTO.getUserId());
+    public void handleRatingCreated(RatingCreated ratingCreated) {
+        Optional<User> user = usersRepository.findById(ratingCreated.getUserId());
         user.ifPresent(value -> {
-            double newRating = ratingDTO.getRating();
-            double oldRating = ratingDTO.getOldRating();
-            boolean isUpdate = ratingDTO.isUpdate();
+            int newRating = ratingCreated.getRating();
+            int scores = value.getScores(); // current scores
+            double averageRating = value.getAverageRating(); // current average rating
 
-            int scores = value.getScores();
-            double averageRating = value.getAverageRating();
-            double newAverageRating;
+            double newAverageRating = (averageRating * scores + newRating) / (scores + 1);
 
-            if (!isUpdate) {
-                newAverageRating = (averageRating * scores + newRating) / (scores + 1);
-                value.setScores(scores + 1);
-            } else {
-                newAverageRating = (averageRating * scores - oldRating + newRating) / scores;
-            }
+            value.setScores(scores + 1);
+            value.setAverageRating(newAverageRating);
+        });
+    }
+
+    @Caching(evict = {
+            // delete cache getTopUser()
+            @CacheEvict(cacheNames = "top-user", allEntries = true),
+            // delete cache findOne()
+            @CacheEvict(cacheNames = "user", key = "#ratingUpdated.getUserId()", condition = "#ratingUpdated.getUserId() != null")
+    })
+    @Transactional
+    @KafkaListener(
+            topics = "ratings-updated",
+            groupId = "user-service-group",
+            containerFactory = "ratingUpdatedContainerFactory"
+    )
+    public void handleRatingUpdated(RatingUpdated ratingUpdated) {
+        Optional<User> user = usersRepository.findById(ratingUpdated.getUserId());
+        user.ifPresent(value -> {
+            int newRating = ratingUpdated.getRating();
+            int oldRating = ratingUpdated.getOldRating();
+            int scores = value.getScores(); // current scores
+            double averageRating = value.getAverageRating(); // current average rating
+
+            double newAverageRating = (averageRating * scores - oldRating + newRating) / scores;
 
             value.setAverageRating(newAverageRating);
+        });
+    }
+
+    @Caching(evict = {
+            // delete cache getTopUser()
+            @CacheEvict(cacheNames = "top-user", allEntries = true),
+            // delete cache findOne()
+            @CacheEvict(cacheNames = "user", key = "#ratingDeleted.getUserId()", condition = "#ratingDeleted.getUserId() != null")
+    })
+    @Transactional
+    @KafkaListener(
+            topics = "ratings-deleted",
+            groupId = "user-service-group",
+            containerFactory = "ratingDeletedContainerFactory"
+    )
+    public void handleRatingDeleted(RatingDeleted ratingDeleted) {
+        Optional<User> user = usersRepository.findById(ratingDeleted.getUserId());
+        user.ifPresent(value -> {
+            int ratingToDelete = ratingDeleted.getRating();
+            int scores = value.getScores();
+            double averageRating = value.getAverageRating();
+
+            int newScores = scores - 1;
+            if (newScores <= 0) {
+                value.setScores(0);
+                value.setAverageRating(0);
+            } else {
+                double newAverageRating = (averageRating * scores - ratingToDelete) / (scores - 1);
+                value.setScores(scores - 1);
+                value.setAverageRating(newAverageRating);
+            }
         });
     }
 

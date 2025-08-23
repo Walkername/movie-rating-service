@@ -11,7 +11,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import ru.walkername.rating_system.dto.NewRatingDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +21,14 @@ public class KafkaProducerConfig {
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${kafka.topic.name}")
-    private String ratingTopicName;
+    @Value("${kafka.rating-created-topic.name}")
+    private String ratingCreatedTopicName;
+
+    @Value("${kafka.rating-updated-topic.name}")
+    private String ratingUpdatedTopicName;
+
+    @Value("${kafka.rating-deleted-topic.name}")
+    private String ratingDeletedTopicName;
 
     @Bean
     public Map<String, Object> producerConfigs() {
@@ -35,18 +40,28 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, NewRatingDTO> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, NewRatingDTO> kafkaTemplate() {
+    public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
-    public NewTopic ratingTopic() {
-        return TopicBuilder.name(ratingTopicName).build();
+    public NewTopic ratingCreatedTopic() {
+        return TopicBuilder.name(ratingCreatedTopicName).build();
+    }
+
+    @Bean
+    public NewTopic ratingUpdatedTopic() {
+        return TopicBuilder.name(ratingUpdatedTopicName).build();
+    }
+
+    @Bean
+    public NewTopic ratingDeletedTopic() {
+        return TopicBuilder.name(ratingDeletedTopicName).build();
     }
 
 }

@@ -8,13 +8,13 @@ public class Rating {
 
     private int movieId;
 
-    private double rating;
+    private int rating;
 
     public Rating() {
 
     }
 
-    public Rating(int userId, int movieId, double rating) {
+    public Rating(int userId, int movieId, int rating) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
@@ -44,11 +44,11 @@ public class Rating {
         this.movieId = movieId;
     }
 
-    public double getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 }

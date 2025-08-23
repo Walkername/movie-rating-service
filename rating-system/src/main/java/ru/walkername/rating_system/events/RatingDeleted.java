@@ -1,10 +1,6 @@
-package ru.walkername.movie_catalog.models;
+package ru.walkername.rating_system.events;
 
-import java.util.Date;
-
-public class Rating {
-
-    private int ratingId;
+public class RatingDeleted {
 
     private int userId;
 
@@ -12,24 +8,13 @@ public class Rating {
 
     private int rating;
 
-    private Date ratedAt;
-
-    public Rating() {
-
+    public RatingDeleted() {
     }
 
-    public Rating(int userId, int movieId, int rating) {
+    public RatingDeleted(int userId, int movieId, int rating) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
-    }
-
-    public int getRatingId() {
-        return ratingId;
-    }
-
-    public void setRatingId(int ratingId) {
-        this.ratingId = ratingId;
     }
 
     public int getUserId() {
@@ -56,11 +41,4 @@ public class Rating {
         this.rating = rating;
     }
 
-    public Date getRatedAt() {
-        return ratedAt;
-    }
-
-    public void setRatedAt(Date ratedAt) {
-        this.ratedAt = ratedAt;
-    }
 }

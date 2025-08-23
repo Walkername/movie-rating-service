@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.MovieDetails;
-import ru.walkername.movie_catalog.dto.NewRatingDTO;
 import ru.walkername.movie_catalog.dto.RatingsResponse;
+import ru.walkername.movie_catalog.events.RatingCreated;
+import ru.walkername.movie_catalog.events.RatingDeleted;
+import ru.walkername.movie_catalog.events.RatingUpdated;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.models.Rating;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
@@ -81,7 +83,7 @@ public class MoviesService {
 
     @Caching(evict = {
             // delete cache findOne()
-            @CacheEvict(cacheNames = "movie", key = "#ratingDTO.getMovieId()", condition = "#ratingDTO.getMovieId() != null"),
+            @CacheEvict(cacheNames = "movie", key = "#ratingCreated.getMovieId()", condition = "#ratingCreated.getMovieId() != null"),
             // delete cache getMoviesByUser()
             @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
             // delete cache getMoviesWithPagination()
@@ -89,29 +91,83 @@ public class MoviesService {
     })
     @Transactional
     @KafkaListener(
-            topics = "ratings-topic",
+            topics = "ratings-created",
             groupId = "movie-service-group",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "ratingCreatedContainerFactory"
     )
-    public void updateAverageRating(NewRatingDTO ratingDTO) {
-        Optional<Movie> movie = moviesRepository.findById(ratingDTO.getMovieId());
+    public void handleRatingCreated(RatingCreated ratingCreated) {
+        System.out.println(ratingCreated);
+        Optional<Movie> movie = moviesRepository.findById(ratingCreated.getMovieId());
         movie.ifPresent(value -> {
-            double newRating = ratingDTO.getRating();
-            double oldRating = ratingDTO.getOldRating();
-            boolean isUpdate = ratingDTO.isUpdate();
+            int newRating = ratingCreated.getRating();
+            int scores = value.getScores(); // current scores
+            double averageRating = value.getAverageRating(); // current average rating
 
-            int scores = value.getScores();
-            double averageRating = value.getAverageRating();
-            double newAverageRating;
+            double newAverageRating = (averageRating * scores + newRating) / (scores + 1);
 
-            if (!isUpdate) {
-                newAverageRating = (averageRating * scores + newRating) / (scores + 1);
-                value.setScores(scores + 1);
-            } else {
-                newAverageRating = (averageRating * scores - oldRating + newRating) / scores;
-            }
+            value.setScores(scores + 1);
+            value.setAverageRating(newAverageRating);
+        });
+    }
+
+    @Caching(evict = {
+            // delete cache findOne()
+            @CacheEvict(cacheNames = "movie", key = "#ratingUpdated.getMovieId()", condition = "#ratingUpdated.getMovieId() != null"),
+            // delete cache getMoviesByUser()
+            @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
+            // delete cache getMoviesWithPagination()
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+    })
+    @Transactional
+    @KafkaListener(
+            topics = "ratings-updated",
+            groupId = "movie-service-group",
+            containerFactory = "ratingUpdatedContainerFactory"
+    )
+    public void handleRatingUpdated(RatingUpdated ratingUpdated) {
+        Optional<Movie> movie = moviesRepository.findById(ratingUpdated.getMovieId());
+        movie.ifPresent(value -> {
+            int newRating = ratingUpdated.getRating();
+            int oldRating = ratingUpdated.getOldRating();
+            int scores = value.getScores(); // current scores
+            double averageRating = value.getAverageRating(); // current average rating
+
+            double newAverageRating = (averageRating * scores - oldRating + newRating) / scores;
 
             value.setAverageRating(newAverageRating);
+        });
+    }
+
+    @Caching(evict = {
+            // delete cache findOne()
+            @CacheEvict(cacheNames = "movie", key = "#ratingDeleted.getMovieId()", condition = "#ratingDeleted.getMovieId() != null"),
+            // delete cache getMoviesByUser()
+            @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
+            // delete cache getMoviesWithPagination()
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+    })
+    @Transactional
+    @KafkaListener(
+            topics = "ratings-deleted",
+            groupId = "movie-service-group",
+            containerFactory = "ratingDeletedContainerFactory"
+    )
+    public void handleRatingDeleted(RatingDeleted ratingDeleted) {
+        Optional<Movie> movie = moviesRepository.findById(ratingDeleted.getMovieId());
+        movie.ifPresent(value -> {
+            int ratingToDelete = ratingDeleted.getRating();
+            int scores = value.getScores();
+            double averageRating = value.getAverageRating();
+
+            int newScores = scores - 1;
+            if (newScores <= 0) {
+                value.setScores(0);
+                value.setAverageRating(0);
+            } else {
+                double newAverageRating = (averageRating * scores - ratingToDelete) / (scores - 1);
+                value.setScores(scores - 1);
+                value.setAverageRating(newAverageRating);
+            }
         });
     }
 

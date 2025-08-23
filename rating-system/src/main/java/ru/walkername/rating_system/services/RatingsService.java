@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.walkername.rating_system.dto.NewRatingDTO;
+import ru.walkername.rating_system.events.RatingCreated;
+import ru.walkername.rating_system.events.RatingDeleted;
+import ru.walkername.rating_system.events.RatingUpdated;
 import ru.walkername.rating_system.models.Rating;
 import ru.walkername.rating_system.repositories.RatingsRepository;
 
@@ -38,16 +40,14 @@ public class RatingsService {
     @Transactional
     public void save(Rating rating) {
         try {
-            NewRatingDTO newRatingDTO = new NewRatingDTO(
+            RatingCreated ratingCreated = new RatingCreated(
                     rating.getUserId(),
                     rating.getMovieId(),
-                    rating.getRating(),
-                    0.0,
-                    false
+                    rating.getRating()
             );
 
             // Kafka: send to User and Movie services
-            kafkaProducerService.sendRating(newRatingDTO);
+            kafkaProducerService.publishRatingCreated(ratingCreated);
 
             // Save to db new added rating
             rating.setRatedAt(new Date());
@@ -62,16 +62,15 @@ public class RatingsService {
         Optional<Rating> oldRating = ratingsRepository.findById(id);
         oldRating.ifPresent(value -> {
             try {
-                NewRatingDTO newRatingDTO = new NewRatingDTO(
+                RatingUpdated ratingUpdated = new RatingUpdated(
                         updatedRating.getUserId(),
                         updatedRating.getMovieId(),
                         updatedRating.getRating(),
-                        value.getRating(),
-                        true
+                        value.getRating()
                 );
 
                 // Kafka: send to User and Movie services
-                kafkaProducerService.sendRating(newRatingDTO);
+                kafkaProducerService.publishRatingUpdated(ratingUpdated);
 
                 // Save to DB updated rating
                 updatedRating.setRatingId(id);
@@ -85,7 +84,22 @@ public class RatingsService {
 
     @Transactional
     public void delete(int id) {
-        ratingsRepository.deleteById(id);
+        Optional<Rating> currentRating = ratingsRepository.findById(id);
+        currentRating.ifPresent(value -> {
+            try {
+                RatingDeleted ratingDeleted = new RatingDeleted(
+                        value.getUserId(),
+                        value.getMovieId(),
+                        value.getRating()
+                );
+
+                kafkaProducerService.publishRatingDeleted(ratingDeleted);
+
+                ratingsRepository.deleteById(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public List<Rating> getRatingsByUser(int id, int page, int moviesPerPage, String[] sort) {
