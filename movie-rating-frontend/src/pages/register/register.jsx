@@ -1,5 +1,5 @@
-import NavigationBar from "../../components/navigation/navigation";
-import RegisterForm from "../../components/register-form/register-form";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
+import RegisterForm from "../../components/auth/register-form/register-form";
 
 export default function Register() {
 

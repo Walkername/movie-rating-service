@@ -1,6 +1,6 @@
-import NavigationBar from '../../components/navigation/navigation';
+import NavigationBar from '../../components/navigation/navigation-bar/navigation-bar';
 import TopUser from '../../components/top-user/top-user';
-import MovieList from '../../components/movie-list/movie-list';
+import MovieList from '../../components/movie-catalog/movie-list/movie-list';
 
 function MainPage() {
 

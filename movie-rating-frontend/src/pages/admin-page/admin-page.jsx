@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getUser, getUserByUsername } from "../../api/user-api";
-import NavigationBar from "../../components/navigation/navigation";
-import UserData from "../../components/user-data/user-data";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
+import UserData from "../../components/user-profile/user-data/user-data";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminPage() {

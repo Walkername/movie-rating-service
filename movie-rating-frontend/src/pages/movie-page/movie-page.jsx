@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import NavigationBar from "../../components/navigation/navigation";
-import MovieDetails from "../../components/movie-details/movie-details";
-import RateMovie from "../../components/rate-movie/rate-movie";
-import DeleteButton from "../../components/delete-button/delete-button";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
+import MovieDetails from "../../components/movie/movie-details/movie-details";
+import RateMovie from "../../components/movie/rate-movie/rate-movie";
+import DeleteButton from "../../components/movie/delete-button/delete-button";
 import { useEffect, useState } from "react";
 import { getMovie } from "../../api/movie-api";
-import MovieDetailsEdit from "../../components/movie-details-edit/movie-details-edit";
+import MovieDetailsEdit from "../../components/movie/movie-details-edit/movie-details-edit";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 
 function MoviePage() {

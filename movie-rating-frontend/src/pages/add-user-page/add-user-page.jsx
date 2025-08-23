@@ -1,5 +1,5 @@
 import { useState } from "react";
-import NavigationBar from "../../components/navigation/navigation";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import { addUser } from "../../api/user-api";
 
 function AddUserPage() {

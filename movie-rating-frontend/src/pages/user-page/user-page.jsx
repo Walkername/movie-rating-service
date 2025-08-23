@@ -1,6 +1,6 @@
-import NavigationBar from "../../components/navigation/navigation";
-import UserDataEdit from "../../components/user-data-edit/user-data-edit";
-import UserData from "../../components/user-data/user-data";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
+import UserDataEdit from "../../components/user-profile/user-data-edit/user-data-edit";
+import UserData from "../../components/user-profile/user-data/user-data";
 import React, { useEffect, useState } from 'react';
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import { getUser } from "../../api/user-api";

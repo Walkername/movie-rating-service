@@ -9,8 +9,8 @@ import Register from './pages/register/register';
 import Login from './pages/login/login';
 import AdminRoute from './utils/admin-route/admin-route';
 import AdminPage from './pages/admin-page/admin-page';
-import AdminUsersTool from './components/admin-users-tool/admin-users-tool';
-import AdminMoviesTool from './components/admin-movies-tool/admin-movies-tool';
+import AdminUsersTool from './components/admin-tools/admin-users-tool/admin-users-tool';
+import AdminMoviesTool from './components/admin-tools/admin-movies-tool/admin-movies-tool';
 
 function App() {
   return (

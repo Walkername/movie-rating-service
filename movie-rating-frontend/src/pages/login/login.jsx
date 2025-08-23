@@ -1,5 +1,5 @@
-import LoginForm from "../../components/login-form/login-form";
-import NavigationBar from "../../components/navigation/navigation";
+import LoginForm from "../../components/auth/login-form/login-form";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 
 export default function Login() {
 

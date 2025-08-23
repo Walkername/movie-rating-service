@@ -1,5 +1,5 @@
-import AddMovieForm from "../../components/add-movie-form/add-movie-form";
-import NavigationBar from "../../components/navigation/navigation";
+import AddMovieForm from "../../components/admin-tools/add-movie-form/add-movie-form";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 
 function AddMoviePage() {
 
