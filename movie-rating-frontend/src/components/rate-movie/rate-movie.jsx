@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addRating, getRating, updateRating } from "../../api/rating-api";
+import { addRating, deleteRating, getRating, updateRating } from "../../api/rating-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import AuthPopup from "../auth-popup/auth-popup";
 
@@ -61,6 +61,15 @@ function RateMovie({ movieId }) {
         }
     };
 
+    // DELETE RATING
+    const handleDelete = () => {
+        const ratingId = ratingInfo.ratingId;
+        deleteRating(ratingId)
+            .then(() => {
+                setRating(null);
+            });
+    };
+
     return (
         <div>
             {/* Модальное окно */}
@@ -86,6 +95,16 @@ function RateMovie({ movieId }) {
                             </button>
                         );
                     })
+                }
+                {
+                    rating && (
+                        <span
+                            className="delete-rating-button"
+                            onClick={handleDelete}
+                        >
+                            Delete Rating
+                        </span>
+                    )
                 }
             </div>
         </div>

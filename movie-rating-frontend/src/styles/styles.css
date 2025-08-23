@@ -319,3 +319,13 @@ table {
 .uploaded-profile-pic {
     width: 200px;
 }
+
+.delete-rating-button {
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.delete-rating-button:hover {
+    cursor: pointer;
+    color: #3498db;
+}

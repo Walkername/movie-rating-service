@@ -36,6 +36,20 @@ export const updateRating = async (ratingId, formData) => {
     }
 };
 
+export const deleteRating = async (ratingId) => {
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/delete/${ratingId}`,
+            {
+                method: "DELETE"
+            }
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getRating = async (userId, movieId) => {
     try {
         const response = await fetch(
