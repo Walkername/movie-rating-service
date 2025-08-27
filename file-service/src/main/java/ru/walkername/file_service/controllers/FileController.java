@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.walkername.file_service.dto.FileResponse;
 import ru.walkername.file_service.services.FileService;
 import ru.walkername.file_service.services.TokenService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,6 +58,15 @@ public class FileController {
                 : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/download-all/signed-url")
+    public ResponseEntity<List<FileResponse>> downloadAllSignedUrl(
+            @RequestParam(value = "entityType") String entityType,
+            @RequestParam(value = "entityId") int entityId
+    ) {
+        List<FileResponse> files = fileService.findAllByEntityTypeAndEntityId(entityType, entityId);
+        return new ResponseEntity<>(files, HttpStatus.OK);
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
             @RequestParam(value = "file") MultipartFile file,
@@ -79,7 +90,7 @@ public class FileController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
         switch (context) {
-            case "user" -> {
+            case "user", "user-avatar" -> {
                 if (decodedJWT == null) {
                     return new ResponseEntity<>("Invalid context", HttpStatus.UNAUTHORIZED);
                 }
@@ -87,7 +98,7 @@ public class FileController {
                 uniqueUrl = "user-" + requestId + "/" + UUID.randomUUID() + extension;
             }
 
-            case "movie" -> {
+            case "movie", "movie-poster" -> {
                 String role = decodedJWT.getClaim("role").asString();
                 if (!role.equals("ADMIN")) {
                     return new ResponseEntity<>("Invalid authorities", HttpStatus.FORBIDDEN);
@@ -99,8 +110,8 @@ public class FileController {
                 return new ResponseEntity<>("There is no such context", HttpStatus.BAD_REQUEST);
             }
         }
-        int uploadedFileId = fileService.uploadFile(uniqueUrl, file);
-        return new ResponseEntity<>(uploadedFileId + "", HttpStatus.OK);
+        fileService.uploadFile(uniqueUrl, file, context, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -60,7 +60,7 @@ public class UsersController {
     }
 
     @PatchMapping("/profile-pic/{id}")
-    public ResponseEntity<String> uploadProfilePic(
+    public ResponseEntity<String> updateProfilePic(
             @RequestHeader("Authorization") String authorization,
             @PathVariable("id") int id,
             @RequestParam("fileId") int fileId
@@ -72,7 +72,7 @@ public class UsersController {
             return response;
         }
 
-        usersService.saveProfilePicture(id, fileId);
+        usersService.updateProfilePicture(id, fileId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

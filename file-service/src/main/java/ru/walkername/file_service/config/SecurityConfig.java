@@ -32,7 +32,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/files/download/", "/files/download/signed-url", "/files/download-by-id/signed-url/{fileId}"
+                                "/files/download/", "/files/download/signed-url",
+                                "/files/download-by-id/signed-url/{fileId}", "/files/download-all/signed-url"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import ru.walkername.user_profile.dto.RatingsResponse;
 import ru.walkername.user_profile.dto.UserDetails;
+import ru.walkername.user_profile.events.FileUploaded;
 import ru.walkername.user_profile.events.RatingCreated;
 import ru.walkername.user_profile.events.RatingDeleted;
 import ru.walkername.user_profile.events.RatingUpdated;
@@ -68,8 +69,24 @@ public class UsersService {
         usersRepository.save(user);
     }
 
+    @CacheEvict(cacheNames = "user", key = "#fileUploaded.getContextId()",
+            condition = "#fileUploaded.getContext() != null && #fileUploaded.getContext().equals('user-avatar')")
     @Transactional
-    public void saveProfilePicture(int userId, int fileId) {
+    @KafkaListener(
+            topics = "file-uploaded",
+            groupId = "user-service-group",
+            containerFactory = "fileUploadedContainerFactory"
+    )
+    public void saveProfilePicture(FileUploaded fileUploaded) {
+        if (fileUploaded.getContext() != null && fileUploaded.getContext().equals("user-avatar")) {
+            Optional<User> currentUser = usersRepository.findById(fileUploaded.getContextId());
+            currentUser.ifPresent(user -> user.setProfilePicId(fileUploaded.getFileId()));
+        }
+    }
+
+    @CacheEvict(cacheNames = "user", key="#userId")
+    @Transactional
+    public void updateProfilePicture(int userId, int fileId) {
         Optional<User> currentUser = usersRepository.findById(userId);
         currentUser.ifPresent(user -> user.setProfilePicId(fileId));
     }

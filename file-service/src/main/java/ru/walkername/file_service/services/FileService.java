@@ -8,11 +8,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ru.walkername.file_service.dto.FileResponse;
+import ru.walkername.file_service.events.FileUploaded;
 import ru.walkername.file_service.models.File;
+import ru.walkername.file_service.models.FileAttachment;
 import ru.walkername.file_service.repositories.FileRepository;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -22,14 +26,18 @@ public class FileService {
 
     private final MinioClient minioClient;
     private final FileRepository fileRepository;
+    private final KafkaProducerService kafkaProducerService;
+    private final FileAttachmentService fileAttachmentService;
 
     @Value("${minio.bucket-name}")
     private String bucketName;
 
     @Autowired
-    public FileService(MinioClient minioClient, FileRepository fileRepository) {
+    public FileService(MinioClient minioClient, FileRepository fileRepository, KafkaProducerService kafkaProducerService, FileAttachmentService fileAttachmentService) {
         this.minioClient = minioClient;
         this.fileRepository = fileRepository;
+        this.kafkaProducerService = kafkaProducerService;
+        this.fileAttachmentService = fileAttachmentService;
     }
 
     @PostConstruct
@@ -49,7 +57,7 @@ public class FileService {
     }
 
     @Transactional
-    public int uploadFile(String filename, MultipartFile file) {
+    public void uploadFile(String filename, MultipartFile file, String context, int contextId) {
         try (InputStream is = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -61,9 +69,27 @@ public class FileService {
             );
 
             File savedFile = new File(filename, new Date());
-
             fileRepository.save(savedFile);
-            return savedFile.getId();
+
+            FileAttachment fileAttachment = new FileAttachment(
+                    savedFile,
+                    context.replaceAll("-.*", ""),
+                    contextId,
+                    new Date()
+            );
+            fileAttachmentService.save(fileAttachment);
+
+            if (context.equals("user-avatar") || context.equals("movie-poster")) {
+                // Create event to send to Kafka Topic
+                FileUploaded fileUploaded = new FileUploaded(
+                        savedFile.getId(),
+                        contextId,
+                        context
+                );
+
+                // Publish event FileUploaded to Kafka
+                kafkaProducerService.publishFileUploaded(fileUploaded);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error uploading file", e);
         }
@@ -91,6 +117,14 @@ public class FileService {
             return generatePreSignedUrl(fileUrl, 10);
         }
         return null;
+    }
+
+    public List<FileResponse> findAllByEntityTypeAndEntityId(String entityType, int entityId) {
+        List<FileResponse> files = fileAttachmentService.findAllByEntityTypeAndEntityId(entityType, entityId);
+        for (FileResponse file : files) {
+            file.setUrl(generatePreSignedUrl(file.getUrl(), 10));
+        }
+        return files;
     }
 
     public byte[] downloadFile(String filename) {
