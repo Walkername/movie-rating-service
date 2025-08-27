@@ -11,6 +11,17 @@ export const downloadFile = async (fileId) => {
     }
 };
 
+export const downloadFiles = async (entityType, entityId) => {
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_FILE_SERVICE_URL}/files/download-all/signed-url?entityType=${entityType}&entityId=${entityId}`
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const uploadFile = async (formData, context, contextId) => {
     try {
         const response = await customRequest(
@@ -25,3 +36,4 @@ export const uploadFile = async (formData, context, contextId) => {
         throw error;
     }
 };
+

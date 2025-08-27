@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import RatedMoviesList from "../rated-movies-list/rated-movies-list";
-import { downloadFile } from "../../../api/file-api";
+import { downloadFile, downloadFiles } from "../../../api/file-api";
 import "../../../styles/user-data.css";
+import unknownProfilePic from "../../../assets/images/unknown-profile-avatar.png";
+import { Link } from "react-router-dom";
 
 function UserData({ user }) {
 
@@ -23,7 +25,7 @@ function UserData({ user }) {
             <div className="user-info">
                 <img
                     className="profile-pic"
-                    src={profilePicUrl || "/default-avatar.png"}
+                    src={profilePicUrl || unknownProfilePic}
                     alt="Profile"
                 />
                 <div>
@@ -39,6 +41,7 @@ function UserData({ user }) {
                     <p className="section-text">{user.scores}</p>
                 </div>
             </div>
+            <Link to={`/user/${user.id}/photos`}>Photo</Link>
 
             <div className="rated-movies">
                 <RatedMoviesList userId={user.id} />

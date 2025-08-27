@@ -93,7 +93,6 @@ function UserDataEdit({ user, setUser }) {
     // PROFILE PICTURE
 
     const [selectedFile, setSelectedFile] = useState(null);
-    const [uploadedFileId, setUploadedFileId] = useState(null);
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -110,14 +109,14 @@ function UserDataEdit({ user, setUser }) {
         formData.append("file", selectedFile);
 
         // Uploading file
-        uploadFile(formData, "user", user.id)
-            .then((data) => {
-                setUploadedFileId(data);
-                // Update profile picture ID
-                updateProfilePictureId(user.id, data)
-                    .catch((error) => {
-                        console.log(error);
-                    });
+        uploadFile(formData, "user-avatar", user.id)
+            .then(() => {
+                // setUploadedFileId(data);
+                // // Update profile picture ID
+                // updateProfilePictureId(user.id, data)
+                //     .catch((error) => {
+                //         console.log(error);
+                //     });
             })
             .catch((error) => {
                 console.log(error);

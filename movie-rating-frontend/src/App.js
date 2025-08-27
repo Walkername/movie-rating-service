@@ -11,6 +11,7 @@ import AdminRoute from './utils/admin-route/admin-route';
 import AdminPage from './pages/admin-page/admin-page';
 import AdminUsersTool from './components/admin-tools/admin-users-tool/admin-users-tool';
 import AdminMoviesTool from './components/admin-tools/admin-movies-tool/admin-movies-tool';
+import UserPhotoCatalog from './pages/user-photo-catalog/user-photo-catalog';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/admin/movies-tool" element={<AdminMoviesTool />} />
         </Route>
         <Route path="/user/:id" element={<UserPage />} />
+        <Route path="/user/:id/photos" element={<UserPhotoCatalog />} />
         <Route path="/" element={<MainPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
