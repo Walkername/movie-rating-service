@@ -1,4 +1,4 @@
-package ru.walkername.file_service.config;
+package ru.walkername.file_service.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -50,9 +50,12 @@ public class JWTFilter extends OncePerRequestFilter {
                     DecodedJWT jwt = tokenService.validateToken(token);
                     String role = jwt.getClaim("role").asString();
                     String username = jwt.getClaim("username").asString();
+                    Long userId = jwt.getClaim("userId").asLong();
+
+                    UserPrincipal userPrincipal = new UserPrincipal(userId, username, role);
 
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            username,
+                            userPrincipal,
                             "",
                             Collections.singletonList(new SimpleGrantedAuthority(role))
                     );

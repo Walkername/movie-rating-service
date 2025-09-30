@@ -1,16 +1,15 @@
 package ru.walkername.file_service.controllers;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.file_service.dto.FileResponse;
+import ru.walkername.file_service.exceptions.InvalidUploadContextException;
+import ru.walkername.file_service.security.UserPrincipal;
 import ru.walkername.file_service.services.FileService;
-import ru.walkername.file_service.services.TokenService;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,33 +19,31 @@ import java.util.UUID;
 public class FileController {
 
     private final FileService fileService;
-    private final TokenService tokenService;
 
     @Autowired
-    public FileController(FileService fileService, TokenService tokenService) {
+    public FileController(FileService fileService) {
         this.fileService = fileService;
-        this.tokenService = tokenService;
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<byte[]> download(
-            @RequestParam("filename") String filename
-    ) {
-        byte[] file = fileService.downloadFile(filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                .body(file);
-    }
+//    @GetMapping("/download")
+//    public ResponseEntity<byte[]> download(
+//            @RequestParam("filename") String filename
+//    ) {
+//        byte[] file = fileService.downloadFile(filename);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+//                .body(file);
+//    }
 
-    @GetMapping("/download/signed-url")
-    public ResponseEntity<String> downloadSignedUrl(
-            @RequestParam("filename") String filename
-    ) {
-        return new ResponseEntity<>(
-                fileService.generatePreSignedUrl(filename, 10),
-                HttpStatus.OK
-        );
-    }
+//    @GetMapping("/download/signed-url")
+//    public ResponseEntity<String> downloadSignedUrl(
+//            @RequestParam("filename") String filename
+//    ) {
+//        return new ResponseEntity<>(
+//                fileService.generatePreSignedUrl(filename, 10),
+//                HttpStatus.OK
+//        );
+//    }
 
     @GetMapping("/download-by-id/signed-url/{fileId}")
     public ResponseEntity<String> downloadById(
@@ -68,13 +65,15 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(
+    public ResponseEntity<HttpStatus> upload(
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "context") String context,
-            @RequestParam(value = "id") Long id,
-            @RequestHeader("Authorization") String authorization
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        String uniqueUrl;
+        if (!context.equals("user") && !context.equals("user-avatar")) {
+            throw new InvalidUploadContextException("There is no such context");
+        }
+
         String originalFilename = file.getOriginalFilename();
         String extension = "";
 
@@ -82,35 +81,11 @@ public class FileController {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
 
-        DecodedJWT decodedJWT;
-        try {
-            String token = authorization.substring(7);
-            decodedJWT = tokenService.validateToken(token);
-        } catch (JWTVerificationException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
-        switch (context) {
-            case "user", "user-avatar" -> {
-                if (decodedJWT == null) {
-                    return new ResponseEntity<>("Invalid context", HttpStatus.UNAUTHORIZED);
-                }
-                int requestId = decodedJWT.getClaim("id").asInt();
-                uniqueUrl = "user-" + requestId + "/" + UUID.randomUUID() + extension;
-            }
+        Long authId = userPrincipal.getUserId();
+        String transformedContext = context.replaceAll("-.*", "");
+        String uniqueUrl = transformedContext + "-" + authId + "/" + UUID.randomUUID() + extension;
 
-            case "movie", "movie-poster" -> {
-                String role = decodedJWT.getClaim("role").asString();
-                if (!role.equals("ADMIN")) {
-                    return new ResponseEntity<>("Invalid authorities", HttpStatus.FORBIDDEN);
-                }
-                uniqueUrl = "movie-" + id + "/" + UUID.randomUUID() + extension;
-            }
-
-            default -> {
-                return new ResponseEntity<>("There is no such context", HttpStatus.BAD_REQUEST);
-            }
-        }
-        fileService.uploadFile(uniqueUrl, file, context, id);
+        fileService.uploadFile(uniqueUrl, file, context, authId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
