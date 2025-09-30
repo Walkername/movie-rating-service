@@ -5,13 +5,13 @@ import ru.walkername.user_profile.models.User;
 
 public class UserDetails {
 
-    private int userId;
+    private Long userId;
 
     private String username;
 
-    private int movieId;
+    private Long movieId;
 
-    private int ratingId;
+    private Long ratingId;
 
     private double rating;
 
@@ -35,27 +35,27 @@ public class UserDetails {
         this.username = username;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getRatingId() {
+    public Long getRatingId() {
         return ratingId;
     }
 
-    public void setRatingId(int ratingId) {
+    public void setRatingId(Long ratingId) {
         this.ratingId = ratingId;
     }
 
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 

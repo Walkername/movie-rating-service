@@ -7,8 +7,8 @@ import ru.walkername.user_profile.models.RefreshToken;
 import java.util.Optional;
 
 @Repository
-public interface RefreshTokensRepository extends JpaRepository<RefreshToken, Integer> {
+public interface RefreshTokensRepository extends JpaRepository<RefreshToken, Long> {
 
-    Optional<RefreshToken> findByUserId(int userId);
+    Optional<RefreshToken> findByUserId(Long userId);
 
 }

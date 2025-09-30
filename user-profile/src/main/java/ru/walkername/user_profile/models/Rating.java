@@ -2,11 +2,11 @@ package ru.walkername.user_profile.models;
 
 public class Rating {
 
-    private int ratingId;
+    private Long ratingId;
 
-    private int userId;
+    private Long userId;
 
-    private int movieId;
+    private Long movieId;
 
     private int rating;
 
@@ -14,33 +14,33 @@ public class Rating {
 
     }
 
-    public Rating(int userId, int movieId, int rating) {
+    public Rating(Long userId, Long movieId, int rating) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
     }
 
-    public int getRatingId() {
+    public Long getRatingId() {
         return ratingId;
     }
 
-    public void setRatingId(int ratingId) {
+    public void setRatingId(Long ratingId) {
         this.ratingId = ratingId;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.walkername.user_profile.security.JWTFilter;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/delete/{id}", "/users/add").hasAuthority("ADMIN")
+                        .requestMatchers("/users/delete/{id}", "/users/add", "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(
                                 "/auth/login", "/auth/register", "/auth/refresh",
                                 "/users", "/users/{id}", "/users/movie/{id}", "/users/update-avg-rating/{id}",

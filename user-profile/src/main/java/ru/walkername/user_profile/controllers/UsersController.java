@@ -1,26 +1,21 @@
 package ru.walkername.user_profile.controllers;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.walkername.user_profile.dto.*;
+import ru.walkername.user_profile.exception.UserInvalidFields;
+import ru.walkername.user_profile.exception.UserInvalidUsername;
 import ru.walkername.user_profile.models.User;
-import ru.walkername.user_profile.services.TokenService;
+import ru.walkername.user_profile.security.UserPrincipal;
 import ru.walkername.user_profile.services.UsersService;
-import ru.walkername.user_profile.util.UserErrorResponse;
-import ru.walkername.user_profile.util.UserNotCreatedException;
+import ru.walkername.user_profile.util.DTOValidator;
+import ru.walkername.user_profile.util.UserModelMapper;
 import ru.walkername.user_profile.util.UserValidator;
-import ru.walkername.user_profile.util.UserWrongAverageRatingException;
-
-import java.util.List;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("/users")
@@ -29,185 +24,104 @@ public class UsersController {
 
     private final UsersService usersService;
     private final UserValidator userValidator;
-    private final ModelMapper modelMapper;
-    private final TokenService tokenService;
+    private final UserModelMapper userModelMapper;
 
     @Autowired
-    public UsersController(UsersService usersService, UserValidator userValidator, ModelMapper modelMapper, TokenService tokenService) {
+    public UsersController(
+            UsersService usersService,
+            UserValidator userValidator,
+            UserModelMapper userModelMapper
+    ) {
         this.usersService = usersService;
         this.userValidator = userValidator;
-        this.modelMapper = modelMapper;
-        this.tokenService = tokenService;
+        this.userModelMapper = userModelMapper;
     }
 
     @GetMapping("/{id}")
-    public UserResponse getUser(
-            @PathVariable("id") int id
+    public ResponseEntity<UserResponse> getUser(
+            @PathVariable("id") Long id
     ) {
-        return convertToUserResponse(usersService.findOne(id));
+        UserResponse userResponse = userModelMapper.convertToUserResponse(usersService.findOne(id));
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @GetMapping("/username/{username}")
-    public UserResponse getUserByUsername(
+    public ResponseEntity<UserResponse> getUserByUsername(
             @PathVariable("username") String username
     ) {
-        return convertToUserResponse(usersService.findByUsername(username).orElse(null));
+        UserResponse userResponse = userModelMapper.convertToUserResponse(usersService.findByUsername(username));
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    @GetMapping()
-    public List<UserResponse> index() {
-        return usersService.getAll().stream().map(this::convertToUserResponse).toList();
-    }
+//    @GetMapping()
+//    public ResponseEntity<List<UserResponse>> index() {
+//        List<UserResponse> list = usersService.getAll().stream().map(userModelMapper::convertToUserResponse).toList();
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
 
-    @PatchMapping("/profile-pic/{id}")
-    public ResponseEntity<String> updateProfilePic(
-            @RequestHeader("Authorization") String authorization,
-            @PathVariable("id") int id,
-            @RequestParam("fileId") int fileId
-    ) {
-        // Check if the user who requested and updated user are the same
-        // Or if the admin, then he can do what he wants
-        ResponseEntity<String> response = checkRoles(authorization, id);
-        if (response != null) {
-            return response;
-        }
+//    @PatchMapping("/profile-pic/{id}")
+//    public ResponseEntity<String> updateProfilePic(
+//            @RequestHeader("Authorization") String authorization,
+//            @PathVariable("id") Long id,
+//            @RequestParam("fileId") Long fileId
+//    ) {
+//        // Check if the user who requested and updated user are the same
+//        // Or if the admin, then he can do what he wants
+//        ResponseEntity<String> response = checkRoles(authorization, id);
+//        if (response != null) {
+//            return response;
+//        }
+//
+//        usersService.updateProfilePicture(id, fileId);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
-        usersService.updateProfilePicture(id, fileId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PatchMapping("/edit/{id}")
-    public ResponseEntity<String> update(
-            @RequestHeader("Authorization") String authorization,
-            @PathVariable("id") int id,
+    @PatchMapping("/me")
+    public ResponseEntity<HttpStatus> update(
             @RequestBody @Valid UserDTO userDTO,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        validateUser(bindingResult, UserNotCreatedException::new);
+        DTOValidator.validate(bindingResult, UserInvalidFields::new);
 
-        // Check if the user who requested and updated user are the same
-        // Or if the admin, then he can do what he wants
-        ResponseEntity<String> response = checkRoles(authorization, id);
-        if (response != null) {
-            return response;
-        }
-
-        // Getting an existing user and setting fields from dto for them
-        User user = usersService.findOne(id);
-        if (user != null) {
-            modelMapper.map(userDTO, user);
-            usersService.save(user);
-        }
-        return new ResponseEntity<>("", HttpStatus.OK);
+        usersService.update(userPrincipal.getUserId(), userDTO);
+        return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/edit/username/{id}")
-    public ResponseEntity<String> updateUsername(
-            @RequestHeader("Authorization") String authorization,
-            @PathVariable("id") int id,
+    @PatchMapping("/me/username")
+    public ResponseEntity<HttpStatus> updateUsername(
             @RequestBody @Valid UsernameDTO usernameDTO,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        // Getting user from userDTO just to validate it: has the same username or not
-        User userToValidate = convertToUser(usernameDTO);
-        userValidator.validate(userToValidate, bindingResult);
-        validateUser(bindingResult, UserNotCreatedException::new);
+        User newUser = userModelMapper.convertToUser(usernameDTO);
+        // check if it has the existing username or not
+        userValidator.validate(newUser, bindingResult);
+        DTOValidator.validate(bindingResult, UserInvalidUsername::new);
 
-        // Check if the user who requested and updated user are the same
-        // Or if the admin, then he can do what he wants
-        ResponseEntity<String> response = checkRoles(authorization, id);
-        if (response != null) {
-            return response;
-        }
-
-        // Getting an existing user and setting fields from dto for them
-        User user = usersService.findOne(id);
-        if (user != null) {
-            modelMapper.map(usernameDTO, user);
-            usersService.update(id, user);
-        }
-        return new ResponseEntity<>("", HttpStatus.OK);
+        usersService.updateUsername(userPrincipal.getUserId(), newUser.getUsername());
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/me")
     public ResponseEntity<HttpStatus> delete(
-            @PathVariable("id") int id
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        usersService.delete(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        usersService.delete(userPrincipal.getUserId());
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/movie/{id}")
-    public List<UserDetails> getUsersByMovie(
-            @PathVariable("id") int id
-    ) {
-        return usersService.getUsersByMovie(id);
-    }
+//    @GetMapping("/movie/{id}")
+//    public List<UserDetails> getUsersByMovie(
+//            @PathVariable("id") Long id
+//    ) {
+//        return usersService.getUsersByMovie(id);
+//    }
 
     @GetMapping("/top-user")
-    public User getTopUser() {
-        return usersService.getTopUser();
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<UserErrorResponse> handleException(UserNotCreatedException ex) {
-        UserErrorResponse response = new UserErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<UserErrorResponse> handleException(UserWrongAverageRatingException ex) {
-        UserErrorResponse response = new UserErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    private void validateUser(BindingResult bindingResult, Function<String, ? extends RuntimeException> exceptionFunction) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error : errors) {
-                errorMsg.append(error.getField())
-                        .append(" - ")
-                        .append(error.getDefaultMessage())
-                        .append(";");
-            }
-
-            throw exceptionFunction.apply(errorMsg.toString());
-        }
-    }
-
-    private User convertToUser(UsernameDTO usernameDTO) {
-        return modelMapper.map(usernameDTO, User.class);
-    }
-
-    private UserResponse convertToUserResponse(User user) {
-        if (user == null) {
-            return null;
-        }
-        return modelMapper.map(user, UserResponse.class);
-    }
-
-    public ResponseEntity<String> checkRoles(String authorization, int id) {
-        try {
-            String token = authorization.substring(7);
-            DecodedJWT jwt = tokenService.validateAccessToken(token);
-            int requestId = jwt.getClaim("id").asInt();
-            String role = jwt.getClaim("role").asString();
-            if (requestId != id && !role.equals("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-        } catch (JWTVerificationException e) {
-            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
-        }
-        return null;
+    public ResponseEntity<UserResponse> getTopUser() {
+        UserResponse userResponse = userModelMapper.convertToUserResponse(usersService.getTopUser());
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
 }

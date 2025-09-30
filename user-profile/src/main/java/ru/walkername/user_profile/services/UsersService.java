@@ -1,27 +1,23 @@
 package ru.walkername.user_profile.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import ru.walkername.user_profile.dto.RatingsResponse;
-import ru.walkername.user_profile.dto.UserDetails;
+import ru.walkername.user_profile.dto.UserDTO;
 import ru.walkername.user_profile.events.FileUploaded;
 import ru.walkername.user_profile.events.RatingCreated;
 import ru.walkername.user_profile.events.RatingDeleted;
 import ru.walkername.user_profile.events.RatingUpdated;
-import ru.walkername.user_profile.models.Rating;
+import ru.walkername.user_profile.exception.UserExistsException;
+import ru.walkername.user_profile.exception.UserNotFoundException;
 import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.UsersRepository;
+import ru.walkername.user_profile.util.UserModelMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,24 +25,18 @@ import java.util.Optional;
 public class UsersService {
 
     private final UsersRepository usersRepository;
-
-    private final String RATING_SERVICE_API;
-
-    private final RestTemplate restTemplate;
+    private final UserModelMapper userModelMapper;
 
     @Autowired
     public UsersService(
             UsersRepository usersRepository,
-            @Value("${rating.service.url}") String RATING_SERVICE_API,
-            RestTemplate restTemplate
-    ) {
+            UserModelMapper userModelMapper) {
         this.usersRepository = usersRepository;
-        this.RATING_SERVICE_API = RATING_SERVICE_API;
-        this.restTemplate = restTemplate;
+        this.userModelMapper = userModelMapper;
     }
 
     @Cacheable(cacheNames = "user", key = "#id", unless = "#result == null")
-    public User findOne(int id) {
+    public User findOne(Long id) {
         Optional<User> user = usersRepository.findById(id);
         return user.orElse(null);
     }
@@ -58,15 +48,34 @@ public class UsersService {
 
     @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
-    public void delete(int id) {
+    public void delete(Long id) {
+        boolean userExists = usersRepository.existsById(id);
+        if (!userExists) {
+            throw new UserNotFoundException("User not found");
+        }
         usersRepository.deleteById(id);
     }
 
     @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
-    public void update(int id, User user) {
-        user.setId(id);
-        usersRepository.save(user);
+    public void update(Long id, UserDTO newUser) {
+        User user = usersRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+
+        userModelMapper.convertToUser(newUser, user);
+    }
+
+    @CacheEvict(cacheNames = "user", key = "#id")
+    @Transactional
+    public void updateUsername(Long id, String newUsername) {
+        User user = usersRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+        if (usersRepository.existsByUsername(newUsername)) {
+            throw new UserExistsException("User with such username already exists");
+        }
+        user.setUsername(newUsername);
     }
 
     @CacheEvict(cacheNames = "user", key = "#fileUploaded.getContextId()",
@@ -84,49 +93,62 @@ public class UsersService {
         }
     }
 
-    @CacheEvict(cacheNames = "user", key="#userId")
-    @Transactional
-    public void updateProfilePicture(int userId, int fileId) {
-        Optional<User> currentUser = usersRepository.findById(userId);
-        currentUser.ifPresent(user -> user.setProfilePicId(fileId));
+    /* Before: FileService uploads new photo and sends Http to UserService
+       in order to save photo id to user profilePicId
+       Now: FileService uploads new photo and sends this event via Kafka to UserService
+       This method is not used
+    */
+//    @CacheEvict(cacheNames = "user", key="#userId")
+//    @Transactional
+//    public void updateProfilePicture(Long userId, Long fileId) {
+//        Optional<User> currentUser = usersRepository.findById(userId);
+//        currentUser.ifPresent(user -> user.setProfilePicId(fileId));
+//    }
+
+    // The method is prohibited
+    // Get list only with pagination
+//    public List<User> getAll() {
+//        return usersRepository.findAll();
+//    }
+
+    public User findByUsername(String username) {
+        return usersRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
     }
 
-    public List<User> getAll() {
-        return usersRepository.findAll();
+    public boolean existsByUsername(String username) {
+        return usersRepository.existsByUsername(username);
     }
 
-    public Optional<User> findByUsername(String username) {
-        return usersRepository.findByUsername(username);
-    }
-
-    public List<UserDetails> getUsersByMovie(int id) {
-        String url = RATING_SERVICE_API + "/ratings/movie/" + id;
-
-        RatingsResponse ratingsResponse = restTemplate.getForObject(url, RatingsResponse.class);
-        List<Rating> ratings = Objects.requireNonNull(ratingsResponse).getRatings();
-        List<Integer> userIds = new ArrayList<>();
-        if (ratings != null) {
-            for (Rating rating : ratings) {
-                userIds.add(rating.getUserId());
-            }
-        }
-
-        List<UserDetails> usersByMovie = new ArrayList<>();
-        List<User> users = usersRepository.findAllById(userIds);
-        // TODO: improve algorithm, because this will be very slow with big amount of data
-        if (ratings != null) {
-            for (Rating rating : ratings) {
-                for (User user : users) {
-                    if (rating.getUserId() == user.getId()) {
-                        UserDetails userDetails = new UserDetails(user, rating);
-                        usersByMovie.add(userDetails);
-                    }
-                }
-            }
-        }
-
-        return usersByMovie;
-    }
+//    public List<UserDetails> getUsersByMovie(Long id) {
+//        String url = RATING_SERVICE_API + "/ratings/movie/" + id;
+//
+//        RatingsResponse ratingsResponse = restTemplate.getForObject(url, RatingsResponse.class);
+//        List<Rating> ratings = Objects.requireNonNull(ratingsResponse).getRatings();
+//        List<Long> userIds = new ArrayList<>();
+//        if (ratings != null) {
+//            for (Rating rating : ratings) {
+//                userIds.add(rating.getUserId());
+//            }
+//        }
+//
+//        List<UserDetails> usersByMovie = new ArrayList<>();
+//        List<User> users = usersRepository.findAllById(userIds);
+//        // TODO: improve algorithm, because this will be very slow with big amount of data
+//        if (ratings != null) {
+//            for (Rating rating : ratings) {
+//                for (User user : users) {
+//                    if (rating.getUserId().equals(user.getId())) {
+//                        UserDetails userDetails = new UserDetails(user, rating);
+//                        usersByMovie.add(userDetails);
+//                    }
+//                }
+//            }
+//        }
+//
+//        return usersByMovie;
+//    }
 
     @Caching(evict = {
             // delete cache getTopUser()
@@ -213,8 +235,9 @@ public class UsersService {
 
     @Cacheable(cacheNames = "top-user")
     public User getTopUser() {
-        Optional<User> user = usersRepository.findUserWithHighestScores();
-        return user.orElse(null);
+        return usersRepository.findUserWithHighestScores().orElseThrow(
+                () -> new UserNotFoundException("Top-user not found")
+        );
     }
 
 }

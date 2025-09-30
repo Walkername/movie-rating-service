@@ -8,11 +8,12 @@ import ru.walkername.user_profile.models.User;
 import java.util.Optional;
 
 @Repository
-public interface UsersRepository extends JpaRepository<User, Integer> {
+public interface UsersRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
     @Query(value = "SELECT * FROM user_profile GROUP BY id ORDER BY SUM(scores) DESC LIMIT 1", nativeQuery = true)
     Optional<User> findUserWithHighestScores();
 
+    boolean existsByUsername(String username);
 }

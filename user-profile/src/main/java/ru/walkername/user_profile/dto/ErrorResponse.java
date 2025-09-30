@@ -1,11 +1,11 @@
-package ru.walkername.user_profile.util;
+package ru.walkername.user_profile.dto;
 
-public class UserErrorResponse {
+public class ErrorResponse {
 
     private String message;
     private long timestamp;
 
-    public UserErrorResponse(String message, long timestamp) {
+    public ErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

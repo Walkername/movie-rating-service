@@ -11,7 +11,7 @@ public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotEmpty(message = "Username should not be empty")
     @Size(min = 5, max = 20, message = "Username should be greater than 5 and less than 20 characters")
@@ -28,7 +28,7 @@ public class User {
     private String description;
 
     @Column(name = "profile_pic_id")
-    private Integer profilePicId;
+    private Long profilePicId;
 
     @Column(name = "average_rating")
     private double averageRating;
@@ -43,7 +43,7 @@ public class User {
 
     }
 
-    public User(String username, String password, String description, Integer profilePicId, double averageRating, int scores, String role) {
+    public User(String username, String password, String description, Long profilePicId, double averageRating, int scores, String role) {
         this.username = username;
         this.password = password;
         this.description = description;
@@ -69,11 +69,11 @@ public class User {
         this.scores = scores;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -109,11 +109,11 @@ public class User {
         this.role = role;
     }
 
-    public Integer getProfilePicId() {
+    public Long getProfilePicId() {
         return profilePicId;
     }
 
-    public void setProfilePicId(Integer profilePicId) {
+    public void setProfilePicId(Long profilePicId) {
         this.profilePicId = profilePicId;
     }
 }

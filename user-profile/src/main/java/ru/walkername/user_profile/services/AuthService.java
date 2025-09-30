@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.walkername.user_profile.exception.*;
 import ru.walkername.user_profile.models.RefreshToken;
 import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.RefreshTokensRepository;
 import ru.walkername.user_profile.repositories.UsersRepository;
-import ru.walkername.user_profile.util.LoginException;
-import ru.walkername.user_profile.util.RegistrationException;
 
 import java.util.Optional;
 
@@ -33,8 +32,8 @@ public class AuthService {
 
     @Transactional
     public void register(User user) {
-        if (usersRepository.existsById(user.getId())) {
-            throw new RegistrationException("User already exists");
+        if (usersRepository.existsByUsername(user.getUsername())) {
+            throw new UserExistsException("User with such username already exists");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -43,27 +42,24 @@ public class AuthService {
     }
 
     public User checkAndGet(User user) {
-        Optional<User> userOptional = usersRepository.findByUsername(user.getUsername());
-        if (userOptional.isEmpty()) {
-            throw new LoginException("User was not found");
+        User dbUser = usersRepository.findByUsername(user.getUsername()).orElseThrow(
+                () -> new UserNotFoundException("Wrong credentials")
+        );
+
+        if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+            throw new InvalidCredentials("Wrong credentials");
         }
 
-        User userGet = userOptional.get();
-
-        if (!passwordEncoder.matches(user.getPassword(), userGet.getPassword())) {
-            throw new LoginException("Wrong password");
-        }
-
-        return userGet;
+        return dbUser;
     }
 
-    public RefreshToken findRefreshToken(int userId) {
+    public RefreshToken findRefreshToken(Long userId) {
         Optional<RefreshToken> refreshTokenOptional = refreshTokensRepository.findByUserId(userId);
         return refreshTokenOptional.orElse(null);
     }
 
     @Transactional
-    public void updateRefreshToken(int userId, String newRefreshToken) {
+    public void updateRefreshToken(Long userId, String newRefreshToken) {
         Optional<RefreshToken> refreshToken = refreshTokensRepository.findByUserId(userId);
         // If DB does not store refresh token for this user, then
         // it just will be saved in DB
