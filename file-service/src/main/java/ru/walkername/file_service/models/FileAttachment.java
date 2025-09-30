@@ -11,7 +11,7 @@ public class FileAttachment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id", nullable = false, unique = true)
@@ -20,25 +20,25 @@ public class FileAttachment {
     @NotEmpty(message = "Entity type should not be empty")
     private String entityType;
 
-    private int entityId;
+    private Long entityId;
 
     private Date uploadedAt;
 
     public FileAttachment() {
     }
 
-    public FileAttachment(File file, String entityType, int entityId, Date uploadedAt) {
+    public FileAttachment(File file, String entityType, Long entityId, Date uploadedAt) {
         this.file = file;
         this.entityType = entityType;
         this.entityId = entityId;
         this.uploadedAt = uploadedAt;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -58,11 +58,11 @@ public class FileAttachment {
         this.entityType = entityType;
     }
 
-    public int getEntityId() {
+    public Long getEntityId() {
         return entityId;
     }
 
-    public void setEntityId(int entityId) {
+    public void setEntityId(Long entityId) {
         this.entityId = entityId;
     }
 

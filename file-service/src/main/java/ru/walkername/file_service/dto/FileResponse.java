@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class FileResponse {
 
-    private int fileId;
+    private Long fileId;
 
     private String url;
 
@@ -13,17 +13,17 @@ public class FileResponse {
     public FileResponse() {
     }
 
-    public FileResponse(int fileId, String url, Date uploadedAt) {
+    public FileResponse(Long fileId, String url, Date uploadedAt) {
         this.fileId = fileId;
         this.url = url;
         this.uploadedAt = uploadedAt;
     }
 
-    public int getFileId() {
+    public Long getFileId() {
         return fileId;
     }
 
-    public void setFileId(int fileId) {
+    public void setFileId(Long fileId) {
         this.fileId = fileId;
     }
 

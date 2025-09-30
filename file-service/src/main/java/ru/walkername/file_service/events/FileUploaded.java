@@ -2,34 +2,34 @@ package ru.walkername.file_service.events;
 
 public class FileUploaded {
 
-    private int fileId;
+    private Long fileId;
 
-    private Integer contextId;
+    private Long contextId;
 
     private String context;
 
     public FileUploaded() {
     }
 
-    public FileUploaded(int fileId, Integer contextId, String context) {
+    public FileUploaded(Long fileId, Long contextId, String context) {
         this.fileId = fileId;
         this.contextId = contextId;
         this.context = context;
     }
 
-    public int getFileId() {
+    public Long getFileId() {
         return fileId;
     }
 
-    public void setFileId(int fileId) {
+    public void setFileId(Long fileId) {
         this.fileId = fileId;
     }
 
-    public Integer getContextId() {
+    public Long getContextId() {
         return contextId;
     }
 
-    public void setContextId(Integer contextId) {
+    public void setContextId(Long contextId) {
         this.contextId = contextId;
     }
 

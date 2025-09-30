@@ -12,7 +12,7 @@ public class File {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotEmpty(message = "File URL should not be empty")
     @Column(name = "url")
@@ -30,11 +30,11 @@ public class File {
         this.uploadedAt = uploadedAt;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

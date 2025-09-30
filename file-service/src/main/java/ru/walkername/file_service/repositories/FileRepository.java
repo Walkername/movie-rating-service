@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.walkername.file_service.models.File;
 
 @Repository
-public interface FileRepository extends JpaRepository<File, Integer> {
+public interface FileRepository extends JpaRepository<File, Long> {
 }

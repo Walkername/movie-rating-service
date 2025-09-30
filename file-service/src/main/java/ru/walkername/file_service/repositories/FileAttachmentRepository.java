@@ -10,7 +10,7 @@ import ru.walkername.file_service.models.FileAttachment;
 import java.util.List;
 
 @Repository
-public interface FileAttachmentRepository extends JpaRepository<FileAttachment, Integer> {
+public interface FileAttachmentRepository extends JpaRepository<FileAttachment, Long> {
 
     @Query("select new ru.walkername.file_service.dto.FileResponse(f.id, f.url, f.uploadedAt) " +
             "from FileAttachment fa " +
@@ -18,7 +18,7 @@ public interface FileAttachmentRepository extends JpaRepository<FileAttachment, 
             "where fa.entityType = :entityType and fa.entityId = :entityId")
     List<FileResponse> findByEntityTypeAndEntityId(
             @Param("entityType") String entityType,
-            @Param("entityId") Integer entityId
+            @Param("entityId") Long entityId
     );
 
 }

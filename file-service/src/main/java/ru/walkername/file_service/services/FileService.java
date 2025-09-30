@@ -57,7 +57,7 @@ public class FileService {
     }
 
     @Transactional
-    public void uploadFile(String filename, MultipartFile file, String context, int contextId) {
+    public void uploadFile(String filename, MultipartFile file, String context, Long contextId) {
         try (InputStream is = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -110,7 +110,7 @@ public class FileService {
         }
     }
 
-    public String downloadById(int fileId) {
+    public String downloadById(Long fileId) {
         Optional<File> file = fileRepository.findById(fileId);
         if (file.isPresent()) {
             String fileUrl = file.get().getUrl();
@@ -119,7 +119,7 @@ public class FileService {
         return null;
     }
 
-    public List<FileResponse> findAllByEntityTypeAndEntityId(String entityType, int entityId) {
+    public List<FileResponse> findAllByEntityTypeAndEntityId(String entityType, Long entityId) {
         List<FileResponse> files = fileAttachmentService.findAllByEntityTypeAndEntityId(entityType, entityId);
         for (FileResponse file : files) {
             file.setUrl(generatePreSignedUrl(file.getUrl(), 10));

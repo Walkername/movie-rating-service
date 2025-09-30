@@ -25,7 +25,7 @@ public class FileAttachmentService {
         fileAttachmentRepository.save(fileAttachment);
     }
 
-    public List<FileResponse> findAllByEntityTypeAndEntityId(String entityType, int entityId) {
+    public List<FileResponse> findAllByEntityTypeAndEntityId(String entityType, Long entityId) {
         return fileAttachmentRepository.findByEntityTypeAndEntityId(entityType, entityId);
     }
 

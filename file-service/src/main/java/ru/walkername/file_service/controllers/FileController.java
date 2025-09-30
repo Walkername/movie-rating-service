@@ -50,7 +50,7 @@ public class FileController {
 
     @GetMapping("/download-by-id/signed-url/{fileId}")
     public ResponseEntity<String> downloadById(
-            @PathVariable("fileId") int fileId
+            @PathVariable("fileId") Long fileId
     ) {
         String signedUrl = fileService.downloadById(fileId);
         return signedUrl != null
@@ -61,7 +61,7 @@ public class FileController {
     @GetMapping("/download-all/signed-url")
     public ResponseEntity<List<FileResponse>> downloadAllSignedUrl(
             @RequestParam(value = "entityType") String entityType,
-            @RequestParam(value = "entityId") int entityId
+            @RequestParam(value = "entityId") Long entityId
     ) {
         List<FileResponse> files = fileService.findAllByEntityTypeAndEntityId(entityType, entityId);
         return new ResponseEntity<>(files, HttpStatus.OK);
@@ -71,7 +71,7 @@ public class FileController {
     public ResponseEntity<String> upload(
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "context") String context,
-            @RequestParam(value = "id") int id,
+            @RequestParam(value = "id") Long id,
             @RequestHeader("Authorization") String authorization
     ) {
         String uniqueUrl;
