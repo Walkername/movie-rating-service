@@ -1,4 +1,4 @@
-package ru.walkername.user_profile.exception;
+package ru.walkername.user_profile.exceptions;
 
 public class UserInvalidFields extends RuntimeException {
     public UserInvalidFields(String message) {

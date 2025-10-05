@@ -1,4 +1,4 @@
-package ru.walkername.user_profile.exception;
+package ru.walkername.user_profile.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

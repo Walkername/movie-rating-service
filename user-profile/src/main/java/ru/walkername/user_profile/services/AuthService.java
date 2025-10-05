@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.walkername.user_profile.exception.*;
+import ru.walkername.user_profile.exceptions.*;
 import ru.walkername.user_profile.models.RefreshToken;
 import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.RefreshTokensRepository;
