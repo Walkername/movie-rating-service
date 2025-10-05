@@ -1,21 +1,22 @@
 package ru.walkername.rating_system.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.walkername.rating_system.dto.PageResponse;
+import ru.walkername.rating_system.dto.RatingResponse;
 import ru.walkername.rating_system.events.RatingCreated;
 import ru.walkername.rating_system.events.RatingDeleted;
 import ru.walkername.rating_system.events.RatingUpdated;
 import ru.walkername.rating_system.models.Rating;
 import ru.walkername.rating_system.repositories.RatingsRepository;
+import ru.walkername.rating_system.utils.RatingModelMapper;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,16 +24,18 @@ public class RatingsService {
 
     private final RatingsRepository ratingsRepository;
     private final KafkaProducerService kafkaProducerService;
+    private final RatingModelMapper ratingModelMapper;
 
     @Autowired
     public RatingsService(
             RatingsRepository ratingsRepository,
-            KafkaProducerService kafkaProducerService) {
+            KafkaProducerService kafkaProducerService, RatingModelMapper ratingModelMapper) {
         this.ratingsRepository = ratingsRepository;
         this.kafkaProducerService = kafkaProducerService;
+        this.ratingModelMapper = ratingModelMapper;
     }
 
-    public Rating findOne(int userId, int movieId) {
+    public Rating findOne(Long userId, Long movieId) {
         Optional<Rating> rating = ratingsRepository.findByUserIdAndMovieId(userId, movieId);
         return rating.orElse(null);
     }
@@ -58,7 +61,7 @@ public class RatingsService {
     }
 
     @Transactional
-    public void update(int id, Rating updatedRating) {
+    public void update(Long id, Rating updatedRating) {
         Optional<Rating> oldRating = ratingsRepository.findById(id);
         oldRating.ifPresent(value -> {
             try {
@@ -83,7 +86,7 @@ public class RatingsService {
     }
 
     @Transactional
-    public void delete(int id) {
+    public void delete(Long id) {
         Optional<Rating> currentRating = ratingsRepository.findById(id);
         currentRating.ifPresent(value -> {
             try {
@@ -102,10 +105,24 @@ public class RatingsService {
         });
     }
 
-    public List<Rating> getRatingsByUser(int id, int page, int moviesPerPage, String[] sort) {
+    public PageResponse<RatingResponse> getRatingsByUser(Long id, int page, int moviesPerPage, String[] sort) {
         Sort sorting = Sort.by(createOrders(sort));
         Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
-        return ratingsRepository.findAllByUserId(id, pageable).getContent();
+        Page<Rating> ratings = ratingsRepository.findAllByUserId(id, pageable);
+
+        List<RatingResponse> ratingResponses = new ArrayList<>();
+        for (Rating rating : ratings.getContent()) {
+            RatingResponse ratingResponse = ratingModelMapper.convertToRatingResponse(rating);
+            ratingResponses.add(ratingResponse);
+        }
+
+        return new PageResponse<>(
+                ratingResponses,
+                page,
+                moviesPerPage,
+                ratings.getTotalElements(),
+                ratings.getTotalPages()
+        );
     }
 
     private List<Sort.Order> createOrders(String[] sort) {
@@ -119,7 +136,7 @@ public class RatingsService {
         return new Sort.Order(direction, property);
     }
 
-    public List<Rating> getRatingsByMovie(int id) {
+    public List<Rating> getRatingsByMovie(Long id) {
         return ratingsRepository.findByMovieId(id);
     }
 

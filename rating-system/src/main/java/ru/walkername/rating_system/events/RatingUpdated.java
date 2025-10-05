@@ -2,9 +2,9 @@ package ru.walkername.rating_system.events;
 
 public class RatingUpdated {
 
-    private int userId;
+    private Long userId;
 
-    private int movieId;
+    private Long movieId;
 
     private int rating;
 
@@ -13,26 +13,26 @@ public class RatingUpdated {
     public RatingUpdated() {
     }
 
-    public RatingUpdated(int userId, int movieId, int rating, int oldRating) {
+    public RatingUpdated(Long userId, Long movieId, int rating, int oldRating) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
         this.oldRating = oldRating;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 

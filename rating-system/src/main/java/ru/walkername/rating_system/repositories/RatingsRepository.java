@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RatingsRepository extends JpaRepository<Rating, Integer> {
+public interface RatingsRepository extends JpaRepository<Rating, Long> {
 
-    Optional<Rating> findByUserIdAndMovieId(int userId, int movieId);
+    Optional<Rating> findByUserIdAndMovieId(Long userId, Long movieId);
 
-    List<Rating> findByUserId(int id);
+    List<Rating> findByUserId(Long id);
 
-    Page<Rating> findAllByUserId(int id, Pageable pageable);
+    Page<Rating> findAllByUserId(Long id, Pageable pageable);
 
-    List<Rating> findByMovieId(int id);
+    List<Rating> findByMovieId(Long id);
 
 }

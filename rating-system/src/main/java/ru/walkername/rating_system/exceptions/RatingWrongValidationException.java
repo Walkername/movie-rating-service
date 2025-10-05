@@ -1,4 +1,4 @@
-package ru.walkername.rating_system.utils;
+package ru.walkername.rating_system.exceptions;
 
 public class RatingWrongValidationException extends RuntimeException {
 

@@ -1,12 +1,12 @@
-package ru.walkername.rating_system.utils;
+package ru.walkername.rating_system.dto;
 
-public class RatingErrorResponse {
+public class ErrorResponse {
 
     private String message;
 
     private long timestamp;
 
-    public RatingErrorResponse(String message, long timestamp) {
+    public ErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

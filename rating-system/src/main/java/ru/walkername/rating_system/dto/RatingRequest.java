@@ -3,29 +3,19 @@ package ru.walkername.rating_system.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-public class RatingDTO {
+public class RatingRequest {
 
-    private int userId;
-
-    private int movieId;
+    private Long movieId;
 
     @Min(value = 0, message = "Rating should be greater than 0")
     @Max(value = 10, message = "Rating should be less than 10")
     private double rating;
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 

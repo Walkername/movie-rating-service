@@ -15,13 +15,13 @@ public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rating_id")
-    private int ratingId;
+    private Long ratingId;
 
     @Column(name = "user_id")
-    private int userId;
+    private Long userId;
 
     @Column(name = "movie_id")
-    private int movieId;
+    private Long movieId;
 
     @Min(value = 1, message = "Rating should be greater than 0")
     @Max(value = 10, message = "Rating should be less than 10")
@@ -35,33 +35,33 @@ public class Rating {
 
     }
 
-    public Rating(int userId, int movieId, int rating) {
+    public Rating(Long userId, Long movieId, int rating) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
     }
 
-    public int getRatingId() {
+    public Long getRatingId() {
         return ratingId;
     }
 
-    public void setRatingId(int ratingId) {
+    public void setRatingId(Long ratingId) {
         this.ratingId = ratingId;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 
