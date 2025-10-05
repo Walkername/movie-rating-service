@@ -17,6 +17,7 @@ import ru.walkername.user_profile.util.UserValidator;
 
 @RestController
 @RequestMapping("/admin/users")
+@CrossOrigin
 public class AdminUsersController {
 
     private final UserModelMapper userModelMapper;
