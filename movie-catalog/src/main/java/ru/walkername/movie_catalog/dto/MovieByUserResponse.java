@@ -5,11 +5,11 @@ import ru.walkername.movie_catalog.models.Rating;
 
 import java.util.Date;
 
-public class MovieDetails {
+public class MovieByUserResponse {
 
-    private int userId;
+    private Long userId;
 
-    private int movieId;
+    private Long movieId;
 
     private String title;
 
@@ -23,11 +23,11 @@ public class MovieDetails {
 
     private Date ratedAt;
 
-    public MovieDetails() {
+    public MovieByUserResponse() {
 
     }
 
-    public MovieDetails(Movie movie, Rating rating) {
+    public MovieByUserResponse(Movie movie, Rating rating) {
         this.userId = rating.getUserId();
         this.movieId = movie.getId();
         this.rating = rating.getRating();
@@ -38,11 +38,11 @@ public class MovieDetails {
         this.ratedAt = rating.getRatedAt();
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -70,11 +70,11 @@ public class MovieDetails {
         this.title = title;
     }
 
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 

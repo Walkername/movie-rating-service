@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,14 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.walkername.movie_catalog.dto.MovieDetails;
-import ru.walkername.movie_catalog.dto.RatingsResponse;
+import ru.walkername.movie_catalog.dto.MovieByUserResponse;
+import ru.walkername.movie_catalog.dto.MovieResponse;
+import ru.walkername.movie_catalog.dto.PageResponse;
 import ru.walkername.movie_catalog.events.RatingCreated;
 import ru.walkername.movie_catalog.events.RatingDeleted;
 import ru.walkername.movie_catalog.events.RatingUpdated;
+import ru.walkername.movie_catalog.exceptions.MovieNotFound;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.models.Rating;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
+import ru.walkername.movie_catalog.util.MovieModelMapper;
 
 import java.util.*;
 
@@ -31,54 +35,25 @@ import java.util.*;
 public class MoviesService {
 
     private final MoviesRepository moviesRepository;
-
     private final String RATING_SERVICE_API;
-
     private final RestTemplate restTemplate;
+    private final MovieModelMapper movieModelMapper;
 
     @Autowired
     public MoviesService(
             MoviesRepository moviesRepository,
             @Value("${rating.service.url}") String RATING_SERVICE_API,
-            RestTemplate restTemplate) {
+            RestTemplate restTemplate, MovieModelMapper movieModelMapper) {
         this.moviesRepository = moviesRepository;
         this.RATING_SERVICE_API = RATING_SERVICE_API;
         this.restTemplate = restTemplate;
-    }
-
-    @Caching(evict = {
-            // delete cache getMoviesNumber()
-            @CacheEvict(cacheNames = "movies-number", allEntries = true),
-            // delete cache getMoviesWithPagination()
-            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
-    })
-    @Transactional
-    public void save(Movie movie) {
-        movie.setCreatedAt(new Date());
-        moviesRepository.save(movie);
+        this.movieModelMapper = movieModelMapper;
     }
 
     @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
-    public Movie findOne(int id) {
-        Optional<Movie> movie = moviesRepository.findById(id);
-        return movie.orElse(null);
-    }
-
-    @CacheEvict(cacheNames = "movie", key = "#id")
-    @Transactional
-    public void update(int id, Movie updatedMovie) {
-        updatedMovie.setId(id);
-        moviesRepository.save(updatedMovie);
-    }
-
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "movie", key = "#id"),
-            @CacheEvict(cacheNames = "movies-number", allEntries = true),
-            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
-    })
-    @Transactional
-    public void delete(int id) {
-        moviesRepository.deleteById(id);
+    public Movie findOne(Long id) {
+        return moviesRepository.findById(id)
+                .orElseThrow(() -> new MovieNotFound("Movie not found"));
     }
 
     @Caching(evict = {
@@ -96,7 +71,6 @@ public class MoviesService {
             containerFactory = "ratingCreatedContainerFactory"
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
-        System.out.println(ratingCreated);
         Optional<Movie> movie = moviesRepository.findById(ratingCreated.getMovieId());
         movie.ifPresent(value -> {
             int newRating = ratingCreated.getRating();
@@ -171,11 +145,6 @@ public class MoviesService {
         });
     }
 
-    @Cacheable(cacheNames = "movies-number")
-    public long getMoviesNumber() {
-        return moviesRepository.count();
-    }
-
     /**
      * Method to get all movies from DB
      * @return list of movies
@@ -195,10 +164,25 @@ public class MoviesService {
      */
     @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
             "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
-    public List<Movie> getAllMoviesWithPagination(int page, int moviesPerPage, String[] sort) {
+    public PageResponse<MovieResponse> getAllMoviesWithPagination(int page, int moviesPerPage, String[] sort) {
         Sort sorting = Sort.by(createOrders(sort));
         Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
-        return moviesRepository.findAll(pageable).getContent();
+
+        Page<Movie> moviesPage = moviesRepository.findAll(pageable);
+        List<MovieResponse> movieResponses = new ArrayList<>();
+
+        for (Movie movie : moviesPage.getContent()) {
+            MovieResponse movieResponse = movieModelMapper.convertToMovieResponse(movie);
+            movieResponses.add(movieResponse);
+        }
+
+        return new PageResponse<>(
+                movieResponses,
+                page,
+                moviesPerPage,
+                moviesPage.getTotalElements(),
+                moviesPage.getTotalPages()
+        );
     }
 
     private List<Sort.Order> createOrders(String[] sort) {
@@ -220,7 +204,7 @@ public class MoviesService {
      */
     @Cacheable(cacheNames = "movies-by-user", key = "#id + '-' + #page + '-' + #moviesPerPage + '-' " +
             "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
-    public List<MovieDetails> getMoviesByUser(int id, int page, int moviesPerPage, String[] sort) {
+    public PageResponse<MovieByUserResponse> getMoviesByUser(Long id, int page, int moviesPerPage, String[] sort) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(RATING_SERVICE_API + "/ratings/user/" + id)
                 .queryParam("page", page)
                 .queryParam("limit", moviesPerPage);
@@ -232,14 +216,24 @@ public class MoviesService {
         }
 
         // Getting Rating list by user_id
-        RatingsResponse ratingsResponse = restTemplate.getForObject(builder.toUriString(), RatingsResponse.class);
-        if (ratingsResponse == null) {
-            return new ArrayList<>();
+//        RatingsResponse ratingsResponse = restTemplate.getForObject(builder.toUriString(), RatingsResponse.class);
+        PageResponse<Rating> pageResponse = restTemplate.getForObject(builder.toUriString(), PageResponse.class);
+        if (pageResponse == null) {
+            return new PageResponse<>(
+                    Collections.emptyList(),
+                    page,
+                    moviesPerPage,
+                    0,
+                    0
+            );
         }
-        List<Rating> ratings = ratingsResponse.getRatings();
+
+        List<Rating> ratings = pageResponse.getContent();
+
+//        List<Rating> ratings = ratingsResponse.getRatings();
 
         // Building list with movieIds from Rating list
-        List<Integer> movieIds = new ArrayList<>();
+        List<Long> movieIds = new ArrayList<>();
         for (Rating rating : ratings) {
             movieIds.add(rating.getMovieId());
         }
@@ -248,18 +242,24 @@ public class MoviesService {
         List<Movie> ratedMovies = moviesRepository.findAllById(movieIds);
 
         // Building list with movie details: title, release year, rating from user, etc.
-        List<MovieDetails> movieDetailsList = new ArrayList<>();
+        List<MovieByUserResponse> movieByUserResponseList = new ArrayList<>();
         // TODO: maybe improve algorithm, because this will be very slow with big amount of data
         for (Rating rating : ratings) {
             for (Movie movie : ratedMovies) {
-                if (rating.getMovieId() == movie.getId()) {
-                    MovieDetails movieDetails = new MovieDetails(movie, rating);
-                    movieDetailsList.add(movieDetails);
+                if (rating.getMovieId().equals(movie.getId())) {
+                    MovieByUserResponse movieByUserResponse = new MovieByUserResponse(movie, rating);
+                    movieByUserResponseList.add(movieByUserResponse);
                 }
             }
         }
 
-        return movieDetailsList;
+        return new PageResponse<>(
+                movieByUserResponseList,
+                page,
+                moviesPerPage,
+                pageResponse.getTotalElements(),
+                pageResponse.getTotalPages()
+        );
     }
 
     public List<Movie> findByTitleStartingWith(String title) {

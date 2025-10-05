@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.walkername.movie_catalog.security.JWTFilter;
 
 import java.util.Arrays;
 
@@ -30,10 +31,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/movies/delete/{id}", "/movies/add", "/movies/edit/{id}").hasAuthority("ADMIN")
-                        .requestMatchers(
-                                "/movies", "/movies/{id}", "/movies/user/{id}", "/movies/update-avg-rating/{id}"
-                        ).permitAll()
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/movies/**").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)

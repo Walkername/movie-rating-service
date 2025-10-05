@@ -1,12 +1,12 @@
-package ru.walkername.movie_catalog.util;
+package ru.walkername.movie_catalog.dto;
 
-public class MovieErrorResponse {
+public class ErrorResponse {
 
     private String message;
 
     private long timestamp;
 
-    public MovieErrorResponse(String message, long timestamp) {
+    public ErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

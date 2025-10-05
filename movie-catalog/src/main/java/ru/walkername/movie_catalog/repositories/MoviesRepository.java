@@ -7,7 +7,7 @@ import ru.walkername.movie_catalog.models.Movie;
 import java.util.List;
 
 @Repository
-public interface MoviesRepository extends JpaRepository<Movie, Integer> {
+public interface MoviesRepository extends JpaRepository<Movie, Long> {
 
     List<Movie> findByTitleStartingWith(String title);
 }

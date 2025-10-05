@@ -14,7 +14,7 @@ public class Movie {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotEmpty(message = "Movie title should not be empty")
     @Size(min = 1, max = 50, message = "Movie title should be greater than 1 and less than 50 characters")
@@ -51,11 +51,11 @@ public class Movie {
         this.createdAt = createdAt;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

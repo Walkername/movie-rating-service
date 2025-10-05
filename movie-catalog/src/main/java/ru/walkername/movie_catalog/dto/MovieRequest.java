@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-public class MovieDTO {
+public class MovieRequest {
 
     @NotEmpty(message = "Movie title should not be empty")
     @Size(min = 1, max = 50, message = "Movie title should be greater than 1 and less than 50 characters")
