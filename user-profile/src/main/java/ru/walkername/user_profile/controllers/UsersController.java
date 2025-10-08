@@ -59,22 +59,17 @@ public class UsersController {
 //        return new ResponseEntity<>(list, HttpStatus.OK);
 //    }
 
-//    @PatchMapping("/profile-pic/{id}")
-//    public ResponseEntity<String> updateProfilePic(
-//            @RequestHeader("Authorization") String authorization,
-//            @PathVariable("id") Long id,
-//            @RequestParam("fileId") Long fileId
-//    ) {
-//        // Check if the user who requested and updated user are the same
-//        // Or if the admin, then he can do what he wants
-//        ResponseEntity<String> response = checkRoles(authorization, id);
-//        if (response != null) {
-//            return response;
-//        }
-//
-//        usersService.updateProfilePicture(id, fileId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @PatchMapping("/me/profile-pic")
+    public ResponseEntity<String> updateProfilePic(
+            @RequestParam("fileId") Long fileId,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        // Check if the user who requested and updated user are the same
+        // Or if the admin, then he can do what he wants
+        Long userId = userPrincipal.getUserId();
+        usersService.updateProfilePicture(userId, fileId);
+        return ResponseEntity.ok().build();
+    }
 
     @PatchMapping("/me")
     public ResponseEntity<HttpStatus> update(

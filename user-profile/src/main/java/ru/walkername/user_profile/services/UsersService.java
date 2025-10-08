@@ -93,17 +93,12 @@ public class UsersService {
         }
     }
 
-    /* Before: FileService uploads new photo and sends Http to UserService
-       in order to save photo id to user profilePicId
-       Now: FileService uploads new photo and sends this event via Kafka to UserService
-       This method is not used
-    */
-//    @CacheEvict(cacheNames = "user", key="#userId")
-//    @Transactional
-//    public void updateProfilePicture(Long userId, Long fileId) {
-//        Optional<User> currentUser = usersRepository.findById(userId);
-//        currentUser.ifPresent(user -> user.setProfilePicId(fileId));
-//    }
+    @CacheEvict(cacheNames = "user", key="#userId")
+    @Transactional
+    public void updateProfilePicture(Long userId, Long fileId) {
+        Optional<User> currentUser = usersRepository.findById(userId);
+        currentUser.ifPresent(user -> user.setProfilePicId(fileId));
+    }
 
     // The method is prohibited
     // Get list only with pagination
