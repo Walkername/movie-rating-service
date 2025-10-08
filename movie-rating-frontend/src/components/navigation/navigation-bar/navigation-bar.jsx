@@ -11,10 +11,6 @@ function NavigationBar() {
     // const authStatus = Date.now() / 1000 <= exp;
     const adminStatus = role === "ADMIN";
 
-    const handleClick = (target) => {
-        navigate(target);
-    }
-
     const handleLogout = (e) => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
