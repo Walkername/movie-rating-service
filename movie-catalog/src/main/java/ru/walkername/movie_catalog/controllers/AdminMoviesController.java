@@ -15,7 +15,7 @@ import ru.walkername.movie_catalog.util.MovieModelMapper;
 import ru.walkername.movie_catalog.util.MovieWrongValidationException;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/movies")
 @CrossOrigin
 public class AdminMoviesController {
 

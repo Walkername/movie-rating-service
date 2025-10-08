@@ -47,6 +47,8 @@ public class AdminMoviesService {
     @Transactional
     public void delete(Long id) {
         moviesRepository.deleteById(id);
+
+        // TODO: add event to Kafka in order to delete ratings with this movie
     }
 
 }
