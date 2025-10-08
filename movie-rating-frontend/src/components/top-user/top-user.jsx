@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
+import { getTopUser } from "../../api/user-api";
 
 function TopUser() {
-
-    // TOP USER
-
     const [topUser, setTopUser] = useState({
         username: "",
         averageRating: "",
@@ -11,26 +9,14 @@ function TopUser() {
     });
 
     useEffect(() => {
-        const url = `${process.env.REACT_APP_USER_SERVICE_URL}/users/top-user`; // Replace with your API endpoint
-
-        fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch movie");
-                }
-                return response.json();
-            })
+        getTopUser()
             .then((data) => {
-                setTopUser(data); // Set the movie data
+                setTopUser(data);
             })
             .catch((error) => {
                 console.error("Error fetching movie:", error);
             });
+
     }, []);
 
     return (
