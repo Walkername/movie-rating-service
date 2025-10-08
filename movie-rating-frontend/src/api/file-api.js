@@ -22,10 +22,10 @@ export const downloadFiles = async (entityType, entityId) => {
     }
 };
 
-export const uploadFile = async (formData, context, contextId) => {
+export const uploadMyFile = async (formData, context) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_FILE_SERVICE_URL}/files/upload?context=${context}&id=${contextId}`,
+            `${process.env.REACT_APP_FILE_SERVICE_URL}/files/upload?context=${context}`,
             {
                 method: "POST",
                 body: formData

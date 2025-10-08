@@ -1,3 +1,4 @@
+import getClaimFromToken from "../utils/token-validation/token-validation";
 
 export default async function customRequest(path, options = {}) {
     // Adding authorization token
@@ -5,6 +6,12 @@ export default async function customRequest(path, options = {}) {
     requestOptions.headers = requestOptions.headers || {};
 
     const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const expRefreshToken = getClaimFromToken(refreshToken, "exp");
+    if (Date.now() / 1000 > expRefreshToken) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+    }
 
     if (accessToken) {
         requestOptions.headers.Authorization = `Bearer ${accessToken}`;
@@ -42,6 +49,7 @@ export default async function customRequest(path, options = {}) {
     }
 
     if (!response.ok) {
+        console.log(1);
         const errBody = await response.json().catch(() => ({}));
         throw new Error(errBody.message || response.statusText);
     }

@@ -1,23 +1,5 @@
 import customRequest from "./fetch-client";
 
-export const addUser = async (formData) => {
-    try {
-        const response = await customRequest(
-            `${process.env.REACT_APP_USER_SERVICE_URL}/users/add`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            }
-        );
-        return await response.json();
-    } catch (error) {
-        throw error;
-    }
-};
-
 export const getUser = async (id) => {
     try {
         const response = await customRequest(
@@ -49,10 +31,10 @@ export const getUserByUsername = async (username) => {
     }
 };
 
-export const updateUsername = async (id, formData) => {
+export const updateMyUsername = async (formData) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_USER_SERVICE_URL}/users/edit/username/${id}`,
+            `${process.env.REACT_APP_USER_SERVICE_URL}/users/me/username`,
             {
                 method: "PATCH",
                 headers: {
@@ -67,10 +49,10 @@ export const updateUsername = async (id, formData) => {
     }
 };
 
-export const updateProfilePictureId = async (userId, fileId) => {
+export const updateMyProfilePictureId = async (fileId) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_USER_SERVICE_URL}/users/profile-pic/${userId}?fileId=${fileId}`,
+            `${process.env.REACT_APP_USER_SERVICE_URL}/users/me/profile-pic?fileId=${fileId}`,
             {
                 method: "PATCH"
             }
@@ -81,9 +63,9 @@ export const updateProfilePictureId = async (userId, fileId) => {
     }
 };
 
-export const updateUserData = async (id, formData) => {
+export const updateMyUserData = async (formData) => {
     try {
-        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/users/edit/${id}`,
+        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/users/me`,
             {
                 method: "PATCH",
                 headers: {
@@ -107,20 +89,3 @@ export const getTopUser = async () => {
     }
 };
 
-export const getUsers = async () => {
-    try {
-        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/users`);
-        return await response.json();
-    } catch (error) {
-        throw error;
-    }
-};
-
-export const getUsersRatedMovie = async (movieId) => {
-    try {
-        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/users/movie/${movieId}`);
-        return await response.json();
-    } catch (error) {
-        throw error;
-    }
-};
