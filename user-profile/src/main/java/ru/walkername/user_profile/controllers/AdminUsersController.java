@@ -3,6 +3,7 @@ package ru.walkername.user_profile.controllers;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.walkername.user_profile.dto.UserDTO;
@@ -10,6 +11,7 @@ import ru.walkername.user_profile.dto.UsernameDTO;
 import ru.walkername.user_profile.exceptions.UserInvalidFields;
 import ru.walkername.user_profile.exceptions.UserInvalidUsername;
 import ru.walkername.user_profile.models.User;
+import ru.walkername.user_profile.security.UserPrincipal;
 import ru.walkername.user_profile.services.UsersService;
 import ru.walkername.user_profile.util.DTOValidator;
 import ru.walkername.user_profile.util.UserModelMapper;
@@ -54,6 +56,15 @@ public class AdminUsersController {
         DTOValidator.validate(bindingResult, UserInvalidUsername::new);
 
         usersService.updateUsername(id, newUser.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/profile-pic")
+    public ResponseEntity<String> updateProfilePic(
+            @PathVariable("id") Long id,
+            @RequestParam("fileId") Long fileId
+    ) {
+        usersService.updateProfilePicture(id, fileId);
         return ResponseEntity.ok().build();
     }
 
