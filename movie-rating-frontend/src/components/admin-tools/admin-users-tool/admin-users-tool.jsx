@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { getUser, getUserByUsername } from "../../../api/user-api";
 import NavigationBar from "../../navigation/navigation-bar/navigation-bar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserDataEdit from "../../user-profile/user-data-edit/user-data-edit";
+import AdminUserDataEdit from "../admin-user-data/admin-user-data-edit";
 
 function AdminUsersTool() {
     const navigate = useNavigate();
@@ -86,19 +87,21 @@ function AdminUsersTool() {
                             <hr></hr>
 
                             <br></br>
-                            
+
                             <div>
                                 {
                                     user
                                         ?
                                         <div className="user-info-fa">
                                             <div>
-                                                <h2 className="username-link" onClick={() => handleNavigate(`/user/${user.id}`)}>{user.username}</h2>
+                                                <h2>
+                                                    <Link className="username-link" to={`/user/${user.id}`}>{user.username}</Link>
+                                                </h2>
                                                 <p className="user-info-fa-description">{user.description}</p>
                                                 <p>Average rating: {user.averageRating}</p>
                                                 <p>Scores: {user.scores}</p>
                                             </div>
-                                            <UserDataEdit user={user} setUser={setUser} />
+                                            <AdminUserDataEdit user={user} setUser={setUser} />
                                         </div>
                                         :
                                         <div>{statusMessage}</div>
