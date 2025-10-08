@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
-import { downloadFiles, uploadFile } from "../../api/file-api";
+import { downloadFiles, uploadMyFile, uploadUserFile } from "../../api/file-api";
 import { Link, useParams } from "react-router-dom";
 import "../../styles/user-photo-catalog.css";
-import { updateProfilePictureId } from "../../api/user-api";
+import { updateMyProfilePictureId } from "../../api/user-api";
 
 export default function UserPhotoCatalog() {
     const { id } = useParams();
@@ -17,7 +17,7 @@ export default function UserPhotoCatalog() {
     }, []);
 
     const setProfilePicture = (photoId) => {
-        updateProfilePictureId(id, photoId);
+        updateMyProfilePictureId(photoId);
     };
 
     // UPLOAD NEW PHOTO
@@ -39,7 +39,7 @@ export default function UserPhotoCatalog() {
         formData.append("file", selectedFile);
 
         // Uploading file
-        uploadFile(formData, "user", id)
+        uploadMyFile(formData, "user")
             .then(() => {
                 window.location.reload();
             })

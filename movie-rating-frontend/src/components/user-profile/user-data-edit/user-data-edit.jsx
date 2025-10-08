@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
-import { updateProfilePicture, updateProfilePictureId, updateUserData, updateUsername } from "../../../api/user-api";
-import { uploadFile } from "../../../api/file-api";
+import { updateMyUserData, updateMyUsername } from "../../../api/user-api";
+import { uploadMyFile } from "../../../api/file-api";
 import "../../../styles/user-data-edit.css";
 
 function UserDataEdit({ user, setUser }) {
@@ -61,7 +61,7 @@ function UserDataEdit({ user, setUser }) {
         evt.preventDefault();
 
         if (validateUsername()) {
-            updateUsername(user.id, formUsername)
+            updateMyUsername(formUsername)
                 .then(() => {
                     setErrorUsername("");
                     setUser({ ...user, username: formUsername.username });
@@ -78,7 +78,7 @@ function UserDataEdit({ user, setUser }) {
         evt.preventDefault();
 
         if (validateDescription()) {
-            updateUserData(user.id, formUserData)
+            updateMyUserData(formUserData)
                 .then(() => {
                     setErrorDescription("");
                     setUser({ ...user, description: formUserData.description });
@@ -109,7 +109,7 @@ function UserDataEdit({ user, setUser }) {
         formData.append("file", selectedFile);
 
         // Uploading file
-        uploadFile(formData, "user-avatar", user.id)
+        uploadMyFile(formData, "user-avatar")
             .then(() => {
                 // setUploadedFileId(data);
                 // // Update profile picture ID
