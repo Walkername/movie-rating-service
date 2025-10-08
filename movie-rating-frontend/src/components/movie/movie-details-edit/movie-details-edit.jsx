@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { updateMovie } from "../../../api/movie-api";
+
+import {updateMovie} from "../../../api/admin-movie-api";
 
 function MovieDetailsEdit({ movie }) {
     const [errorTitle, setErrorTitle] = useState("");

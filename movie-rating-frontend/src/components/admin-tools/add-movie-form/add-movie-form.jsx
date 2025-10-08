@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { addMovie } from "../../../api/movie-api";
+
+import {addMovie} from "../../../api/admin-movie-api";
 
 function AddMovieForm() {
     const [errorTitle, setErrorTitle] = useState("");

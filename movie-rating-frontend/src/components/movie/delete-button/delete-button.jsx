@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { deleteMovie } from "../../../api/movie-api";
+
+import {deleteMovie} from "../../../api/admin-movie-api";
 
 function DeleteButton({id}) {
     const navigate = useNavigate();

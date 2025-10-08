@@ -1,6 +1,7 @@
 import { useState } from "react";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
-import { addUser } from "../../api/user-api";
+
+import {addUser} from "../../api/admin-user-api";
 
 function AddUserPage() {
     const [formData, setFormData] = useState({
