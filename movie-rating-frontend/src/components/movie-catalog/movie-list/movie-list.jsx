@@ -10,7 +10,6 @@ import MovieCardBar from "../movie-card-bar/movie-card-bar";
 import { getMoviesNumber, getMoviesWithPagination } from "../../../api/movie-api";
 
 function MovieList() {
-    const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -26,6 +25,14 @@ function MovieList() {
     const [sort, setSort] = useState(sortPar);
     const [sortField, setSortField] = useState("averageRating");
     const [sortOrder, setSortOrder] = useState("desc");
+
+    const [pageResponse, setPageResponse] = useState({
+        content: [],
+        limit: limit,
+        page: page,
+        totalElements: 0,
+        totalPages: 0
+    });
 
     const [viewMode, setViewMode] = useState(viewmodePar);
 
@@ -71,7 +78,7 @@ function MovieList() {
     useEffect(() => {
         getMoviesWithPagination(page, limit, sort)
             .then((data) => {
-                setMovies(data);
+                setPageResponse(data);
                 setLoading(false);
                 // Movie props
                 // setMovies(MOVIES);
@@ -90,25 +97,6 @@ function MovieList() {
         navigate(target);
     };
 
-    // NUMBER OF MOVIES IN DB
-
-    const [moviesNumber, setMoviesNumber] = useState(0);
-
-    useEffect(() => {
-        const url = `${process.env.REACT_APP_MOVIE_SERVICE_URL}/movies/count`;
-
-        getMoviesNumber()
-            .then((data) => {
-                setMoviesNumber(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error fetching movies:", error);
-                setError(error.message); 
-                setLoading(false);
-            });
-    }, []);
-
     return (
         <div className="movie-list-container">
             <h2 style={{ textAlign: "center" }}>Catalog</h2>
@@ -121,7 +109,7 @@ function MovieList() {
                     ) : error ? (
                         <div>Error: {error}</div>
                     ) :
-                        movies.map((movie, index) => {
+                        pageResponse.content.map((movie, index) => {
                             if (index < limit) {
                                 return viewMode ?
                                     (
@@ -147,8 +135,8 @@ function MovieList() {
             </div>
             <div>
                 {
-                    Math.ceil(moviesNumber / limit) > 1 &&
-                    Array.from({ length: Math.ceil(moviesNumber / limit) }, (_, index) => (
+                    Math.ceil(pageResponse.totalElements / limit) > 1 &&
+                    Array.from({ length: Math.ceil(pageResponse.totalElements / limit) }, (_, index) => (
                         <button
                             className="page-button"
                             key={index}
@@ -156,9 +144,7 @@ function MovieList() {
                         >
                             {index + 1}
                         </button>
-
                     ))
-
                 }
             </div>
             <div

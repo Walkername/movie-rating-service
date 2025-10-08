@@ -7,13 +7,19 @@ import "../../../styles/rated-movies-list.css";
 function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
 
-    const [ratedMovies, setRatedMovies] = useState([]);
-
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(10);
     const [sort, setSort] = useState("ratedAt");
     const [sortField, setSortField] = useState("ratedAt");
     const [sortOrder, setSortOrder] = useState("desc");
+
+    const [pageResponse, setPageResponse] = useState({
+        content: [],
+        limit: limit,
+        page: page,
+        totalElements: 0,
+        totalPages: 0
+    });
 
     const handleSortButton = (columnName) => {
         let order = sortOrder;
@@ -51,20 +57,12 @@ function RatedMoviesList({ userId }) {
     useEffect(() => {
         getMoviesByUser(userId, page, limit, sort)
             .then((data) => {
-                setRatedMovies(data);
+                setPageResponse(data);
             })
             .catch((error) => {
                 console.error(error);
             });
     }, [userId, page, limit, sort]);
-
-    // NUMBER OF MOVIES IN DB
-
-    const [moviesNumber, setMoviesNumber] = useState(0);
-
-    useEffect(() => {
-        // TODO: getMoviesNumberByUser() in order to compute 
-    }, []);
 
     const handlePageButton = (value) => {
         setPage(value);
@@ -112,7 +110,7 @@ function RatedMoviesList({ userId }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {ratedMovies.map((element, index) => (
+                    {pageResponse.content.map((element, index) => (
                         <tr
                             key={index}
                             onClick={() => navigate(`/movies/${element.movieId}`)}
@@ -130,19 +128,16 @@ function RatedMoviesList({ userId }) {
             </table>
             <div>
                 {
-                    Array.from({ length: Math.ceil(moviesNumber / limit) }, (_, index) => {
-                        if (Math.ceil(moviesNumber / limit) > 1) {
-                            return (
-                                <button
-                                    className="page-button"
-                                    key={index}
-                                    onClick={() => handlePageButton(index)}
-                                >
-                                    {index + 1}
-                                </button>
-                            );
-                        }
-                    })
+                    Math.ceil(pageResponse.totalElements / limit) > 1 &&
+                    Array.from({ length: Math.ceil(pageResponse.totalElements / limit) }, (_, index) => (
+                        <button
+                            className="page-button"
+                            key={index}
+                            onClick={() => handlePageButton(index)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))
                 }
             </div>
         </div>
