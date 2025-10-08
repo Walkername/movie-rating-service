@@ -15,15 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.walkername.movie_catalog.dto.MovieByUserResponse;
-import ru.walkername.movie_catalog.dto.MovieResponse;
-import ru.walkername.movie_catalog.dto.PageResponse;
+import ru.walkername.movie_catalog.dto.*;
 import ru.walkername.movie_catalog.events.RatingCreated;
 import ru.walkername.movie_catalog.events.RatingDeleted;
 import ru.walkername.movie_catalog.events.RatingUpdated;
 import ru.walkername.movie_catalog.exceptions.MovieNotFound;
 import ru.walkername.movie_catalog.models.Movie;
-import ru.walkername.movie_catalog.models.Rating;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
 import ru.walkername.movie_catalog.util.MovieModelMapper;
 
@@ -216,9 +213,8 @@ public class MoviesService {
         }
 
         // Getting Rating list by user_id
-//        RatingsResponse ratingsResponse = restTemplate.getForObject(builder.toUriString(), RatingsResponse.class);
-        PageResponse<Rating> pageResponse = restTemplate.getForObject(builder.toUriString(), PageResponse.class);
-        if (pageResponse == null) {
+        RatingsResponse ratingsResponse = restTemplate.getForObject(builder.toUriString(), RatingsResponse.class);
+        if (ratingsResponse == null || ratingsResponse.getPageResponse() == null) {
             return new PageResponse<>(
                     Collections.emptyList(),
                     page,
@@ -227,14 +223,13 @@ public class MoviesService {
                     0
             );
         }
+        PageResponse<RatingResponse> pageResponse = ratingsResponse.getPageResponse();
 
-        List<Rating> ratings = pageResponse.getContent();
-
-//        List<Rating> ratings = ratingsResponse.getRatings();
+        List<RatingResponse> ratings = pageResponse.getContent();
 
         // Building list with movieIds from Rating list
         List<Long> movieIds = new ArrayList<>();
-        for (Rating rating : ratings) {
+        for (RatingResponse rating : ratings) {
             movieIds.add(rating.getMovieId());
         }
 
@@ -244,7 +239,7 @@ public class MoviesService {
         // Building list with movie details: title, release year, rating from user, etc.
         List<MovieByUserResponse> movieByUserResponseList = new ArrayList<>();
         // TODO: maybe improve algorithm, because this will be very slow with big amount of data
-        for (Rating rating : ratings) {
+        for (RatingResponse rating : ratings) {
             for (Movie movie : ratedMovies) {
                 if (rating.getMovieId().equals(movie.getId())) {
                     MovieByUserResponse movieByUserResponse = new MovieByUserResponse(movie, rating);

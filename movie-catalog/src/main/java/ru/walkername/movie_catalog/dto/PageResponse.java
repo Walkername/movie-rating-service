@@ -14,6 +14,9 @@ public class PageResponse<T> {
 
     private int totalPages;
 
+    public PageResponse() {
+    }
+
     public PageResponse(List<T> content, int page, int limit, long totalElements, int totalPages) {
         this.content = content;
         this.page = page;

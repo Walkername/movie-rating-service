@@ -1,7 +1,6 @@
 package ru.walkername.movie_catalog.dto;
 
 import ru.walkername.movie_catalog.models.Movie;
-import ru.walkername.movie_catalog.models.Rating;
 
 import java.util.Date;
 
@@ -27,7 +26,7 @@ public class MovieByUserResponse {
 
     }
 
-    public MovieByUserResponse(Movie movie, Rating rating) {
+    public MovieByUserResponse(Movie movie, RatingResponse rating) {
         this.userId = rating.getUserId();
         this.movieId = movie.getId();
         this.rating = rating.getRating();

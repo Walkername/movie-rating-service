@@ -1,18 +1,14 @@
 package ru.walkername.movie_catalog.dto;
 
-import ru.walkername.movie_catalog.models.Rating;
-
-import java.util.List;
-
 public class RatingsResponse {
 
-    private List<Rating> ratings;
+    private PageResponse<RatingResponse> pageResponse;
 
-    public List<Rating> getRatings() {
-        return ratings;
+    public PageResponse<RatingResponse> getPageResponse() {
+        return pageResponse;
     }
 
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
+    public void setPageResponse(PageResponse<RatingResponse> pageResponse) {
+        this.pageResponse = pageResponse;
     }
 }
