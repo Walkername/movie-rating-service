@@ -1,6 +1,7 @@
 package ru.walkername.file_service.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -18,20 +19,27 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Transactional(readOnly = true)
 public class FileService {
 
     private final MinioService minioService;
     private final FileRepository fileRepository;
     private final KafkaProducerService kafkaProducerService;
     private final FileAttachmentService fileAttachmentService;
+    private final ApplicationContext applicationContext;
 
     @Autowired
-    public FileService(MinioService minioService, FileRepository fileRepository, KafkaProducerService kafkaProducerService, FileAttachmentService fileAttachmentService) {
+    public FileService(
+            MinioService minioService,
+            FileRepository fileRepository,
+            KafkaProducerService kafkaProducerService,
+            FileAttachmentService fileAttachmentService,
+            ApplicationContext applicationContext
+    ) {
         this.minioService = minioService;
         this.fileRepository = fileRepository;
         this.kafkaProducerService = kafkaProducerService;
         this.fileAttachmentService = fileAttachmentService;
+        this.applicationContext = applicationContext;
     }
 
     public void uploadFile(String filename, MultipartFile file, String context, Long contextId) {
@@ -39,14 +47,12 @@ public class FileService {
         minioService.upload(filename, file);
 
         // Save File and FileAttachment in DB
-        File savedFile = saveFileAndAttachment(filename, context, contextId);
-
-        // After transaction commit publish Kafka event
-        registerFileUploadedEvent(savedFile, context, contextId);
+        FileService self = applicationContext.getBean(FileService.class);
+        self.saveFileAndAttachmentAndPublishEvent(filename, context, contextId);
     }
 
     @Transactional
-    public File saveFileAndAttachment(String filename, String context, Long contextId) {
+    public void saveFileAndAttachmentAndPublishEvent(String filename, String context, Long contextId) {
         File savedFile = fileRepository.save(new File(filename, new Date()));
 
         FileAttachment fileAttachment = new FileAttachment(
@@ -57,7 +63,8 @@ public class FileService {
         );
         fileAttachmentService.save(fileAttachment);
 
-        return savedFile;
+        // After transaction commit publish Kafka event
+        registerFileUploadedEvent(savedFile, context, contextId);
     }
 
     private void registerFileUploadedEvent(File savedFile, String context, Long contextId) {
