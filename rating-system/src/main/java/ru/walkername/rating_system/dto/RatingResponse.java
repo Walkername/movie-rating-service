@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class RatingResponse {
 
-    private int userId;
+    private Long userId;
 
-    private int movieId;
+    private Long movieId;
 
     private int rating;
 
@@ -15,26 +15,26 @@ public class RatingResponse {
     public RatingResponse() {
     }
 
-    public RatingResponse(int userId, int movieId, int rating, Date ratedAt) {
+    public RatingResponse(Long userId, Long movieId, int rating, Date ratedAt) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
         this.ratedAt = ratedAt;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getMovieId() {
+    public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
 

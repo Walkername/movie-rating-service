@@ -47,9 +47,8 @@ public class RatingsController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/edit")
     public ResponseEntity<HttpStatus> update(
-            @PathVariable("id") Long id,
             @RequestBody @Valid RatingRequest ratingRequest,
             BindingResult bindingResult,
             @AuthenticationPrincipal UserPrincipal userPrincipal
@@ -58,15 +57,17 @@ public class RatingsController {
         Rating rating = ratingModelMapper.convertToRating(ratingRequest);
         rating.setUserId(userPrincipal.getUserId());
 
-        ratingsService.update(id, rating);
+        ratingsService.update(rating);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{movieId}")
     public ResponseEntity<HttpStatus> delete(
-            @PathVariable("id") Long id
+            @PathVariable("movieId") Long movieId,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        ratingsService.delete(id);
+        Long userId = userPrincipal.getUserId();
+        ratingsService.delete(movieId, userId);
         return ResponseEntity.noContent().build();
     }
 
@@ -75,19 +76,23 @@ public class RatingsController {
             @PathVariable("userId") Long userId,
             @PathVariable("movieId") Long movieId
     ) {
-        RatingResponse ratingResponse = ratingModelMapper.convertToRatingResponse(ratingsService.findOne(userId, movieId));
+        Rating rating = ratingsService.findOne(userId, movieId);
+        if (rating == null) {
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        RatingResponse ratingResponse = ratingModelMapper.convertToRatingResponse(rating);
         return new ResponseEntity<>(ratingResponse, HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<PageResponse<RatingResponse>> getRatingsByUser(
+    public ResponseEntity<RatingsResponse> getRatingsByUser(
             @PathVariable("id") Long id,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "limit", defaultValue = "10") Integer limit,
             @RequestParam(value = "sort", defaultValue = "ratedAt:desc") String[] sort
     ) {
-        PageResponse<RatingResponse> pageResponse = ratingsService.getRatingsByUser(id, page, limit, sort);
-        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
+        RatingsResponse ratingsResponse = ratingsService.getRatingsByUser(id, page, limit, sort);
+        return new ResponseEntity<>(ratingsResponse, HttpStatus.OK);
     }
 
 //    @GetMapping("/movie/{id}")

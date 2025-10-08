@@ -8,7 +8,7 @@ public class RatingRequest {
     private Long movieId;
 
     @Min(value = 0, message = "Rating should be greater than 0")
-    @Max(value = 10, message = "Rating should be less than 10")
+    @Max(value = 10, message = "Rating should not be greater than 10")
     private double rating;
 
     public Long getMovieId() {

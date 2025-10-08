@@ -25,8 +25,8 @@ public class RatingValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Rating rating = (Rating) target;
-        System.out.println(rating);
-        if (ratingsService.findOne(rating.getUserId(), rating.getMovieId()) != null) {
+
+        if (ratingsService.existsByUserIdAndMovieId(rating.getUserId(), rating.getMovieId())) {
             errors.rejectValue("userId", "", "The rating with this pair of id has already been determined");
             errors.rejectValue("movieId", "", "The rating with this pair of id has already been determined");
         }

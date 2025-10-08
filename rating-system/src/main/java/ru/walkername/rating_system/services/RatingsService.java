@@ -7,11 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ru.walkername.rating_system.dto.PageResponse;
 import ru.walkername.rating_system.dto.RatingResponse;
+import ru.walkername.rating_system.dto.RatingsResponse;
 import ru.walkername.rating_system.events.RatingCreated;
 import ru.walkername.rating_system.events.RatingDeleted;
 import ru.walkername.rating_system.events.RatingUpdated;
+import ru.walkername.rating_system.exceptions.RatingNotFound;
 import ru.walkername.rating_system.models.Rating;
 import ru.walkername.rating_system.repositories.RatingsRepository;
 import ru.walkername.rating_system.utils.RatingModelMapper;
@@ -29,7 +33,9 @@ public class RatingsService {
     @Autowired
     public RatingsService(
             RatingsRepository ratingsRepository,
-            KafkaProducerService kafkaProducerService, RatingModelMapper ratingModelMapper) {
+            KafkaProducerService kafkaProducerService,
+            RatingModelMapper ratingModelMapper
+    ) {
         this.ratingsRepository = ratingsRepository;
         this.kafkaProducerService = kafkaProducerService;
         this.ratingModelMapper = ratingModelMapper;
@@ -40,72 +46,105 @@ public class RatingsService {
         return rating.orElse(null);
     }
 
+    public boolean existsByUserIdAndMovieId(Long userId, Long movieId) {
+        return ratingsRepository.existsByUserIdAndMovieId(userId, movieId);
+    }
+
     @Transactional
     public void save(Rating rating) {
-        try {
-            RatingCreated ratingCreated = new RatingCreated(
-                    rating.getUserId(),
-                    rating.getMovieId(),
-                    rating.getRating()
-            );
+        // Save to db new added rating
+        rating.setRatedAt(new Date());
+        ratingsRepository.save(rating);
 
-            // Kafka: send to User and Movie services
-            kafkaProducerService.publishRatingCreated(ratingCreated);
+        // Kafka: send to User and Movie services
+        registerRatingCreatedEvent(rating.getUserId(), rating.getMovieId(), rating.getRating());
+    }
 
-            // Save to db new added rating
-            rating.setRatedAt(new Date());
-            ratingsRepository.save(rating);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void registerRatingCreatedEvent(Long userId, Long movieId, int rating) {
+        RatingCreated ratingCreated = new RatingCreated(
+                userId,
+                movieId,
+                rating
+        );
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                kafkaProducerService.publishRatingCreated(ratingCreated);
+            }
+        });
     }
 
     @Transactional
-    public void update(Long id, Rating updatedRating) {
-        Optional<Rating> oldRating = ratingsRepository.findById(id);
-        oldRating.ifPresent(value -> {
-            try {
-                RatingUpdated ratingUpdated = new RatingUpdated(
-                        updatedRating.getUserId(),
-                        updatedRating.getMovieId(),
-                        updatedRating.getRating(),
-                        value.getRating()
-                );
+    public void update(Rating updatedRating) {
+        // Getting user's rating
+        // userId from UserPrincipal, so
+        // you can't get rating other people, manually typing userId, and update it
+        Rating oldRating = ratingsRepository
+                .findByUserIdAndMovieId(updatedRating.getUserId(), updatedRating.getMovieId())
+                .orElseThrow(() -> new RatingNotFound("Rating not found"));
 
-                // Kafka: send to User and Movie services
+        // Save to DB updated rating
+        updatedRating.setRatingId(oldRating.getRatingId());
+        updatedRating.setRatedAt(new Date());
+        ratingsRepository.save(updatedRating);
+
+        // Kafka: send to User and Movie services
+        registerRatingUpdatedEvent(
+                updatedRating.getUserId(),
+                updatedRating.getMovieId(),
+                updatedRating.getRating(),
+                oldRating.getRating()
+        );
+    }
+
+    private void registerRatingUpdatedEvent(Long userId, Long movieId, int newRating, int oldRating) {
+        RatingUpdated ratingUpdated = new RatingUpdated(
+                userId,
+                movieId,
+                newRating,
+                oldRating
+        );
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
                 kafkaProducerService.publishRatingUpdated(ratingUpdated);
-
-                // Save to DB updated rating
-                updatedRating.setRatingId(id);
-                updatedRating.setRatedAt(new Date());
-                ratingsRepository.save(updatedRating);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         });
     }
 
     @Transactional
-    public void delete(Long id) {
-        Optional<Rating> currentRating = ratingsRepository.findById(id);
-        currentRating.ifPresent(value -> {
-            try {
-                RatingDeleted ratingDeleted = new RatingDeleted(
-                        value.getUserId(),
-                        value.getMovieId(),
-                        value.getRating()
-                );
+    public void delete(Long movieId, Long userId) {
+        Rating currentRating = ratingsRepository
+                .findByUserIdAndMovieId(userId, movieId)
+                .orElseThrow(() -> new RatingNotFound("Rating not found"));
 
+        ratingsRepository.delete(currentRating);
+
+        registerRatingDeletedEvent(
+                currentRating.getUserId(),
+                currentRating.getMovieId(),
+                currentRating.getRating()
+        );
+    }
+
+    private void registerRatingDeletedEvent(Long userId, Long movieId, int rating) {
+        RatingDeleted ratingDeleted = new RatingDeleted(
+                userId,
+                movieId,
+                rating
+        );
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
                 kafkaProducerService.publishRatingDeleted(ratingDeleted);
-
-                ratingsRepository.deleteById(id);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         });
     }
 
-    public PageResponse<RatingResponse> getRatingsByUser(Long id, int page, int moviesPerPage, String[] sort) {
+    public RatingsResponse getRatingsByUser(Long id, int page, int moviesPerPage, String[] sort) {
         Sort sorting = Sort.by(createOrders(sort));
         Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
         Page<Rating> ratings = ratingsRepository.findAllByUserId(id, pageable);
@@ -116,13 +155,14 @@ public class RatingsService {
             ratingResponses.add(ratingResponse);
         }
 
-        return new PageResponse<>(
+        PageResponse<RatingResponse> pageResponse = new PageResponse<>(
                 ratingResponses,
                 page,
                 moviesPerPage,
                 ratings.getTotalElements(),
                 ratings.getTotalPages()
         );
+        return new RatingsResponse(pageResponse);
     }
 
     private List<Sort.Order> createOrders(String[] sort) {
