@@ -4,8 +4,9 @@ create table user_profile(
     password varchar not null,  
     description varchar(500) default '',  
     average_rating numeric(4, 2) not null check (average_rating <= 10.00) default 0,  
-    scores int not null default 0,  
-    role varchar not null default 'USER'  
+    scores int not null default 0,
+    profile_pic_id bigint,
+    role varchar not null default 'USER'
 );
 
 create table movie(  
@@ -24,7 +25,7 @@ create table rating(
     user_id bigint not null,
     movie_id bigint not null,
     rating int not null check (rating >= 1 and rating <= 10),  
-    ratedAt timestamp not null
+    rated_at timestamp not null
 );
 
 create table file (
