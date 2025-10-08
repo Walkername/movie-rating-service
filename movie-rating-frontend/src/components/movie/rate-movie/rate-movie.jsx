@@ -32,14 +32,12 @@ function RateMovie({ movieId }) {
         }
 
         const formData = {
-            userId: userId,
             movieId: movieId,
             rating: rateValue
         }
 
         if (rating != null) {
-            const ratingId = ratingInfo.ratingId;
-            updateRating(ratingId, formData)
+            updateRating(formData)
                 .then((data) => {
                     console.log("Rating updated successfully:", data);
                     setRating(rateValue);
@@ -63,8 +61,7 @@ function RateMovie({ movieId }) {
 
     // DELETE RATING
     const handleDelete = () => {
-        const ratingId = ratingInfo.ratingId;
-        deleteRating(ratingId)
+        deleteRating(movieId)
             .then(() => {
                 setRating(null);
             });
