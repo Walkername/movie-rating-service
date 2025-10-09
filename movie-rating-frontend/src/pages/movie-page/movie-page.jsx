@@ -14,7 +14,6 @@ function MoviePage() {
     const token = localStorage.getItem("accessToken");
     let isAccessToEdit = false;
     if (token != null) {
-        const tokenId = getClaimFromToken(token, "id");
         const tokenRole = getClaimFromToken(token, "role");
         isAccessToEdit = tokenRole === "ADMIN";
     }

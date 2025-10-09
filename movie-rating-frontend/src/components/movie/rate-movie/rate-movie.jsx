@@ -10,19 +10,18 @@ function RateMovie({ movieId }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // CURRENT RATING
-    const [ratingInfo, setRatingInfo] = useState(null);
     const [rating, setRating] = useState(null);
 
     useEffect(() => {
         getRating(userId, movieId)
             .then((data) => {
-                setRatingInfo(data);
+                console.log("gfd");
                 setRating(data.rating);
             })
             .catch((error) => {
                 console.error("Error:", error);
             })
-    }, [movieId, userId, rating]);
+    }, [userId, movieId]);
 
     // SEND RATING
     const handleSubmit = (rateValue) => {
