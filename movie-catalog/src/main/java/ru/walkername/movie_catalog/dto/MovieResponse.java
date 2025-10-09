@@ -16,6 +16,8 @@ public class MovieResponse {
 
     private int scores;
 
+    private Long posterPicId;
+
     private Date createdAt;
 
     public MovieResponse() {
@@ -67,6 +69,14 @@ public class MovieResponse {
 
     public void setScores(int scores) {
         this.scores = scores;
+    }
+
+    public Long getPosterPicId() {
+        return posterPicId;
+    }
+
+    public void setPosterPicId(Long posterPicId) {
+        this.posterPicId = posterPicId;
     }
 
     public Date getCreatedAt() {

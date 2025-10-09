@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.*;
+import ru.walkername.movie_catalog.events.FileUploaded;
 import ru.walkername.movie_catalog.events.RatingCreated;
 import ru.walkername.movie_catalog.events.RatingDeleted;
 import ru.walkername.movie_catalog.events.RatingUpdated;
@@ -144,6 +145,7 @@ public class MoviesService {
 
     /**
      * Method to get all movies from DB
+     *
      * @return list of movies
      */
     public List<Movie> getAllMovies() {
@@ -153,10 +155,11 @@ public class MoviesService {
     /**
      * Method to get all movies from DB with pagination
      * Method is need to do lists of movies on the site
-     * @param page number of page
+     *
+     * @param page          number of page
      * @param moviesPerPage number of movies that will be in the list
      *                      (all movies are split by this number, you give only part by page number)
-     * @param sort defines what field will be used in order to sort movies list
+     * @param sort          defines what field will be used in order to sort movies list
      * @return list of movies
      */
     @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
@@ -262,6 +265,23 @@ public class MoviesService {
             return Collections.emptyList();
         }
         return moviesRepository.findByTitleStartingWith(title);
+    }
+
+    @CacheEvict(cacheNames = "movie", key = "#fileUploaded.getContextId()",
+            condition = "#fileUploaded.getContext() != null && #fileUploaded.getContext().equals('movie-poster')")
+    @Transactional
+    @KafkaListener(
+            topics = "file-uploaded",
+            groupId = "movie-service-group",
+            containerFactory = "fileUploadedContainerFactory"
+    )
+    public void saveMoviePoster(FileUploaded fileUploaded) {
+        if (fileUploaded.getContext() != null && fileUploaded.getContext().equals("movie-poster")) {
+            Movie movie = moviesRepository.findById(fileUploaded.getContextId()).orElseThrow(
+                    () -> new MovieNotFound("Movie not found")
+            );
+            movie.setPosterPicId(fileUploaded.getFileId());
+        }
     }
 
 }
