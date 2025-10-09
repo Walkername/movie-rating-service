@@ -2,7 +2,6 @@ import { Link, useParams } from "react-router-dom";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import MovieDetails from "../../components/movie/movie-details/movie-details";
 import RateMovie from "../../components/movie/rate-movie/rate-movie";
-import DeleteButton from "../../components/movie/delete-button/delete-button";
 import { useEffect, useState } from "react";
 import { getMovie } from "../../api/movie-api";
 import MovieDetailsEdit from "../../components/movie/movie-details-edit/movie-details-edit";
