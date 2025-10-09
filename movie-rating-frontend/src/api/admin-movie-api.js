@@ -3,7 +3,7 @@ import customRequest from "./fetch-client";
 export const addMovie = async (formData) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/add`,
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies`,
             {
                 method: "POST",
                 headers: {
@@ -17,10 +17,11 @@ export const addMovie = async (formData) => {
         throw error;
     }
 };
+
 export const updateMovie = async (id, formData) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/edit/${id}`,
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/${id}`,
             {
                 method: "PATCH",
                 headers: {
@@ -34,10 +35,11 @@ export const updateMovie = async (id, formData) => {
         throw error;
     }
 };
+
 export const deleteMovie = async (id) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/delete/${id}`,
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/${id}`,
             {
                 method: "DELETE"
             }

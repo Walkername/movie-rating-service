@@ -3,7 +3,7 @@ import customRequest from "./fetch-client";
 export const addRating = async (formData) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/add`,
+            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings`,
             {
                 method: "POST",
                 headers: {
@@ -21,7 +21,7 @@ export const addRating = async (formData) => {
 export const updateRating = async (formData) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/edit`,
+            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings`,
             {
                 method: "PATCH",
                 headers: {
@@ -39,7 +39,7 @@ export const updateRating = async (formData) => {
 export const deleteRating = async (movieId) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/delete/${movieId}`,
+            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/${movieId}`,
             {
                 method: "DELETE"
             }

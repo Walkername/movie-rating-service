@@ -1,22 +1,5 @@
 import customRequest from "./fetch-client";
 
-export const addUser = async (formData) => {
-    try {
-        const response = await customRequest(
-            `${process.env.REACT_APP_USER_SERVICE_URL}/users/add`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            }
-        );
-        return await response.json();
-    } catch (error) {
-        throw error;
-    }
-};
 export const updateUserData = async (userId, formData) => {
     try {
         const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/admin/users/${userId}`,
@@ -33,6 +16,7 @@ export const updateUserData = async (userId, formData) => {
         throw error;
     }
 };
+
 export const updateUsername = async (userId, formData) => {
     try {
         const response = await customRequest(
@@ -50,6 +34,7 @@ export const updateUsername = async (userId, formData) => {
         throw new Error(error.message || "Update username failed");
     }
 };
+
 export const updateProfilePictureId = async (userId, fileId) => {
     try {
         const response = await customRequest(
