@@ -95,6 +95,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    align-content: center;
 }
 
 .close-button:hover {
