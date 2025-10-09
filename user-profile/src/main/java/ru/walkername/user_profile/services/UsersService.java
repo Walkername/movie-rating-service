@@ -93,7 +93,7 @@ public class UsersService {
         }
     }
 
-    @CacheEvict(cacheNames = "user", key="#userId")
+    @CacheEvict(cacheNames = "user", key = "#userId")
     @Transactional
     public void updateProfilePicture(Long userId, Long fileId) {
         Optional<User> currentUser = usersRepository.findById(userId);

@@ -32,7 +32,7 @@ public class RatingsController {
         this.ratingModelMapper = ratingModelMapper;
     }
 
-    @PostMapping("/add")
+    @PostMapping("")
     public ResponseEntity<HttpStatus> add(
             @RequestBody @Valid RatingRequest ratingRequest,
             BindingResult bindingResult,
@@ -47,7 +47,7 @@ public class RatingsController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/edit")
+    @PatchMapping("")
     public ResponseEntity<HttpStatus> update(
             @RequestBody @Valid RatingRequest ratingRequest,
             BindingResult bindingResult,
@@ -61,7 +61,7 @@ public class RatingsController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete/{movieId}")
+    @DeleteMapping("/{movieId}")
     public ResponseEntity<HttpStatus> delete(
             @PathVariable("movieId") Long movieId,
             @AuthenticationPrincipal UserPrincipal userPrincipal

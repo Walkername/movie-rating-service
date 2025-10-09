@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.walkername.movie_catalog.exceptions.MovieNotFound;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
 
@@ -37,6 +38,15 @@ public class AdminMoviesService {
     public void update(Long id, Movie updatedMovie) {
         updatedMovie.setId(id);
         moviesRepository.save(updatedMovie);
+    }
+
+    @CacheEvict(cacheNames = "movie", key = "#movieId")
+    @Transactional
+    public void updatePosterPicture(Long movieId, Long fileId) {
+        Movie movie = moviesRepository.findById(movieId).orElseThrow(
+                () -> new MovieNotFound("Movie not found")
+        );
+        movie.setPosterPicId(fileId);
     }
 
     @Caching(evict = {

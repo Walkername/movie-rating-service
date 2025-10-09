@@ -30,7 +30,7 @@ public class AdminMoviesController {
         this.movieModelMapper = movieModelMapper;
     }
 
-    @PostMapping("/add")
+    @PostMapping("")
     public ResponseEntity<HttpStatus> add(
             @RequestBody @Valid MovieRequest movieRequest,
             BindingResult bindingResult
@@ -41,7 +41,7 @@ public class AdminMoviesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> update(
             @PathVariable("id") Long id,
             @RequestBody @Valid MovieRequest movieRequest,
@@ -56,12 +56,21 @@ public class AdminMoviesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PatchMapping("/{id}/poster-pic")
+    public ResponseEntity<HttpStatus> updatePosterPic(
+            @PathVariable("id") Long id,
+            @RequestParam("fileId") Long fileId
+    ) {
+        adminMoviesService.updatePosterPicture(id, fileId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(
             @PathVariable("id") Long id
     ) {
         adminMoviesService.delete(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 }

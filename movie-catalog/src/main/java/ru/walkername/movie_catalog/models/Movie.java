@@ -35,6 +35,9 @@ public class Movie {
     @Column(name = "scores")
     private int scores;
 
+    @Column(name = "poster_pic_id")
+    private Long posterPicId;
+
     @Column(name = "created_at")
     private Date createdAt;
 
@@ -42,12 +45,13 @@ public class Movie {
 
     }
 
-    public Movie(String title, int releaseYear, String description, double averageRating, int scores, Date createdAt) {
+    public Movie(String title, int releaseYear, String description, double averageRating, int scores, Long posterPicId, Date createdAt) {
         this.title = title;
         this.releaseYear = releaseYear;
         this.description = description;
         this.averageRating = averageRating;
         this.scores = scores;
+        this.posterPicId = posterPicId;
         this.createdAt = createdAt;
     }
 
@@ -99,6 +103,14 @@ public class Movie {
         this.scores = scores;
     }
 
+    public Long getPosterPicId() {
+        return posterPicId;
+    }
+
+    public void setPosterPicId(Long posterPicId) {
+        this.posterPicId = posterPicId;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -116,6 +128,8 @@ public class Movie {
                 ", description='" + description + '\'' +
                 ", averageRating=" + averageRating +
                 ", scores=" + scores +
+                ", posterPicId=" + posterPicId +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

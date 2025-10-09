@@ -58,7 +58,7 @@ public class AdminUsersController {
     }
 
     @PatchMapping("/{id}/profile-pic")
-    public ResponseEntity<String> updateProfilePic(
+    public ResponseEntity<HttpStatus> updateProfilePic(
             @PathVariable("id") Long id,
             @RequestParam("fileId") Long fileId
     ) {
@@ -66,7 +66,7 @@ public class AdminUsersController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> delete(
             @PathVariable("id") Long id
     ) {
