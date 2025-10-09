@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 function MovieCardBar({ movie, index }) {
-    let href = "/movies/" + movie.id;
+    let href = "/movie/" + movie.id;
     return (
         <Link className="movie-card-bar" to={href}>
             <span className="movie-card-bar-index">{index + 1}</span>

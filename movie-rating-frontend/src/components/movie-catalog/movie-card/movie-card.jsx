@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 function MovieCard({ movie }) {
-    let href = "/movies/" + movie.id;
+    let href = "/movie/" + movie.id;
     return (
         <Link className="movie-card" to={href}>
             <div className="movie-card-header">

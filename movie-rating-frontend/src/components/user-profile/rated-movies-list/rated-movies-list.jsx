@@ -113,7 +113,7 @@ function RatedMoviesList({ userId }) {
                     {pageResponse.content.map((element, index) => (
                         <tr
                             key={index}
-                            onClick={() => navigate(`/movies/${element.movieId}`)}
+                            onClick={() => navigate(`/movie/${element.movieId}`)}
                             className="movie-row"
                         >
                             <td>{index + 1 + limit * page}</td>
