@@ -18,15 +18,13 @@ function App() {
     <Router>
       <Routes>
         <Route element={<AdminRoute />}>
-          <Route path="/movies/add" element={<AddMoviePage />} />
-          <Route path="/users/add" element={<AddUserPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/users-tool" element={<AdminUsersTool />} />
           <Route path="/admin/movies-tool" element={<AdminMoviesTool />} />
         </Route>
+        <Route path="/" element={<MainPage />} />
         <Route path="/user/:id" element={<UserPage />} />
         <Route path="/user/:id/photos" element={<UserPhotoCatalog />} />
-        <Route path="/" element={<MainPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/movies/:id" element={<MoviePage />} />

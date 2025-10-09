@@ -15,17 +15,7 @@ function AddUserPage() {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault(); // Prevent the default form submission behavior
-
-        addUser(formData)
-            .then((data) => {
-                console.log("User added successfully:", data);
-                alert("User added successfully!");
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("Error adding user");
-            });
+        e.preventDefault();
     };
 
     return (
