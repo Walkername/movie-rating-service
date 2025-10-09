@@ -36,6 +36,20 @@ export const updateMovie = async (id, formData) => {
     }
 };
 
+export const updateMoviePoster = async (id, fileId) => {
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/${id}/poster-pic?fileId=${fileId}`,
+            {
+                method: "PATCH"
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const deleteMovie = async (id) => {
     try {
         const response = await customRequest(
