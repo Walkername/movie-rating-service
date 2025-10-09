@@ -12,7 +12,7 @@ export const addMovie = async (formData) => {
                 body: JSON.stringify(formData)
             }
         );
-        return await response.json();
+        return await response;
     } catch (error) {
         throw error;
     }
@@ -44,7 +44,7 @@ export const deleteMovie = async (id) => {
                 method: "DELETE"
             }
         );
-        return await response.json();
+        return response;
     } catch (error) {
         throw error;
     }
