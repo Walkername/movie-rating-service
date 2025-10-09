@@ -15,7 +15,6 @@ function RateMovie({ movieId }) {
     useEffect(() => {
         getRating(userId, movieId)
             .then((data) => {
-                console.log("gfd");
                 setRating(data.rating);
             })
             .catch((error) => {
