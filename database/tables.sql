@@ -17,6 +17,7 @@ create table movie(
     average_rating numeric(4, 2) not null check (average_rating <= 10.00)  
         default 0,  
     scores int not null default 0,
+    poster_pic_id bigint,
     created_at timestamp with time zone default current_timestamp
 );
 
