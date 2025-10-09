@@ -84,6 +84,7 @@ public class RatingsService {
                 .findByUserIdAndMovieId(updatedRating.getUserId(), updatedRating.getMovieId())
                 .orElseThrow(() -> new RatingNotFound("Rating not found"));
 
+        int oldRatingValue = oldRating.getRating();
         // Save to DB updated rating
         updatedRating.setRatingId(oldRating.getRatingId());
         updatedRating.setRatedAt(new Date());
@@ -94,7 +95,7 @@ public class RatingsService {
                 updatedRating.getUserId(),
                 updatedRating.getMovieId(),
                 updatedRating.getRating(),
-                oldRating.getRating()
+                oldRatingValue
         );
     }
 
