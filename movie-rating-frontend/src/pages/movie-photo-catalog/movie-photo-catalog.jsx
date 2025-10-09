@@ -1,23 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
-import { downloadFiles, uploadMyFile } from "../../api/file-api";
 import { Link, useParams } from "react-router-dom";
-import "../../styles/user-photo-catalog.css";
+import { downloadFiles } from "../../api/file-api";
 import ImageGallery from "../../components/image-gallery/image-gallery";
 import ImageUploadForm from "../../components/image-upload-form/image-upload-form";
+import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
+import { updateMoviePoster } from "../../api/admin-movie-api";
 import ImageViewer from "../../components/image-viewer/image-viewer";
-import { updateMyProfilePictureId } from "../../api/user-api";
+import { uploadFile } from "../../api/admin-file-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 
-export default function UserPhotoCatalog() {
+export default function MoviePhotoCatalog() {
     const { id } = useParams();
     const token = localStorage.getItem("accessToken");
-    const tokenId = getClaimFromToken(token, "id");
-    const isAccessToEdit = id == tokenId;
+    const tokenRole = getClaimFromToken(token, "role");
+    const isAccessToEdit = tokenRole == "ADMIN";
 
     const [photos, setPhotos] = useState([]);
     useEffect(() => {
-        downloadFiles("user", id)
+        downloadFiles("movie", id)
             .then((data) => {
                 setPhotos(data);
             });
@@ -32,14 +32,14 @@ export default function UserPhotoCatalog() {
         setViewStatus(true);
     };
 
-    const setProfilePicture = (photo) => {
-        updateMyProfilePictureId(photo.fileId);
+    const setMoviePoster = (photo) => {
+        updateMoviePoster(id, photo.fileId);
     };
 
-    const userActions = [
+    const movieActions = [
         {
-            label: "Set as Profile Picture",
-            handler: setProfilePicture
+            label: "Set as Movie Poster",
+            handler: setMoviePoster
         }
     ];
 
@@ -57,7 +57,7 @@ export default function UserPhotoCatalog() {
         const formData = new FormData();
         formData.append("file", selectedFile);
 
-        uploadMyFile(formData, "user")
+        uploadFile(formData, "movie", id)
             .then(() => {
                 if (previewUrl) {
                     URL.revokeObjectURL(previewUrl);
@@ -69,7 +69,7 @@ export default function UserPhotoCatalog() {
                     fileInputRef.current.value = '';
                 }
 
-                downloadFiles("user", id)
+                downloadFiles("movie", id)
                     .then((data) => {
                         setPhotos(data);
                     });
@@ -91,8 +91,8 @@ export default function UserPhotoCatalog() {
                 <div className="page-content">
                     <div>
                         <div className="header-actions">
-                            <Link to={`/user/${id}`} className="back-button">
-                                ← Back to Profile
+                            <Link to={`/movie/${id}`} className="back-button">
+                                ← Back to Movie
                             </Link>
 
                             <ImageUploadForm
@@ -113,16 +113,15 @@ export default function UserPhotoCatalog() {
                             onPhotoClick={handlePhotoClick}
                         />
                         <ImageViewer
-                            isAccessToEdit={isAccessToEdit}
                             viewStatus={viewStatus}
                             setViewStatus={setViewStatus}
                             selectedPhoto={selectedPhoto}
                             setSelectedPhoto={setSelectedPhoto}
-                            additionalActions={userActions}
+                            additionalActions={movieActions}
                         />
                     </div>
                 </div>
             </div >
         </>
-    )
+    );
 }

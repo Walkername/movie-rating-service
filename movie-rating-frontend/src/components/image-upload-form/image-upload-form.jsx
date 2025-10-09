@@ -1,17 +1,16 @@
-import { useRef, useState } from "react";
-import getClaimFromToken from "../../utils/token-validation/token-validation";
-import { uploadMyFile } from "../../api/file-api";
 import ImageUploadViewer from "../image-upload-viewer/image-upload-viewer";
 
-export default function ImageUploadForm({id}) {
-    const token = localStorage.getItem("accessToken");
-    const tokenId = getClaimFromToken(token, "id");
-
-    const [previewStatus, setPreviewStatus] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(null);
-    const fileInputRef = useRef(null);
-
+export default function ImageUploadForm({
+    isAccessToEdit,
+    handleUploadPhoto,
+    previewStatus,
+    setPreviewStatus,
+    selectedFile,
+    setSelectedFile,
+    previewUrl,
+    setPreviewUrl,
+    fileInputRef
+}) {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -23,36 +22,10 @@ export default function ImageUploadForm({id}) {
         }
     };
 
-    const handleUploadPhoto = (evt) => {
-        if (evt) evt.preventDefault();
-
-        if (!selectedFile) return;
-
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-
-        uploadMyFile(formData, "user")
-            .then(() => {
-                if (previewUrl) {
-                    URL.revokeObjectURL(previewUrl);
-                }
-                setPreviewStatus(false);
-                setSelectedFile(null);
-                setPreviewUrl(null);
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
-                window.location.reload();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-
     return (
         <>
             {
-                id == tokenId &&
+                isAccessToEdit && 
                 (
                     <form onSubmit={handleUploadPhoto} className="upload-form">
                         <div className="file-input-container">

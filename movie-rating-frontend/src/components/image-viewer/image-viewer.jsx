@@ -1,15 +1,18 @@
 import { useEffect } from "react";
-import { updateMyProfilePictureId } from "../../api/user-api";
+import { useParams } from "react-router-dom";
+import getClaimFromToken from "../../utils/token-validation/token-validation";
 
-export default function ImageViewer({ 
-    viewStatus, 
-    setViewStatus, 
-    selectedPhoto, 
-    setSelectedPhoto 
+export default function ImageViewer({
+    isAccessToEdit,
+    viewStatus,
+    setViewStatus,
+    selectedPhoto,
+    setSelectedPhoto,
+    additionalActions = []
 }) {
-    const setProfilePicture = (photoId) => {
-        updateMyProfilePictureId(photoId);
-    };
+    const { id } = useParams();
+    const token = localStorage.getItem("accessToken");
+    const tokenId = getClaimFromToken(token, "id");
 
     const closeViewer = () => {
         setViewStatus(false);
@@ -46,12 +49,21 @@ export default function ImageViewer({
                                 className="fullscreen-photo"
                             />
                             <div className="photo-actions">
-                                <button
-                                    onClick={() => setProfilePicture(selectedPhoto.fileId)}
-                                    className="action-button"
-                                >
-                                    Set as Profile Picture
-                                </button>
+                                {
+                                    additionalActions.map((action, index) => {
+                                        return isAccessToEdit &&
+                                            (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => action.handler(selectedPhoto)}
+                                                    className="action-button"
+                                                >
+                                                    {action.label}
+                                                </button>
+                                            )
+                                    })
+                                }
+
                             </div>
                         </div>
                     </div>
