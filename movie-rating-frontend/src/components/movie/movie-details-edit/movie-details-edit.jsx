@@ -1,6 +1,8 @@
 import { useState } from "react";
-
-import {updateMovie} from "../../../api/admin-movie-api";
+import "../../../styles/movie-data-edit.css";
+import { updateMovie } from "../../../api/admin-movie-api";
+import { uploadFile } from "../../../api/admin-file-api";
+import DeleteButton from "../delete-button/delete-button";
 
 function MovieDetailsEdit({ movie }) {
     const [errorTitle, setErrorTitle] = useState("");
@@ -11,7 +13,7 @@ function MovieDetailsEdit({ movie }) {
         title: movie.title,
         releaseYear: movie.releaseYear,
         description: movie.description
-    })
+    });
 
     const validateTitle = () => {
         let errors = "";
@@ -24,7 +26,7 @@ function MovieDetailsEdit({ movie }) {
         }
 
         return true;
-    }
+    };
 
     const validateDescription = () => {
         if (formData.description.length > 500) {
@@ -33,7 +35,7 @@ function MovieDetailsEdit({ movie }) {
         } else {
             return true;
         }
-    }
+    };
 
     const validateReleaseYear = () => {
         if (formData.releaseYear < 0) {
@@ -42,12 +44,12 @@ function MovieDetailsEdit({ movie }) {
         } else {
             return true;
         }
-    }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-    }
+    };
 
     const handleUpdate = (evt) => {
         evt.preventDefault();
@@ -67,57 +69,98 @@ function MovieDetailsEdit({ movie }) {
                     setErrorDescription("Some error has occured");
                 })
         }
-    }
+    };
+
+    // MOVIE POSTER
+
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+        }
+    };
+
+    const handleUploadMoviePoster = (evt) => {
+        evt.preventDefault();
+
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        // Uploading file
+        uploadFile(formData, "movie-poster", movie.id)
+            .then(() => {
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     return (
-        <form onSubmit={handleUpdate}>
-            <label>Title:</label>
-            <br />
-            <input type="text" min="1" max="50" name="title" placeholder="title" value={formData.title}
-                onChange={handleChange} required />
-            {
-                errorTitle !== ""
-                    ? <>
-                        <br />
-                        <span style={{ color: "red" }}>{errorTitle}</span>
-                    </>
-                    : <></>
-            }
-            <br />
+        <div className="edit-container">
+            <DeleteButton id={movie.id} />
+            <div className="edit-card">
+                <h3>Movie Poster</h3>
+                {
+                    selectedFile && (
+                        <img
+                            className="edit-poster"
+                            src={URL.createObjectURL(selectedFile)}
+                            alt={selectedFile.name}
+                        />
+                    )
+                }
+                <form onSubmit={handleUploadMoviePoster}>
+                    <input id="movie-poster" type="file" onChange={handleFileChange} />
+                    <button type="submit" className="edit-btn">Upload</button>
+                </form>
+            </div>
 
-            <label>Release year:</label>
-            <br />
-            <input type="number" name="releaseYear" min="0" placeholder="2000" value={formData.releaseYear}
-                onChange={handleChange} required />
-            {
-                errorReleaseYear !== ""
-                    ? <>
-                        <br />
-                        <span style={{ color: "red" }}>{errorReleaseYear}</span>
-                    </>
-                    : <></>
-            }
-            <br />
+            <form onSubmit={handleUpdate}>
+                <div className="edit-card">
+                    <h3>Title:</h3>
+                    <input
+                        type="text"
+                        min="1"
+                        max="50"
+                        name="title"
+                        placeholder="title"
+                        value={formData.title}
+                        onChange={handleChange} required
+                    />
+                    {errorTitle !== "" && <p className="error-text">{errorTitle}</p>}
 
-            <label>Description:</label>
-            <br></br>
-            <textarea type="text" max="500" name="description" rows="5" placeholder="..." value={formData.description}
-                onChange={handleChange}
-                required
-            ></textarea>
-            {
-                errorDescription !== ""
-                    ? <>
-                        <br />
-                        <span style={{ color: "red" }}>{errorDescription}</span>
-                    </>
-                    : <></>
-            }
-            <br />
+                    <h3>Release Year:</h3>
+                    <input
+                        type="number"
+                        name="releaseYear"
+                        min="0"
+                        placeholder="2000"
+                        value={formData.releaseYear}
+                        onChange={handleChange} required
+                    />
+                    {errorReleaseYear !== "" && <p style={{ color: "red" }}>{errorReleaseYear}</p>}
 
-            <input type="submit" value="Update" />
-        </form>
-    )
+                    <h3>Description:</h3>
+                    <textarea
+                        type="text"
+                        max="500"
+                        name="description"
+                        rows="5"
+                        placeholder="..."
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                    ></textarea>
+                    {errorDescription !== "" && <span style={{ color: "red" }}>{errorDescription}</span>}
+
+                    <button type="submit" className="edit-btn">Update</button>
+                </div>
+            </form>
+        </div>
+    );
 }
 
 export default MovieDetailsEdit;

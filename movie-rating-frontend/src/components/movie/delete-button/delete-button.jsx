@@ -6,8 +6,7 @@ function DeleteButton({id}) {
     const navigate = useNavigate();
     const handleDelete = () => {
         deleteMovie(id)
-            .then((data) => {
-                console.log("Movie deleted successfully:", data);
+            .then(() => {
                 navigate("/");
             })
             .catch((error) => {
@@ -18,7 +17,7 @@ function DeleteButton({id}) {
 
     return (
         <div>
-            <button onClick={handleDelete}>Delete</button>
+            <button className="edit-btn" onClick={handleDelete}>Delete</button>
         </div>
     );
 }

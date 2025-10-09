@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import MovieDetails from "../../components/movie/movie-details/movie-details";
 import RateMovie from "../../components/movie/rate-movie/rate-movie";
@@ -38,47 +38,38 @@ function MoviePage() {
     return (
         <>
             <NavigationBar />
-            <div className="page-content-container">
-                <div className="page-content">
-                    {
-                        movie == null
-                            ? <h1>Error: Movie was not found</h1>
-                            : <div>
-                                {
-                                    !isEditing
-                                        ? (
-                                            <>
-                                                <MovieDetails movie={movie} />
-                                                <RateMovie movieId={id} isAccessToEdit={isAccessToEdit} />
-                                            </>
-                                        )
-                                        : (
-                                            isAccessToEdit
-                                                ?
+            <div className="profile-page">
+                    <div className="profile-card">
+                        {
+                            movie == null
+                                ? <h1>Error: Movie was not found</h1>
+                                : <div>
+                                    {
+                                        !isEditing
+                                            ? (
                                                 <>
-                                                    <DeleteButton id={id} />
-                                                    <MovieDetailsEdit movie={movie} />
+                                                    <MovieDetails movie={movie} />
+                                                    <Link to={`/movie/${movie.id}/photos`}>Photos</Link>
+                                                    <RateMovie movieId={id} isAccessToEdit={isAccessToEdit} />
                                                 </>
-                                                :
-                                                <></>
-                                        )
+                                            )
+                                            : (
+                                                isAccessToEdit && <MovieDetailsEdit movie={movie} />
+                                            )
 
-                                }
-                            </div>
-                    }
-                    {
-                        isAccessToEdit
-                            ?
+                                    }
+                                </div>
+                        }
+                        {
+                            isAccessToEdit &&
                             <div>
-                                <button onClick={handleEdit}>
+                                <br></br>
+                                <button className="edit-button" onClick={handleEdit}>
                                     {isEditing ? "Back" : "Edit"}
                                 </button>
                             </div>
-                            :
-                            <></>
-                    }
-
-                </div>
+                        }
+                    </div>
             </div>
 
         </>
