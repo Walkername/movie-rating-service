@@ -11,10 +11,10 @@ export const downloadFile = async (fileId) => {
     }
 };
 
-export const downloadFiles = async (entityType, entityId) => {
+export const downloadFiles = async (entityType, entityId, page = 0, limit = 10, sort = "uploadedAt:desc") => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_FILE_SERVICE_URL}/files/download-all/signed-url?entityType=${entityType}&entityId=${entityId}`
+            `${process.env.REACT_APP_FILE_SERVICE_URL}/files/download-all/signed-url?entityType=${entityType}&entityId=${entityId}&page=${page}&limit=${limit}&sort=${sort}`
         );
         return await response.json();
     } catch (error) {

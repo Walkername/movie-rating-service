@@ -1,13 +1,15 @@
 
 export default function ImageGallery({
-    photos,
+    pageResponse = {
+        content: []
+    },
     onPhotoClick 
 }) {
     return (
         <>
             <div className="user-photo-catalog">
                 {
-                    photos.map((photo, index) => {
+                    pageResponse.content.map((photo, index) => {
                         return (
                             <div
                                 className="photo-card"

@@ -15,11 +15,11 @@ export default function MoviePhotoCatalog() {
     const tokenRole = getClaimFromToken(token, "role");
     const isAccessToEdit = tokenRole == "ADMIN";
 
-    const [photos, setPhotos] = useState([]);
+    const [pageResponse, setPageResponse] = useState([]);
     useEffect(() => {
         downloadFiles("movie", id)
             .then((data) => {
-                setPhotos(data);
+                setPageResponse(data);
             });
     }, [id]);
 
@@ -71,7 +71,7 @@ export default function MoviePhotoCatalog() {
 
                 downloadFiles("movie", id)
                     .then((data) => {
-                        setPhotos(data);
+                        setPageResponse(data);
                     });
             })
             .catch((error) => {
@@ -109,7 +109,7 @@ export default function MoviePhotoCatalog() {
                         </div>
 
                         <ImageGallery
-                            photos={photos}
+                            photos={pageResponse}
                             onPhotoClick={handlePhotoClick}
                         />
                         <ImageViewer

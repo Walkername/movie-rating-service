@@ -15,11 +15,17 @@ export default function UserPhotoCatalog() {
     const tokenId = getClaimFromToken(token, "id");
     const isAccessToEdit = id == tokenId;
 
-    const [photos, setPhotos] = useState([]);
+    const [pageResponse, setPageResponse] = useState({
+        content: [],
+        limit: 0,
+        page: 0,
+        totalElements: 0,
+        totalPages: 0
+    });
     useEffect(() => {
         downloadFiles("user", id)
             .then((data) => {
-                setPhotos(data);
+                setPageResponse(data);
             });
     }, [id]);
 
@@ -71,7 +77,7 @@ export default function UserPhotoCatalog() {
 
                 downloadFiles("user", id)
                     .then((data) => {
-                        setPhotos(data);
+                        setPageResponse(data);
                     });
             })
             .catch((error) => {
@@ -109,7 +115,7 @@ export default function UserPhotoCatalog() {
                         </div>
 
                         <ImageGallery
-                            photos={photos}
+                            pageResponse={pageResponse}
                             onPhotoClick={handlePhotoClick}
                         />
                         <ImageViewer
