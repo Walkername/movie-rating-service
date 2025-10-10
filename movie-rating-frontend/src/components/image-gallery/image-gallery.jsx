@@ -3,8 +3,19 @@ export default function ImageGallery({
     pageResponse = {
         content: []
     },
-    onPhotoClick 
+    limit,
+    setLimit,
+    onPhotoClick
 }) {
+    const morePhotos = 10;
+    const hasNextPage = pageResponse.page < pageResponse.totalPages - 1;
+
+    const loadMorePhotos = () => {
+        if (hasNextPage) {
+            setLimit(limit + morePhotos);
+        }
+    };
+
     return (
         <>
             <div className="user-photo-catalog">
@@ -26,6 +37,25 @@ export default function ImageGallery({
                         )
                     })
                 }
+                {hasNextPage && (
+                    <div 
+                        className="photo-card load-more-card"
+                        onClick={loadMorePhotos}
+                    >
+                        <div className="load-more-content">
+                            <svg 
+                                width="48" 
+                                height="48" 
+                                viewBox="0 0 24 24" 
+                                fill="currentColor"
+                                className="load-more-icon"
+                            >
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span className="load-more-text">Load More</span>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

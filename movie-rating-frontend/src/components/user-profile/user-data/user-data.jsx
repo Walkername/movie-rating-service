@@ -42,7 +42,7 @@ function UserData({ user }) {
                     <p className="section-text">{user.scores}</p>
                 </div>
             </div>
-            <Link to={`/user/${user.id}/photos`}>Photo</Link>
+            
             <PhotoPreviewStrip userId={user.id} />
 
             <div className="rated-movies">

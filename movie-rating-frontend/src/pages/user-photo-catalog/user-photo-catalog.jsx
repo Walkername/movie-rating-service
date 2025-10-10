@@ -15,6 +15,10 @@ export default function UserPhotoCatalog() {
     const tokenId = getClaimFromToken(token, "id");
     const isAccessToEdit = id == tokenId;
 
+    const [page, setPage] = useState(0);
+    const [limit, setLimit] = useState(1);
+    const [sort, setSort] = useState("uploadedAt:desc");
+
     const [pageResponse, setPageResponse] = useState({
         content: [],
         limit: 0,
@@ -22,12 +26,13 @@ export default function UserPhotoCatalog() {
         totalElements: 0,
         totalPages: 0
     });
+
     useEffect(() => {
-        downloadFiles("user", id)
+        downloadFiles("user", id, page, limit, sort)
             .then((data) => {
                 setPageResponse(data);
             });
-    }, [id]);
+    }, [id, page, limit, sort]);
 
     // ImageViewer
     const [viewStatus, setViewStatus] = useState(false);
@@ -116,6 +121,8 @@ export default function UserPhotoCatalog() {
 
                         <ImageGallery
                             pageResponse={pageResponse}
+                            limit={limit}
+                            setLimit={setLimit}
                             onPhotoClick={handlePhotoClick}
                         />
                         <ImageViewer

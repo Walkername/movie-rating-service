@@ -302,3 +302,89 @@
         width: 100%;
     }
 }
+
+/* Стили для карточки "Load More" */
+.load-more-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px dashed #adb5bd;
+    transition: all 0.3s ease;
+}
+
+.load-more-card:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-color: #6c757d;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.load-more-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    padding: 20px;
+}
+
+.load-more-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.load-more-icon {
+    color: #6c757d;
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+}
+
+.load-more-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #495057;
+    line-height: 1;
+}
+
+.load-more-card:hover .load-more-icon {
+    transform: scale(1.1);
+    color: #495057;
+}
+
+.load-more-text {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.load-more-page {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .user-photo-catalog {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .load-more-content {
+        padding: 15px;
+    }
+    
+    .load-more-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .load-more-text {
+        font-size: 1rem;
+    }
+}
