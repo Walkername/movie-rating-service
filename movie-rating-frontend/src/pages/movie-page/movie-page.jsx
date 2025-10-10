@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import MovieDetails from "../../components/movie/movie-details/movie-details";
 import RateMovie from "../../components/movie/rate-movie/rate-movie";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { getMovie } from "../../api/movie-api";
 import MovieDetailsEdit from "../../components/movie/movie-details-edit/movie-details-edit";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
-import PhotoPreviewStrip from "../../components/user-profile/photo-preview-strip/photo-preview-strip";
+import PhotoPreviewStrip from "../../components/photo-preview-strip/photo-preview-strip";
 import { updateMoviePoster } from "../../api/admin-movie-api";
 
 function MoviePage() {

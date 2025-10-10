@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { downloadFiles } from "../../../api/file-api";
-import "../../../styles/photo-preview-strip.css";
+import { downloadFiles } from "../../api/file-api";
+import "../../styles/photo-preview-strip.css";
 import { Link } from "react-router-dom";
-import ImageViewer from "../../image-viewer/image-viewer";
-import getClaimFromToken from "../../../utils/token-validation/token-validation";
-import { updateMyProfilePictureId } from "../../../api/user-api";
+import ImageViewer from "../image-viewer/image-viewer";
 
 export default function PhotoPreviewStrip({
     isAccessToEdit,
