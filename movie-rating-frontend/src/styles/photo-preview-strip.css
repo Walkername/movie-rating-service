@@ -1,0 +1,232 @@
+/* photo-preview-strip.css */
+.photo-preview-strip {
+    margin: 20px 0;
+}
+
+.photo-strip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Кнопка "View All" */
+.view-all-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.view-all-button:hover {
+    background: #e9ecef;
+    color: #212529;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.view-all-button:active {
+    transform: translateY(0);
+}
+
+.photo-strip-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    margin-top: 12px;
+    text-align: center;
+    align-items: center;
+    color: #333;
+    font-weight: 600;
+}
+
+.photo-strip-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.photo-strip-container {
+    overflow-x: auto;
+    padding: 20px 30px 20px 0; /* Больше padding справа */
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.photo-strip-container::-webkit-scrollbar {
+    display: none;
+}
+
+.photo-strip-scroll {
+    display: flex;
+    gap: 12px;
+    padding: 4px 8px;
+}
+
+.photo-strip-scroll::after {
+    content: '';
+    flex: 0 0 12px; /* Добавляем пространство справа */
+    height: 1px;
+}
+
+.photo-strip-item {
+    flex: 0 0 auto;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.photo-strip-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.photo-strip-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* Стили для карточки "More" */
+.photo-strip-more-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.photo-strip-more-card:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    text-decoration: none;
+}
+
+.more-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.more-card-icon {
+    opacity: 0.9;
+    margin-bottom: 4px;
+}
+
+.more-card-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.more-card-count {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+/* Стили для кнопок прокрутки */
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.2s ease;
+    color: #333;
+}
+
+.scroll-button:hover {
+    background: #f8f9fa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.scroll-button:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.scroll-button-left {
+    left: -20px;
+}
+
+.scroll-button-right {
+    right: -20px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .photo-strip-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .view-all-button {
+        align-self: flex-start;
+    }
+    
+    .photo-strip-wrapper {
+        padding: 0 30px;
+        margin: 0 -30px;
+    }
+    
+    .photo-strip-container {
+        padding: 20px 30px 20px 0;
+    }
+    
+    .photo-strip-scroll::after {
+        flex: 0 0 30px;
+    }
+    
+    .photo-strip-more-card {
+        margin-right: 15px;
+    }
+    
+    .photo-strip-more-card:hover {
+        margin-right: 20px;
+    }
+    
+    .scroll-button {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .photo-strip-item {
+        width: 110px;
+        height: 110px;
+    }
+}

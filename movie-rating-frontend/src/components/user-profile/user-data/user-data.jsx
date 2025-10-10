@@ -4,6 +4,7 @@ import { downloadFile } from "../../../api/file-api";
 import "../../../styles/user-data.css";
 import unknownProfilePic from "../../../assets/images/unknown-profile-avatar.png";
 import { Link } from "react-router-dom";
+import PhotoPreviewStrip from "../photo-preview-strip/photo-preview-strip";
 
 function UserData({ user }) {
 
@@ -42,6 +43,7 @@ function UserData({ user }) {
                 </div>
             </div>
             <Link to={`/user/${user.id}/photos`}>Photo</Link>
+            <PhotoPreviewStrip userId={user.id} />
 
             <div className="rated-movies">
                 <RatedMoviesList userId={user.id} />
