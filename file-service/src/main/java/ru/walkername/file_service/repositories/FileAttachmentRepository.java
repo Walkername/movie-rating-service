@@ -1,13 +1,13 @@
 package ru.walkername.file_service.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.walkername.file_service.dto.FileResponse;
 import ru.walkername.file_service.models.FileAttachment;
-
-import java.util.List;
 
 @Repository
 public interface FileAttachmentRepository extends JpaRepository<FileAttachment, Long> {
@@ -16,9 +16,10 @@ public interface FileAttachmentRepository extends JpaRepository<FileAttachment, 
             "from FileAttachment fa " +
             "join fa.file f " +
             "where fa.entityType = :entityType and fa.entityId = :entityId")
-    List<FileResponse> findByEntityTypeAndEntityId(
+    Page<FileResponse> findByEntityTypeAndEntityId(
             @Param("entityType") String entityType,
-            @Param("entityId") Long entityId
+            @Param("entityId") Long entityId,
+            Pageable pageable
     );
 
 }

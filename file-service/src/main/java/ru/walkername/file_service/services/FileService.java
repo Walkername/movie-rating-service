@@ -2,21 +2,23 @@ package ru.walkername.file_service.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.file_service.dto.FileResponse;
+import ru.walkername.file_service.dto.PageResponse;
 import ru.walkername.file_service.events.FileUploaded;
 import ru.walkername.file_service.models.File;
 import ru.walkername.file_service.models.FileAttachment;
 import ru.walkername.file_service.repositories.FileRepository;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FileService {
@@ -89,12 +91,38 @@ public class FileService {
         return null;
     }
 
-    public List<FileResponse> findAllByEntityTypeAndEntityId(String entityType, Long entityId) {
-        List<FileResponse> files = fileAttachmentService.findAllByEntityTypeAndEntityId(entityType, entityId);
-        for (FileResponse file : files) {
+    public PageResponse<FileResponse> findAllByEntityTypeAndEntityId(
+            String entityType,
+            Long entityId,
+            int page,
+            int moviesPerPage,
+            String[] sort
+    ) {
+        Sort sorting = Sort.by(createOrders(sort));
+        Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
+
+        Page<FileResponse> files = fileAttachmentService.findAllByEntityTypeAndEntityId(entityType, entityId, pageable);
+        for (FileResponse file : files.getContent()) {
             file.setUrl(minioService.generatePreSignedUrl(file.getUrl(), 10));
         }
-        return files;
+        return new PageResponse<>(
+                files.getContent(),
+                page,
+                moviesPerPage,
+                files.getTotalElements(),
+                files.getTotalPages()
+        );
+    }
+
+    private List<Sort.Order> createOrders(String[] sort) {
+        return Arrays.stream(sort).map(this::parseSort).toList();
+    }
+
+    private Sort.Order parseSort(String sortParam) {
+        String[] parts = sortParam.split(":");
+        String property = parts[0];
+        Sort.Direction direction = parts.length > 1 ? Sort.Direction.fromString(parts[1]) : Sort.Direction.DESC;
+        return new Sort.Order(direction, property);
     }
 
 }

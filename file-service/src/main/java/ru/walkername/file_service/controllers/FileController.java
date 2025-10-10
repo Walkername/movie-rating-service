@@ -7,11 +7,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.file_service.dto.FileResponse;
+import ru.walkername.file_service.dto.PageResponse;
 import ru.walkername.file_service.exceptions.InvalidUploadContextException;
 import ru.walkername.file_service.security.UserPrincipal;
 import ru.walkername.file_service.services.FileService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,11 +56,14 @@ public class FileController {
     }
 
     @GetMapping("/download-all/signed-url")
-    public ResponseEntity<List<FileResponse>> downloadAllSignedUrl(
+    public ResponseEntity<PageResponse<FileResponse>> downloadAllSignedUrl(
             @RequestParam(value = "entityType") String entityType,
-            @RequestParam(value = "entityId") Long entityId
+            @RequestParam(value = "entityId") Long entityId,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(value = "sort", defaultValue = "uploadedAt:desc") String[] sort
     ) {
-        List<FileResponse> files = fileService.findAllByEntityTypeAndEntityId(entityType, entityId);
+        PageResponse<FileResponse> files = fileService.findAllByEntityTypeAndEntityId(entityType, entityId, page, limit, sort);
         return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
