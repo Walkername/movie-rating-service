@@ -3,7 +3,6 @@ import validateDate from "../../../utils/date-validation/date-validation";
 import { downloadFile } from "../../../api/file-api";
 import "../../../styles/movie-details.css";
 import unknownMoviePoster from "../../../assets/images/unknown-movie-poster.png";
-import { Link } from "react-router-dom";
 
 function MovieDetails({ movie }) {
     const [posterPicUrl, setPosterPicUrl] = useState(null);

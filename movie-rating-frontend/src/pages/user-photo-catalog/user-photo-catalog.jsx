@@ -16,7 +16,7 @@ export default function UserPhotoCatalog() {
     const isAccessToEdit = id == tokenId;
 
     const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(1);
+    const [limit, setLimit] = useState(10);
     const [sort, setSort] = useState("uploadedAt:desc");
 
     const [pageResponse, setPageResponse] = useState({

@@ -1,7 +1,11 @@
 
 export default function ImageGallery({
     pageResponse = {
-        content: []
+        content: [],
+        totalPages: 0,
+        page: 0,
+        totalElements: 0,
+        limit: 0
     },
     limit,
     setLimit,

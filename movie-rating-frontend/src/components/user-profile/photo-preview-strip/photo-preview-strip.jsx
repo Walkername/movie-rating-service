@@ -7,13 +7,12 @@ import getClaimFromToken from "../../../utils/token-validation/token-validation"
 import { updateMyProfilePictureId } from "../../../api/user-api";
 
 export default function PhotoPreviewStrip({
-    userId,
+    isAccessToEdit,
+    context,
+    contextId,
+    addionalActions = [],
     maxPhotos = 10
 }) {
-    const token = localStorage.getItem("accessToken");
-    const tokenId = getClaimFromToken(token, "id");
-    const isAccessToEdit = userId == tokenId;
-
     // ImageViewer
     const [viewStatus, setViewStatus] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -22,17 +21,6 @@ export default function PhotoPreviewStrip({
         setSelectedPhoto(photo);
         setViewStatus(true);
     };
-
-    const setProfilePicture = (photo) => {
-        updateMyProfilePictureId(photo.fileId);
-    };
-
-    const userActions = [
-        {
-            label: "Set as Profile Picture",
-            handler: setProfilePicture
-        }
-    ];
 
     const page = 0;
     const sort = "uploadedAt:desc";
@@ -45,11 +33,11 @@ export default function PhotoPreviewStrip({
     });
 
     useEffect(() => {
-        downloadFiles("user", userId, page, maxPhotos, sort)
+        downloadFiles(context, contextId, page, maxPhotos, sort)
             .then((data) => {
                 setPageResponse(data);
             });
-    }, [userId, page, maxPhotos, sort]);
+    }, [contextId, page, maxPhotos, sort]);
 
     // Scrolling
     // Refs для контейнера прокрутки
@@ -115,7 +103,7 @@ export default function PhotoPreviewStrip({
             <div className="photo-strip-header">
                 <h3 className="photo-strip-title">Recent Photos</h3>
                 <Link
-                    to={`/user/${userId}/photos`}
+                    to={`/${context}/${contextId}/photos`}
                     className="view-all-button"
                 >
                     <span>View All</span>
@@ -145,8 +133,8 @@ export default function PhotoPreviewStrip({
                     ref={scrollContainerRef}
                 >
                     <div className="photo-strip-scroll">
-                        {pageResponse.content.map((photo) => (
-                            <div key={photo.id} className="photo-strip-item" onClick={() => handlePhotoClick(photo)}>
+                        {pageResponse.content.map((photo, index) => (
+                            <div key={index} className="photo-strip-item" onClick={() => handlePhotoClick(photo)}>
                                 <img
                                     src={photo.url}
                                     alt={photo.title}
@@ -156,7 +144,7 @@ export default function PhotoPreviewStrip({
                             </div>
                         ))}
                         <Link
-                            to={`/user/${userId}/photos`}
+                            to={`/${context}/${contextId}/photos`}
                             className="photo-strip-item photo-strip-more-card"
                         >
                             <div className="more-card-content">
@@ -200,7 +188,7 @@ export default function PhotoPreviewStrip({
                     setViewStatus={setViewStatus}
                     selectedPhoto={selectedPhoto}
                     setSelectedPhoto={setSelectedPhoto}
-                    additionalActions={userActions}
+                    additionalActions={addionalActions}
                 />
             </div>
         </div>

@@ -15,13 +15,24 @@ export default function MoviePhotoCatalog() {
     const tokenRole = getClaimFromToken(token, "role");
     const isAccessToEdit = tokenRole == "ADMIN";
 
-    const [pageResponse, setPageResponse] = useState([]);
+    const [page, setPage] = useState(0);
+    const [limit, setLimit] = useState(10);
+    const [sort, setSort] = useState("uploadedAt:desc");
+
+    const [pageResponse, setPageResponse] = useState({
+        content: [],
+        limit: 0,
+        page: 0,
+        totalElements: 0,
+        totalPages: 0
+    });
+
     useEffect(() => {
-        downloadFiles("movie", id)
+        downloadFiles("movie", id, page, limit, sort)
             .then((data) => {
                 setPageResponse(data);
             });
-    }, [id]);
+    }, [id, page, limit, sort]);
 
     // ImageViewer
     const [viewStatus, setViewStatus] = useState(false);
@@ -109,10 +120,13 @@ export default function MoviePhotoCatalog() {
                         </div>
 
                         <ImageGallery
-                            photos={pageResponse}
+                            pageResponse={pageResponse}
+                            limit={limit}
+                            setLimit={setLimit}
                             onPhotoClick={handlePhotoClick}
                         />
                         <ImageViewer
+                            isAccessToEdit={isAccessToEdit}
                             viewStatus={viewStatus}
                             setViewStatus={setViewStatus}
                             selectedPhoto={selectedPhoto}

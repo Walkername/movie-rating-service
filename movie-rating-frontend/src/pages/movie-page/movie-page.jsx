@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 import { getMovie } from "../../api/movie-api";
 import MovieDetailsEdit from "../../components/movie/movie-details-edit/movie-details-edit";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
+import PhotoPreviewStrip from "../../components/user-profile/photo-preview-strip/photo-preview-strip";
+import { updateMoviePoster } from "../../api/admin-movie-api";
 
 function MoviePage() {
-    const { id } = useParams(); // Get the movie ID from the URL parameters
-    const [movie, setMovie] = useState(null); // State for the movie data
+    const { id } = useParams();
+    const [movie, setMovie] = useState(null);
     const token = localStorage.getItem("accessToken");
     let isAccessToEdit = false;
     if (token != null) {
@@ -20,12 +22,12 @@ function MoviePage() {
     useEffect(() => {
         getMovie(id)
             .then((data) => {
-                setMovie(data); // Set the movie data
+                setMovie(data);
             })
             .catch((error) => {
                 console.error(error);
             });
-    }, [id]); // this runs whenever `id` changes
+    }, [id]);
 
     // Handle edit button
     const [isEditing, setIsEditing] = useState(false);
@@ -34,41 +36,58 @@ function MoviePage() {
         setIsEditing(!isEditing);
     }
 
+    // PhotoPreviewStrip
+    const setMoviePoster = (photo) => {
+        updateMoviePoster(id, photo.fileId);
+    };
+
+    const movieActions = [
+        {
+            label: "Set as Movie Poster",
+            handler: setMoviePoster
+        }
+    ];
+
     return (
         <>
             <NavigationBar />
             <div className="profile-page">
-                    <div className="profile-card">
-                        {
-                            movie == null
-                                ? <h1>Error: Movie was not found</h1>
-                                : <div>
-                                    {
-                                        !isEditing
-                                            ? (
-                                                <>
-                                                    <MovieDetails movie={movie} />
-                                                    <Link to={`/movie/${movie.id}/photos`}>Photos</Link>
-                                                    <RateMovie movieId={id} isAccessToEdit={isAccessToEdit} />
-                                                </>
-                                            )
-                                            : (
-                                                isAccessToEdit && <MovieDetailsEdit movie={movie} />
-                                            )
+                <div className="profile-card">
+                    {
+                        movie == null
+                            ? <h1>Error: Movie was not found</h1>
+                            : <div>
+                                {
+                                    !isEditing
+                                        ? (
+                                            <>
+                                                <MovieDetails movie={movie} />
+                                                <PhotoPreviewStrip
+                                                    isAccessToEdit={isAccessToEdit}
+                                                    context={"movie"}
+                                                    contextId={movie.id}
+                                                    addionalActions={movieActions}
+                                                />
+                                                <RateMovie movieId={id} isAccessToEdit={isAccessToEdit} />
+                                            </>
+                                        )
+                                        : (
+                                            isAccessToEdit && <MovieDetailsEdit movie={movie} />
+                                        )
 
-                                    }
-                                </div>
-                        }
-                        {
-                            isAccessToEdit &&
-                            <div>
-                                <br></br>
-                                <button className="edit-button" onClick={handleEdit}>
-                                    {isEditing ? "Back" : "Edit"}
-                                </button>
+                                }
                             </div>
-                        }
-                    </div>
+                    }
+                    {
+                        isAccessToEdit &&
+                        <div>
+                            <br></br>
+                            <button className="edit-button" onClick={handleEdit}>
+                                {isEditing ? "Back" : "Edit"}
+                            </button>
+                        </div>
+                    }
+                </div>
             </div>
 
         </>
