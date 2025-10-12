@@ -4,6 +4,11 @@
     gap: 20px;
 }
 
+.edit-container-top-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
 .edit-card {
     background: #fff;
     padding: 16px;

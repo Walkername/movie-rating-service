@@ -56,12 +56,12 @@ function MoviePage() {
                     {
                         movie == null
                             ? <h1>Error: Movie was not found</h1>
-                            : <div>
+                            : <>
                                 {
                                     !isEditing
                                         ? (
                                             <>
-                                                <MovieDetails movie={movie} />
+                                                <MovieDetails isAccessToEdit={isAccessToEdit} movie={movie} handleEdit={handleEdit} />
                                                 <PhotoPreviewStrip
                                                     isAccessToEdit={isAccessToEdit}
                                                     context={"movie"}
@@ -72,20 +72,11 @@ function MoviePage() {
                                             </>
                                         )
                                         : (
-                                            isAccessToEdit && <MovieDetailsEdit movie={movie} />
+                                            isAccessToEdit && <MovieDetailsEdit isAccessToEdit={isAccessToEdit} movie={movie} handleEdit={handleEdit} />
                                         )
 
                                 }
-                            </div>
-                    }
-                    {
-                        isAccessToEdit &&
-                        <div>
-                            <br></br>
-                            <button className="edit-button" onClick={handleEdit}>
-                                {isEditing ? "Back" : "Edit"}
-                            </button>
-                        </div>
+                            </>
                     }
                 </div>
             </div>

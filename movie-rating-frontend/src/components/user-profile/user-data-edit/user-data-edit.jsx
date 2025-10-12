@@ -4,7 +4,7 @@ import { updateMyUserData, updateMyUsername } from "../../../api/user-api";
 import { uploadMyFile } from "../../../api/file-api";
 import "../../../styles/user-data-edit.css";
 
-function UserDataEdit({ user, setUser }) {
+function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     const token = localStorage.getItem("accessToken");
     const id = getClaimFromToken(token, "id");
 
@@ -111,12 +111,6 @@ function UserDataEdit({ user, setUser }) {
         // Uploading file
         uploadMyFile(formData, "user-avatar")
             .then(() => {
-                // setUploadedFileId(data);
-                // // Update profile picture ID
-                // updateProfilePictureId(user.id, data)
-                //     .catch((error) => {
-                //         console.log(error);
-                //     });
             })
             .catch((error) => {
                 console.log(error);
@@ -125,6 +119,17 @@ function UserDataEdit({ user, setUser }) {
 
     return (
         <div className="edit-container">
+            <div className="edit-container-top-bar">
+                <div></div>
+                {
+                    isAccessToEdit &&
+                    <div>
+                        <button className="edit-button" onClick={handleEdit} >
+                            Back
+                        </button>
+                    </div>
+                }
+            </div>
             {/* Фото профиля */}
             <div className="edit-card">
                 <h3>Profile Picture</h3>

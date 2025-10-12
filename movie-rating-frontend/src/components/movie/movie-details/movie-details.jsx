@@ -4,7 +4,7 @@ import { downloadFile } from "../../../api/file-api";
 import "../../../styles/movie-details.css";
 import unknownMoviePoster from "../../../assets/images/unknown-movie-poster.png";
 
-function MovieDetails({ movie }) {
+function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
     const [posterPicUrl, setPosterPicUrl] = useState(null);
 
     useEffect(() => {
@@ -25,28 +25,38 @@ function MovieDetails({ movie }) {
                 src={posterPicUrl || unknownMoviePoster}
                 alt="Poster"
             />
-            <div>
-                <h2>{movie.title} ({movie.releaseYear})</h2>
-                <h3>Description</h3>
-                <div className="movie-description">
-                    {movie.description}
+            <div className="movie-info-right-side">
+                <div className="movie-info-details">
+                    <h2>{movie.title} ({movie.releaseYear})</h2>
+                    <h3>Description</h3>
+                    <div className="movie-description">
+                        {movie.description}
+                    </div>
+                    <div>
+                        <b>Release year:</b> {movie.releaseYear}
+                    </div>
+                    <div>
+                        <b>Average rating:</b> {
+                            movie.averageRating !== 0.0
+                                ? movie.averageRating
+                                : <span>no ratings</span>
+                        }
+                    </div>
+                    <div>
+                        <b>Scores:</b> {movie.scores}
+                    </div>
+                    <div style={{ fontSize: "12px", }}>
+                        Created at: {validateDate(movie.createdAt)}
+                    </div>
                 </div>
-                <div>
-                    <b>Release year:</b> {movie.releaseYear}
-                </div>
-                <div>
-                    <b>Average rating:</b> {
-                        movie.averageRating !== 0.0
-                            ? movie.averageRating
-                            : <span>no ratings</span>
-                    }
-                </div>
-                <div>
-                    <b>Scores:</b> {movie.scores}
-                </div>
-                <div style={{ fontSize: "12px", }}>
-                    Created at: {validateDate(movie.createdAt)}
-                </div>
+                {
+                    isAccessToEdit &&
+                    <div>
+                        <button className="edit-button" onClick={handleEdit}>
+                            Edit
+                        </button>
+                    </div>
+                }
             </div>
         </div>
     )

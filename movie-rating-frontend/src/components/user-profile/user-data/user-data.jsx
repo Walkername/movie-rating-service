@@ -7,11 +7,7 @@ import PhotoPreviewStrip from "../../photo-preview-strip/photo-preview-strip";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import { updateMyProfilePictureId } from "../../../api/user-api";
 
-function UserData({ user }) {
-    const token = localStorage.getItem("accessToken");
-    const tokenId = getClaimFromToken(token, "id");
-    const isAccessToEdit = user.id == tokenId;
-
+function UserData({ isAccessToEdit, isEditing, user, handleEdit }) {
     const [profilePicUrl, setProfilePicUrl] = useState(null);
 
     useEffect(() => {
@@ -45,17 +41,27 @@ function UserData({ user }) {
                     src={profilePicUrl || unknownProfilePic}
                     alt="Profile"
                 />
-                <div>
-                    <h2 className="username">{user.username}</h2>
+                <div className="user-info-right-side">
+                    <div>
+                        <h2 className="username">{user.username}</h2>
 
-                    <h3 className="section-title">Description</h3>
-                    <p className="section-text">{user.description || "No description provided"}</p>
+                        <h3 className="section-title">Description</h3>
+                        <p className="section-text">{user.description || "No description provided"}</p>
 
-                    <h3 className="section-title">Average rating</h3>
-                    <p className="section-text">{user.averageRating ?? "N/A"}</p>
+                        <h3 className="section-title">Average rating</h3>
+                        <p className="section-text">{user.averageRating ?? "N/A"}</p>
 
-                    <h3 className="section-title">Scores</h3>
-                    <p className="section-text">{user.scores}</p>
+                        <h3 className="section-title">Scores</h3>
+                        <p className="section-text">{user.scores}</p>
+                    </div>
+                    {
+                        isAccessToEdit &&
+                        <div>
+                            <button className="edit-button" onClick={handleEdit} >
+                                Edit
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
 

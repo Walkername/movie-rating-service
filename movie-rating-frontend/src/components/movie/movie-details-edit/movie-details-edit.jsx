@@ -1,10 +1,10 @@
 import { useState } from "react";
-import "../../../styles/movie-data-edit.css";
+import "../../../styles/movie-details-edit.css";
 import { updateMovie } from "../../../api/admin-movie-api";
 import { uploadFile } from "../../../api/admin-file-api";
 import DeleteButton from "../delete-button/delete-button";
 
-function MovieDetailsEdit({ movie }) {
+function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
     const [errorTitle, setErrorTitle] = useState("");
     const [errorDescription, setErrorDescription] = useState("");
     const [errorReleaseYear, setErrorReleaseYear] = useState("");
@@ -100,7 +100,17 @@ function MovieDetailsEdit({ movie }) {
 
     return (
         <div className="edit-container">
-            <DeleteButton id={movie.id} />
+            <div className="edit-container-top-bar">
+                <DeleteButton id={movie.id} />
+                {
+                    isAccessToEdit &&
+                    <div>
+                        <button className="edit-button" onClick={handleEdit}>
+                            Back
+                        </button>
+                    </div>
+                }
+            </div>
             <div className="edit-card">
                 <h3>Movie Poster</h3>
                 {

@@ -31,7 +31,7 @@ function UserPage() {
             });
     }, [id]);
 
-    const handleEditButton = () => {
+    const handleEdit = () => {
         setIsEditing(!isEditing);
     };
 
@@ -48,24 +48,20 @@ function UserPage() {
                                 {isEditing
                                     ? (isAccessToEdit && (
                                         <UserDataEdit
+                                            isAccessToEdit={isAccessToEdit}
                                             user={user}
                                             setUser={setUser}
+                                            handleEdit={handleEdit}
                                         />
                                     ))
-                                    : <UserData user={user} />
+                                    : <UserData
+                                        isAccessToEdit={isAccessToEdit}
+                                        user={user}
+                                        handleEdit={handleEdit}
+                                    />
                                 }
                             </>
                     }
-                    {isAccessToEdit && (
-                        <div className="button-container">
-                            <button
-                                className="edit-button"
-                                onClick={handleEditButton}
-                            >
-                                {isEditing ? 'Back' : 'Edit'}
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
         </>
