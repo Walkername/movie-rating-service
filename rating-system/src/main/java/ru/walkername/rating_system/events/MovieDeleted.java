@@ -1,0 +1,21 @@
+package ru.walkername.rating_system.events;
+
+public class MovieDeleted {
+
+    private Long movieId;
+
+    public MovieDeleted() {
+    }
+
+    public MovieDeleted(Long movieId) {
+        this.movieId = movieId;
+    }
+
+    public Long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
+    }
+}

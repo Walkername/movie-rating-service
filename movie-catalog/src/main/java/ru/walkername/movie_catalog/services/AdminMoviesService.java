@@ -5,6 +5,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import ru.walkername.movie_catalog.events.MovieDeleted;
 import ru.walkername.movie_catalog.exceptions.MovieNotFound;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
@@ -15,15 +18,15 @@ import java.util.Date;
 public class AdminMoviesService {
 
     private final MoviesRepository moviesRepository;
+    private final KafkaProducerService kafkaProducerService;
 
     @Autowired
-    public AdminMoviesService(MoviesRepository moviesRepository) {
+    public AdminMoviesService(MoviesRepository moviesRepository, KafkaProducerService kafkaProducerService) {
         this.moviesRepository = moviesRepository;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @Caching(evict = {
-            // delete cache getMoviesNumber()
-            @CacheEvict(cacheNames = "movies-number", allEntries = true),
             // delete cache getMoviesWithPagination()
             @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
     })
@@ -51,14 +54,27 @@ public class AdminMoviesService {
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "movie", key = "#id"),
-            @CacheEvict(cacheNames = "movies-number", allEntries = true),
-            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true),
+            @CacheEvict(cacheNames = "movies-by-user", allEntries = true)
     })
     @Transactional
     public void delete(Long id) {
         moviesRepository.deleteById(id);
 
-        // TODO: add event to Kafka in order to delete ratings with this movie
+        // Kafka: send to Rating Service in order
+        // to delete all ratings with this movieId
+        registerMovieDeletedEvent(id);
+    }
+
+    private void registerMovieDeletedEvent(Long movieId) {
+        MovieDeleted movieDeleted = new MovieDeleted(movieId);
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                kafkaProducerService.publishMovieDeleted(movieDeleted);
+            }
+        });
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -12,6 +13,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import ru.walkername.rating_system.dto.PageResponse;
 import ru.walkername.rating_system.dto.RatingResponse;
 import ru.walkername.rating_system.dto.RatingsResponse;
+import ru.walkername.rating_system.events.MovieDeleted;
 import ru.walkername.rating_system.events.RatingCreated;
 import ru.walkername.rating_system.events.RatingDeleted;
 import ru.walkername.rating_system.events.RatingUpdated;
@@ -143,6 +145,25 @@ public class RatingsService {
                 kafkaProducerService.publishRatingDeleted(ratingDeleted);
             }
         });
+    }
+
+    @Transactional
+    @KafkaListener(
+            topics = "movies-deleted",
+            groupId = "rating-service-group",
+            containerFactory = "movieDeletedContainerFactory"
+    )
+    public void deleteRatingsByMovieId(MovieDeleted movieDeleted) {
+        // This is inefficient, so we need to make it impossible to delete the movie
+        List<Rating> ratings = ratingsRepository.findByMovieId(movieDeleted.getMovieId());
+        ratingsRepository.deleteAllByMovieId(movieDeleted.getMovieId());
+        ratings.forEach(rating ->
+                registerRatingDeletedEvent(
+                        rating.getUserId(),
+                        movieDeleted.getMovieId(),
+                        rating.getRating()
+                )
+        );
     }
 
     public RatingsResponse getRatingsByUser(Long id, int page, int moviesPerPage, String[] sort) {

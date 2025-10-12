@@ -22,4 +22,5 @@ public interface RatingsRepository extends JpaRepository<Rating, Long> {
 
     boolean existsByUserIdAndMovieId(Long userId, Long movieId);
 
+    void deleteAllByMovieId(Long movieId);
 }
