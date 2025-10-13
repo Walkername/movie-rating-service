@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { register } from "../../../api/auth-api";
 import { useNavigate } from "react-router-dom";
+import "./register-form.css";
 
 export default function RegisterForm() {
     const navigate = useNavigate();
@@ -43,33 +44,64 @@ export default function RegisterForm() {
     }
 
     return (
-        <form method="POST" onSubmit={handleSubmit}>
-            <label>Username:</label>
-            <br></br>
-            <input name="username" type="text" min="5" max="20" value={clientForm.username} onChange={handleChange} required />
-            <br></br>
+        <>
+            <form className="register-form" method="POST" onSubmit={handleSubmit}>
+                <label className="register-username-label" htmlFor="username">
+                    Username:
+                </label>
+                <input
+                    className="register-username-input"
+                    id="username"
+                    name="username"
+                    type="text"
+                    min="5"
+                    max="20"
+                    value={clientForm.username}
+                    onChange={handleChange}
+                    required
+                />
 
-            <label>Password:</label>
-            <br></br>
-            <input name="password" type="password" min="5" value={clientForm.password} onChange={handleChange} required />
-            <br></br>
+                <label className="register-password-label" htmlFor="password">
+                    Password:
+                </label>
+                <input
+                    className="register-password-input"
+                    id="password"
+                    name="password"
+                    type="password"
+                    min="5"
+                    value={clientForm.password}
+                    onChange={handleChange}
+                    required
+                />
 
-            <label>Password confirmation:</label>
-            <br></br>
-            <input name="passwordConfirmation" type="password" value={clientForm.passwordConfirmation} onChange={handleChange} required />
-            <br></br>
-            {
-                errorMessages.map((message, index) => {
-                    return message != "" && (
-                        <>
-                            <span key={index} style={{ color: "red" }}>{message}</span>
-                            <br></br>
-                        </>
-                    );
-                })
-            }
+                <label className="register-password-confirmation-label" htmlFor="password-confirmation">
+                    Password confirmation:
+                </label>
+                <input
+                    className="register-password-confirmation-input"
+                    id="password-confirmation"
+                    name="passwordConfirmation"
+                    type="password"
+                    value={clientForm.passwordConfirmation}
+                    onChange={handleChange}
+                    required
+                />
 
-            <input type="submit" value="Register" />
-        </form>
-    )
+                <input className="register-button" type="submit" value="Register" />
+            </form>
+            <div>
+                {
+                    errorMessages.map((message, index) => {
+                        return message != "" && (
+                            <>
+                                <span key={index} style={{ color: "red" }}>{message}</span>
+                                <br></br>
+                            </>
+                        );
+                    })
+                }
+            </div>
+        </>
+    );
 }

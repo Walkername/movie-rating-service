@@ -49,7 +49,6 @@ export default async function customRequest(path, options = {}) {
     }
 
     if (!response.ok) {
-        console.log(1);
         const errBody = await response.json().catch(() => ({}));
         throw new Error(errBody.message || response.statusText);
     }

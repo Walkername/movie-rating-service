@@ -1,0 +1,40 @@
+.profile-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+}
+
+.error-text {
+    color: #e74c3c;
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.edit-button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 18px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;    
+    transition: background 0.3s ease;
+}
+
+.edit-button:hover {
+    background-color: #2980b9;
+}

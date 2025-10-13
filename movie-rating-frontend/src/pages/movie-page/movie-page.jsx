@@ -8,6 +8,7 @@ import MovieDetailsEdit from "../../components/movie/movie-details-edit/movie-de
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import PhotoPreviewStrip from "../../components/photo-preview-strip/photo-preview-strip";
 import { updateMoviePoster } from "../../api/admin-movie-api";
+import "./movie-page.css";
 
 function MoviePage() {
     const { id } = useParams();

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { login } from "../../../api/auth-api";
 import { useNavigate } from "react-router-dom";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
+import "./login-form.css";
 
 export default function LoginForm() {
     const navigate = useNavigate();
@@ -36,28 +37,50 @@ export default function LoginForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>Username:</label>
-            <br></br>
-            <input name="username" type="text" min="5" max="20" value={formData.title} onChange={handleChange} required />
-            <br></br>
+        <>
+            <form className="login-form" onSubmit={handleSubmit}>
+                <label className="login-username-label" htmlFor="username">
+                    Username:
+                </label>
+                <input
+                    className="login-username-input"
+                    id="username"
+                    name="username"
+                    type="text"
+                    min="5"
+                    max="20"
+                    value={formData.title}
+                    onChange={handleChange}
+                    required
+                />
 
-            <label>Password:</label>
-            <br></br>
-            <input name="password" type="password" min="5" value={formData.title} onChange={handleChange} required />
-            <br></br>
-            {
-                errorMessages.map((message, index) => {
-                    return message != "" && (
-                        <>
-                            <span key={index} style={{ color: "red" }}>{message}</span>
-                            <br></br>
-                        </>
-                    );
-                })
-            }
+                <label className="login-password-label" htmlFor="password">
+                    Password:
+                </label>
+                <input
+                    className="login-password-input"
+                    id="password"
+                    name="password"
+                    type="password"
+                    min="5"
+                    value={formData.title}
+                    onChange={handleChange}
+                    required
+                />
 
-            <input type="submit" value="Login" />
-        </form>
-    )
+                <input className="login-button" type="submit" value="Login" />
+            </form>
+            <div>
+                {
+                    errorMessages.length != 0 ?
+                        errorMessages.map((message, index) => {
+                            return message != "" && (
+                                    <span key={index} style={{ color: "red" }}>{message}</span>
+                            );
+                        })
+                        : <div></div>
+                }
+            </div>
+        </>
+    );
 }
