@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import { getMoviesByUser } from "../../../api/movie-api";
 import validateDate from "../../../utils/date-validation/date-validation";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../../../styles/rated-movies-list.css";
 
 function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
 
-    const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(10);
-    const [sort, setSort] = useState("ratedAt");
-    const [sortField, setSortField] = useState("ratedAt");
-    const [sortOrder, setSortOrder] = useState("desc");
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const pagePar = searchParams.get("page") ? searchParams.get("page") : 0;
+    const limitPar = searchParams.get("limit") ? searchParams.get("limit") : 10;
+    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "ratedAt";
+
+    const [page, setPage] = useState(pagePar);
+    const [limit, setLimit] = useState(limitPar);
+    const [sort, setSort] = useState(sortPar);
+    const sortParams = sortPar.split(":");
+    const [sortField, setSortField] = useState(sortParams[0]);
+    const [sortOrder, setSortOrder] = useState(sortParams[1]);
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -31,7 +38,7 @@ function RatedMoviesList({ userId }) {
         setSortField(columnName);
         setSort(newSort);
 
-        // Обновляем URL параметр
+        // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('sort', newSort);
 
@@ -45,10 +52,10 @@ function RatedMoviesList({ userId }) {
         setPage(newPage);
         setLimit(e.target.value);
 
-        // Обновляем URL параметр
+        // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('limit', limitValue);
-        searchParams.set('page', newPage); // также обновляем страницу
+        searchParams.set('page', newPage);
 
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
         window.history.pushState({}, '', newUrl);

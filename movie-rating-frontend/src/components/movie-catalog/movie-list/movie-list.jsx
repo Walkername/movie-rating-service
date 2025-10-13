@@ -23,8 +23,9 @@ function MovieList() {
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(sortPar);
-    const [sortField, setSortField] = useState("averageRating");
-    const [sortOrder, setSortOrder] = useState("desc");
+    const sortParams = sortPar.split(":");
+    const [sortField, setSortField] = useState(sortParams[0]);
+    const [sortOrder, setSortOrder] = useState(sortParams[1]);
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -46,7 +47,7 @@ function MovieList() {
         setSortField(field);
         setSort(newSort);
 
-        // Обновляем URL параметр
+        // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('sort', newSort);
 
@@ -58,6 +59,12 @@ function MovieList() {
         const order = sortOrder === "desc" ? "asc" : "desc";
         setSortOrder(order);
         setSort(`${sortField}:${order}`);
+
+        // Update URL parameters
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('sort', `${sortField}:${order}`);
+        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+        window.history.pushState({}, '', newUrl);
     };
 
     const handleLimitButton = (e) => {
@@ -66,10 +73,10 @@ function MovieList() {
         setPage(newPage);
         setLimit(e.target.value);
 
-        // Обновляем URL параметр
+        // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('limit', limitValue);
-        searchParams.set('page', newPage); // также обновляем страницу
+        searchParams.set('page', newPage);
 
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
         window.history.pushState({}, '', newUrl);
@@ -154,7 +161,7 @@ function MovieList() {
                     margin: "5px"
                 }}
             >
-                <select onChange={handleSortButton}>
+                <select onChange={handleSortButton} value={sortField}>
                     <option value="averageRating">Rating</option>
                     <option value="releaseYear">Release Year</option>
                     <option value="createdAt">Date added</option>
@@ -162,7 +169,7 @@ function MovieList() {
                 <button className={`sort-order-button sort-order-${sortOrder}`} onClick={handleSortOrderButton}>
                     <span className="sort-order-icon"></span>
                 </button>
-                <select onChange={handleLimitButton}>
+                <select onChange={handleLimitButton} value={limit}>
                     <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
