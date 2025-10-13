@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getUser, getUserByUsername } from "../../../api/user-api";
 import NavigationBar from "../../navigation/navigation-bar/navigation-bar";
 import { Link, useNavigate } from "react-router-dom";
 import UserDataEdit from "../../user-profile/user-data-edit/user-data-edit";
 import AdminUserDataEdit from "../admin-user-data/admin-user-data-edit";
+import { downloadFile } from "../../../api/file-api";
 
 function AdminUsersTool() {
     const navigate = useNavigate();
@@ -12,7 +13,6 @@ function AdminUsersTool() {
         navigate(target);
     }
 
-    const token = localStorage.getItem("accessToken");
     const [idToSend, setIdToSend] = useState("");
     const [usernameToSend, setUsernameToSend] = useState("");
 
@@ -22,11 +22,11 @@ function AdminUsersTool() {
 
     const handleIdInput = (e) => {
         setIdToSend(e.target.value);
-    }
+    };
 
     const handleUsernameInput = (e) => {
         setUsernameToSend(e.target.value);
-    }
+    };
 
     const handleGetUserById = (e) => {
         e.preventDefault();
@@ -38,8 +38,8 @@ function AdminUsersTool() {
             .catch(() => {
                 setUser(null);
                 setStatusMessage("Such user was not found");
-            })
-    }
+            });
+    };
 
     const handleGetUserByUsername = (e) => {
         e.preventDefault();
@@ -51,8 +51,23 @@ function AdminUsersTool() {
             .catch(() => {
                 setUser(null);
                 setStatusMessage("Such user was not found");
+            });
+    };
+
+    // DOWNLOAD PROFILE PICTURE
+    const [profilePicUrl, setProfilePicUrl] = useState(null);
+
+    useEffect(() => {
+        if (!user) return;
+        if (!user.profilePicId) return;
+        downloadFile(user.profilePicId)
+            .then((data) => {
+                setProfilePicUrl(data);
             })
-    }
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }, [user.profilePicId]);
 
     return (
         <>
@@ -94,6 +109,14 @@ function AdminUsersTool() {
                                         ?
                                         <div className="user-info-fa">
                                             <div>
+                                                {
+                                                    profilePicUrl &&
+                                                    <img
+                                                        className="profile-pic"
+                                                        src={profilePicUrl}
+                                                        alt="Profile"
+                                                    />
+                                                }
                                                 <h2>
                                                     <Link className="username-link" to={`/user/${user.id}`}>{user.username}</Link>
                                                 </h2>

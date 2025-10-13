@@ -4,7 +4,6 @@ import { downloadFile } from "../../../api/file-api";
 import "../../../styles/user-data.css";
 import unknownProfilePic from "../../../assets/images/unknown-profile-avatar.png";
 import PhotoPreviewStrip from "../../photo-preview-strip/photo-preview-strip";
-import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import { updateMyProfilePictureId } from "../../../api/user-api";
 
 function UserData({ isAccessToEdit, isEditing, user, handleEdit }) {
@@ -19,7 +18,7 @@ function UserData({ isAccessToEdit, isEditing, user, handleEdit }) {
             .catch((error) => {
                 console.error("Error:", error);
             });
-    }, [user.profilePicUrl]);
+    }, [user.profilePicId]);
 
     // PhotoPreviewStrip
     const setProfilePicture = (photo) => {
