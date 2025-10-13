@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import { updateMyUserData, updateMyUsername } from "../../../api/user-api";
 import { uploadMyFile } from "../../../api/file-api";
 import "../../../styles/user-data-edit.css";
+import "../../../styles/user-photo-catalog.css";
+import ImageUploadViewer from "../../image-upload-viewer/image-upload-viewer";
 
 function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     const token = localStorage.getItem("accessToken");
@@ -91,12 +93,20 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     };
 
     // PROFILE PICTURE
-
+    // ImageUploadViewer
+    const [previewStatus, setPreviewStatus] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
-            setSelectedFile(e.target.files[0]);
+            const file = e.target.files[0];
+            setSelectedFile(file);
+
+            const fileUrl = URL.createObjectURL(file);
+            setPreviewUrl(fileUrl);
+            setPreviewStatus(true);
         }
     };
 
@@ -111,6 +121,17 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
         // Uploading file
         uploadMyFile(formData, "user-avatar")
             .then(() => {
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                }
+                setPreviewStatus(false);
+                setSelectedFile(null);
+                setPreviewUrl(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+
+                window.location.reload();
             })
             .catch((error) => {
                 console.log(error);
@@ -141,8 +162,19 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                     />
                 )}
                 <form onSubmit={handleUploadProfilePicture}>
-                    <input id="profile-pic" type="file" onChange={handleFileChange} />
-                    <button type="submit" className="edit-btn">Upload</button>
+                    <div className="file-input-container">
+                        <input
+                            ref={fileInputRef}
+                            id="profile-pic"
+                            type="file"
+                            onChange={handleFileChange}
+                            className="file-input"
+                            accept="/image/*"
+                        />
+                        <label htmlFor="profile-pic" className="file-input-label">
+                            Choose Photo
+                        </label>
+                    </div>
                 </form>
             </div>
 
@@ -178,6 +210,16 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                     {errorDescription && <p className="error-text">{errorDescription}</p>}
                 </form>
             </div>
+
+            <ImageUploadViewer
+                previewStatus={previewStatus}
+                setPreviewStatus={setPreviewStatus}
+                handleUploadPhoto={handleUploadProfilePicture}
+                setSelectedFile={setSelectedFile}
+                fileInputRef={fileInputRef}
+                previewUrl={previewUrl}
+                setPreviewUrl={setPreviewUrl}
+            />
         </div>
     );
 }

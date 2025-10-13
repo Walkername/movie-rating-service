@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "../../../styles/movie-details-edit.css";
 import { updateMovie } from "../../../api/admin-movie-api";
 import { uploadFile } from "../../../api/admin-file-api";
 import DeleteButton from "../delete-button/delete-button";
+import ImageUploadViewer from "../../image-upload-viewer/image-upload-viewer";
+import "../../../styles/user-photo-catalog.css";
 
 function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
     const [errorTitle, setErrorTitle] = useState("");
@@ -72,12 +74,20 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
     };
 
     // MOVIE POSTER
-
+    // ImageUploadViewer
+    const [previewStatus, setPreviewStatus] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
-            setSelectedFile(e.target.files[0]);
+            const file = e.target.files[0];
+            setSelectedFile(file);
+
+            const fileUrl = URL.createObjectURL(file);
+            setPreviewUrl(fileUrl);
+            setPreviewStatus(true);
         }
     };
 
@@ -92,6 +102,16 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
         // Uploading file
         uploadFile(formData, "movie-poster", movie.id)
             .then(() => {
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                }
+                setPreviewStatus(false);
+                setSelectedFile(null);
+                setPreviewUrl(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                window.location.reload();
             })
             .catch((error) => {
                 console.log(error);
@@ -122,9 +142,21 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
                         />
                     )
                 }
-                <form onSubmit={handleUploadMoviePoster}>
-                    <input id="movie-poster" type="file" onChange={handleFileChange} />
-                    <button type="submit" className="edit-btn">Upload</button>
+                <form onSubmit={handleUploadMoviePoster} className="upload-form">
+                    <div className="file-input-container">
+                        <input
+                            ref={fileInputRef}
+                            id="movie-poster"
+                            type="file"
+                            onChange={handleFileChange}
+                            className="file-input"
+                            accept="/image/*"
+                        />
+                        <label htmlFor="movie-poster" className="file-input-label">
+                            Choose Photo
+                        </label>
+                    </div>
+
                 </form>
             </div>
 
@@ -169,6 +201,16 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
                     <button type="submit" className="edit-btn">Update</button>
                 </div>
             </form>
+
+            <ImageUploadViewer
+                previewStatus={previewStatus}
+                setPreviewStatus={setPreviewStatus}
+                handleUploadPhoto={handleUploadMoviePoster}
+                setSelectedFile={setSelectedFile}
+                fileInputRef={fileInputRef}
+                previewUrl={previewUrl}
+                setPreviewUrl={setPreviewUrl}
+            />
         </div>
     );
 }

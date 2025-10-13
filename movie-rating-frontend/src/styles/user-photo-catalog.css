@@ -127,11 +127,16 @@
 /* Стили для верхней панели с кнопками */
 .header-actions {
     display: flex;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
     padding: 20px 0;
     border-bottom: 1px solid #e0e0e0;
+}
+
+.photo-catalog-page {
+    width: 100%;
 }
 
 /* Стили для кнопки Back */
@@ -160,7 +165,7 @@
 /* Стили для формы загрузки */
 .upload-form {
     display: flex;
-    align-items: center;
+    justify-content: start;
     gap: 15px;
 }
 
