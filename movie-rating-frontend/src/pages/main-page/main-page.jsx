@@ -7,12 +7,10 @@ function MainPage() {
     return (
         <>
             <NavigationBar />
-            <div>
-                <h1>Main Page</h1>
-            </div>
 
-            <div className="page-content-container">
-                <div className="page-content">
+            <div className="background-page">
+                <h1>Main Page</h1>
+                <div className="main-page-content">
                     <div>
                         <TopUser />
 

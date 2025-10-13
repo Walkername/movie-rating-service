@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import validateDate from "../../../utils/date-validation/date-validation";
 import { downloadFile } from "../../../api/file-api";
-import "../../../styles/movie-details.css";
+import "./movie-details.css";
 import unknownMoviePoster from "../../../assets/images/unknown-movie-poster.png";
 
 function MovieDetails({ isAccessToEdit, movie, handleEdit }) {

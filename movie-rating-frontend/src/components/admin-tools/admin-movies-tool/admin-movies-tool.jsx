@@ -87,19 +87,21 @@ function AdminMoviesTool() {
     return (
         <>
             <NavigationBar />
-            <div>
+            <div className="background-page">
                 <h1>Admin Tools</h1>
-            </div>
-            <div className="page-content-container">
-                <div className="page-content">
+                <div className="profile-card">
                     <div className="admin-content">
                         <div className="admin-toolbar">
                             <button
                                 onClick={() => handleNavigate("/admin/users-tool")}
-                            >Users</button>
+                            >
+                                Users
+                            </button>
                             <button
                                 onClick={() => handleNavigate("/admin/movies-tool")}
-                            >Movies</button>
+                            >
+                                Movies
+                            </button>
                         </div>
                         <div>
                             <label htmlFor="movie-tool">Movie Tool: </label>

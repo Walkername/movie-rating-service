@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getMoviesByUser } from "../../../api/movie-api";
 import validateDate from "../../../utils/date-validation/date-validation";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import "../../../styles/rated-movies-list.css";
+import "./rated-movies-list.css";
 
 function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
@@ -17,8 +17,8 @@ function RatedMoviesList({ userId }) {
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(sortPar);
     const sortParams = sortPar.split(":");
-    const [sortField, setSortField] = useState(sortParams[0]);
-    const [sortOrder, setSortOrder] = useState(sortParams[1]);
+    const [sortField, setSortField] = useState(sortParams[0] ? sortParams[0] : "ratedAt");
+    const [sortOrder, setSortOrder] = useState(sortParams[1] ? sortParams[1] : "desc");
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -121,7 +121,6 @@ function RatedMoviesList({ userId }) {
                         <tr
                             key={index}
                             onClick={() => navigate(`/movie/${element.movieId}`)}
-                            className="movie-row"
                         >
                             <td>{index + 1 + limit * page}</td>
                             <td>{element.title}</td>

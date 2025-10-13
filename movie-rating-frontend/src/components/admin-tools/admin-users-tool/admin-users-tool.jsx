@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { getUser, getUserByUsername } from "../../../api/user-api";
 import NavigationBar from "../../navigation/navigation-bar/navigation-bar";
 import { Link, useNavigate } from "react-router-dom";
-import UserDataEdit from "../../user-profile/user-data-edit/user-data-edit";
-import AdminUserDataEdit from "../admin-user-data/admin-user-data-edit";
+import AdminUserDataEdit from "../admin-user-data-edit/admin-user-data-edit";
 import { downloadFile } from "../../../api/file-api";
+import "./admin-users-tool.css";
 
 function AdminUsersTool() {
     const navigate = useNavigate();
@@ -67,24 +67,27 @@ function AdminUsersTool() {
             .catch((error) => {
                 console.error("Error:", error);
             });
-    }, [user.profilePicId]);
+    }, [user]);
 
     return (
         <>
             <NavigationBar />
-            <div>
+
+            <div className="background-page">
                 <h1>Admin Tools</h1>
-            </div>
-            <div className="page-content-container">
-                <div className="page-content">
+                <div className="profile-card">
                     <div className="admin-content">
                         <div className="admin-toolbar">
                             <button
                                 onClick={() => handleNavigate("/admin/users-tool")}
-                            >Users</button>
+                            >
+                                Users
+                            </button>
                             <button
                                 onClick={() => handleNavigate("/admin/movies-tool")}
-                            >Movies</button>
+                            >
+                                Movies
+                            </button>
                         </div>
                         <div>
                             <div>You can find user:</div>

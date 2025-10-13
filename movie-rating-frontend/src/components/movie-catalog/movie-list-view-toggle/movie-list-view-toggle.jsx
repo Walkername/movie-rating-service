@@ -1,8 +1,9 @@
+import "./movie-list-view-toggle.css";
 
 function MovieViewToggle({ viewMode, setViewMode }) {
     const handleViewMode = (state) => {
         setViewMode(state);
-        // Обновляем URL параметр
+        
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set('viewmode', state);
 
@@ -11,7 +12,7 @@ function MovieViewToggle({ viewMode, setViewMode }) {
     };
 
     return (
-        <div className="view-toggle">
+        <div className="movie-list-view-toggle">
             <button
                 className={!viewMode ? 'active' : ''}
                 onClick={() => {

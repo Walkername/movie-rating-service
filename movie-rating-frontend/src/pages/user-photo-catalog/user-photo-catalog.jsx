@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import { downloadFiles, uploadMyFile } from "../../api/file-api";
 import { Link, useParams } from "react-router-dom";
-import "../../styles/user-photo-catalog.css";
+import "./user-photo-catalog.css";
 import ImageGallery from "../../components/image-gallery/image-gallery";
 import ImageUploadForm from "../../components/image-upload-form/image-upload-form";
 import ImageViewer from "../../components/image-viewer/image-viewer";
@@ -93,13 +93,9 @@ export default function UserPhotoCatalog() {
     return (
         <>
             <NavigationBar />
-
-            <div>
+            <div className="background-page">
                 <h1>Photo Catalog</h1>
-            </div>
-
-            <div className="page-content-container">
-                <div className="page-content">
+                <div className="profile-card">
                     <div>
                         <div className="header-actions">
                             <Link to={`/user/${id}`} className="back-button">

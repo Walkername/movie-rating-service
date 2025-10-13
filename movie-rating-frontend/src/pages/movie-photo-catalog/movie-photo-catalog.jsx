@@ -8,7 +8,6 @@ import { updateMoviePoster } from "../../api/admin-movie-api";
 import ImageViewer from "../../components/image-viewer/image-viewer";
 import { uploadFile } from "../../api/admin-file-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
-import "../../styles/user-photo-catalog.css";
 
 export default function MoviePhotoCatalog() {
     const { id } = useParams();

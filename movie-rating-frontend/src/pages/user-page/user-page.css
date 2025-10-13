@@ -1,12 +1,3 @@
-.profile-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #f5f6fa;
-    min-height: 100vh;
-    padding: 20px;
-}
-
 .profile-title {
     font-size: 2rem;
     font-weight: bold;

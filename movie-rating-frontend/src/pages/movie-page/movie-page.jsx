@@ -51,7 +51,7 @@ function MoviePage() {
     return (
         <>
             <NavigationBar />
-            <div className="profile-page">
+            <div className="background-page">
                 <div className="profile-card">
                     {
                         movie == null

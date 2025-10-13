@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
-import "../../../styles/movie-details-edit.css";
+import "./movie-details-edit.css";
 import { updateMovie } from "../../../api/admin-movie-api";
 import { uploadFile } from "../../../api/admin-file-api";
 import DeleteButton from "../delete-button/delete-button";
 import ImageUploadViewer from "../../image-upload-viewer/image-upload-viewer";
-import "../../../styles/user-photo-catalog.css";
 
 function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
     const [errorTitle, setErrorTitle] = useState("");

@@ -43,6 +43,7 @@
 
 .movies-table td {
     padding: 12px;
+    text-align: center;
     border-bottom: 1px solid #ddd;
 }
 
@@ -50,16 +51,12 @@
     text-align: left;
 }
 
-.movies-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.movie-row {
+.movies-table tr {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.movie-row:hover {
+.movies-table tr:hover {
     background-color: #e8f4ff;
 }
 

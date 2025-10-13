@@ -1,0 +1,12 @@
+.admin-content {
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+}
+
+.admin-toolbar {
+    width: 100px;
+}
+
+.admin-toolbar button {
+    width: 80px;
+}

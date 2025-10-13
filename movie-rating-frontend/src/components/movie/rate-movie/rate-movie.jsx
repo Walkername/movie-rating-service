@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { addRating, deleteRating, getRating, updateRating } from "../../../api/rating-api";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import AuthPopup from "../../auth-popup/auth-popup";
-import "../../../styles/rate-movie.css";
+import "./rate-movie.css";
 
 function RateMovie({ movieId }) {
     const token = localStorage.getItem("accessToken");

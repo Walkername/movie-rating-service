@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import { updateMyUserData, updateMyUsername } from "../../../api/user-api";
 import { uploadMyFile } from "../../../api/file-api";
-import "../../../styles/user-data-edit.css";
-import "../../../styles/user-photo-catalog.css";
+import "./user-data-edit.css";
 import ImageUploadViewer from "../../image-upload-viewer/image-upload-viewer";
 
 function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import SearchField from "../search-field/search-field";
+import "./navigation-bar.css";
 
 function NavigationBar() {
     const navigate = useNavigate();

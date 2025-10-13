@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react";
-import "../../../styles/user-data-edit.css";
 
 import {updateUserData, updateUsername} from "../../../api/admin-user-api";
 import {uploadFile} from "../../../api/admin-file-api";

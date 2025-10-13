@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import './movie-card.css';
 
 function MovieCard({ movie }) {
     let href = "/movie/" + movie.id;

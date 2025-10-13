@@ -1,11 +1,11 @@
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import UserDataEdit from "../../components/user-profile/user-data-edit/user-data-edit";
 import UserData from "../../components/user-profile/user-data/user-data";
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import { getUser } from "../../api/user-api";
 import { useParams } from "react-router-dom";
-import "../../styles/user-page.css";
+import "./user-page.css";
 
 function UserPage() {
     const { id } = useParams();
@@ -38,7 +38,7 @@ function UserPage() {
     return (
         <>
             <NavigationBar />
-            <div className="profile-page">
+            <div className="background-page">
                 <h1 className="profile-title">User Profile</h1>
                 <div className="profile-card">
                     {

@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import MOVIES from "../../../props/props";
-import '../../../styles/movie-card.css';
-import '../../../styles/movie-card-bar.css';
-import '../../../styles/sort-button.css';
 import MovieCard from "../movie-card/movie-card";
-import MovieViewToggle from "../movie-view-toggle/movie-view-toggle";
+import MovieViewToggle from "../movie-list-view-toggle/movie-list-view-toggle";
 import MovieCardBar from "../movie-card-bar/movie-card-bar";
-import { getMoviesNumber, getMoviesWithPagination } from "../../../api/movie-api";
+import { getMoviesWithPagination } from "../../../api/movie-api";
+import SortButton from "../sort-button/sort-button";
+import "./movie-list.css";
 
 function MovieList() {
     const [loading, setLoading] = useState(true);
@@ -24,8 +23,8 @@ function MovieList() {
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(sortPar);
     const sortParams = sortPar.split(":");
-    const [sortField, setSortField] = useState(sortParams[0]);
-    const [sortOrder, setSortOrder] = useState(sortParams[1]);
+    const [sortField, setSortField] = useState(sortParams[0] ? sortParams[0] : "uploadedAt");
+    const [sortOrder, setSortOrder] = useState(sortParams[1] ? sortParams[1] : "desc");
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -166,9 +165,7 @@ function MovieList() {
                     <option value="releaseYear">Release Year</option>
                     <option value="createdAt">Date added</option>
                 </select>
-                <button className={`sort-order-button sort-order-${sortOrder}`} onClick={handleSortOrderButton}>
-                    <span className="sort-order-icon"></span>
-                </button>
+                <SortButton sortOrder={sortOrder} handleSortOrderButton={handleSortOrderButton} />
                 <select onChange={handleLimitButton} value={limit}>
                     <option value={10}>10</option>
                     <option value={20}>20</option>

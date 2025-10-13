@@ -20,3 +20,14 @@
     width: 100%;
     justify-content: space-between;
 }
+
+.movie-description {
+    width: 500px;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 1px;
+    height: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
