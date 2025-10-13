@@ -34,4 +34,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleException(MovieNotFound ex) {
+        ErrorResponse response = new ErrorResponse(
+                ex.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 }
