@@ -1,3 +1,4 @@
+import "./image-gallery.css";
 
 export default function ImageGallery({
     pageResponse = {
@@ -22,7 +23,7 @@ export default function ImageGallery({
 
     return (
         <>
-            <div className="user-photo-catalog">
+            <div className="photo-catalog-grid">
                 {
                     pageResponse.content.map((photo, index) => {
                         return (
@@ -32,7 +33,7 @@ export default function ImageGallery({
                                 onClick={() => onPhotoClick(photo)}
                             >
                                 <img
-                                    className="user-photo"
+                                    className="photo"
                                     key={index}
                                     src={photo.url}
                                     alt={`Photo ${index + 1}`}
