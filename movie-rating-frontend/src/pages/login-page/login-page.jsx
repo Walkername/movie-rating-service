@@ -11,7 +11,7 @@ export default function LoginPage() {
 
             <div className="background-page">
                 <h1>Login Page</h1>
-                <div className="login-form-container">
+                <div className="login-page">
                     <LoginForm />
                 </div>
             </div>
