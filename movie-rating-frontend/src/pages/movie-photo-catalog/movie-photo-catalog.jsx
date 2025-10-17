@@ -8,6 +8,7 @@ import { updateMoviePoster } from "../../api/admin-movie-api";
 import ImageViewer from "../../components/image-viewer/image-viewer";
 import { uploadFile } from "../../api/admin-file-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
+import "./movie-photo-catalog.css";
 
 export default function MoviePhotoCatalog() {
     const { id } = useParams();
@@ -94,13 +95,10 @@ export default function MoviePhotoCatalog() {
         <>
             <NavigationBar />
 
-            <div>
+            <div className="background-page">
                 <h1>Photo Catalog</h1>
-            </div>
-
-            <div className="page-content-container">
-                <div className="page-content">
-                    <div className="photo-catalog-page">
+                <div className="profile-card">
+                    <div>
                         <div className="header-actions">
                             <Link to={`/movie/${id}`} className="back-button">
                                 ← Back to Movie
@@ -135,7 +133,7 @@ export default function MoviePhotoCatalog() {
                         />
                     </div>
                 </div>
-            </div >
+            </div>
         </>
     );
 }
