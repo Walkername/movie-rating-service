@@ -1,44 +1,36 @@
-.register-form {
+.register-form-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    width: 100%;
 }
 
-.register-username-label {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: auto;
+.register-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
 }
 
-.register-username-input {
-    margin-top: 2px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-    padding: 8px 16px;
-    border: 1px solid #dee2e6;
+.form-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 15px;
 }
 
-.register-password-label {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: auto;
-}
-
-.register-password-input {
-    margin-top: 2px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-    padding: 8px 16px;
-    border: 1px solid #dee2e6;
-    transition: all 0.3s ease;
-}
-
+.register-username-label,
+.register-password-label,
 .register-password-confirmation-label {
     padding-top: 5px;
     padding-bottom: 5px;
-    margin-right: auto;
+    width: 100%;
+    text-align: left;
 }
 
+.register-username-input,
+.register-password-input,
 .register-password-confirmation-input {
     margin-top: 2px;
     margin-bottom: 5px;
@@ -46,14 +38,17 @@
     padding: 8px 16px;
     border: 1px solid #dee2e6;
     transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .register-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 8px 16px;
-    margin: 8px;
+    margin: 8px 0;
     background: #f8f9fa;
     color: #495057;
     text-decoration: none;
@@ -64,9 +59,10 @@
     transition: all 0.3s ease;
     white-space: nowrap;
     cursor: pointer;
+    width: 100%;
 }
 
-.register-button:hover {
+.register-button:hover:not(:disabled) {
     background: #e9ecef;
     color: #212529;
     border-color: #adb5bd;
@@ -78,4 +74,32 @@
 .error-text {
     color: red;
     font-size: 0.9rem;
+}
+
+.register-username-input.error,
+.register-password-input.error,
+.register-password-confirmation-input.error {
+    border-color: #ff4444;
+    box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+}
+
+.field-error {
+    color: #ff4444;
+    font-size: 0.8em;
+    margin-top: 0.25rem;
+    display: block;
+    text-align: left;
+    width: 100%;
+}
+
+.register-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-errors {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin-top: 10px;
 }

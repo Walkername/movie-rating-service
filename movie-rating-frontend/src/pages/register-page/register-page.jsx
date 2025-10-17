@@ -10,7 +10,7 @@ export default function RegisterPage() {
 
             <div className="background-page">
                 <h1>Register Page</h1>
-                <div className="register-form-container">
+                <div className="register-page">
                     <RegisterForm />
                 </div>
             </div>
