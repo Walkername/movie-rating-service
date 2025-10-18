@@ -14,7 +14,6 @@ import ru.walkername.rating_system.services.RatingsService;
 import ru.walkername.rating_system.exceptions.RatingWrongValidationException;
 import ru.walkername.rating_system.utils.DTOValidator;
 import ru.walkername.rating_system.utils.RatingModelMapper;
-import ru.walkername.rating_system.utils.RatingValidator;
 
 @RestController
 @RequestMapping("/ratings")
@@ -22,18 +21,22 @@ import ru.walkername.rating_system.utils.RatingValidator;
 public class RatingsController {
 
     private final RatingsService ratingsService;
-    private final RatingValidator ratingValidator;
+//    private final RatingValidator ratingValidator;
     private final RatingModelMapper ratingModelMapper;
 
     @Autowired
-    public RatingsController(RatingsService ratingsService, RatingValidator ratingValidator, RatingModelMapper ratingModelMapper) {
+    public RatingsController(
+            RatingsService ratingsService,
+//            RatingValidator ratingValidator,
+            RatingModelMapper ratingModelMapper
+    ) {
         this.ratingsService = ratingsService;
-        this.ratingValidator = ratingValidator;
+//        this.ratingValidator = ratingValidator;
         this.ratingModelMapper = ratingModelMapper;
     }
 
-    @PostMapping("")
-    public ResponseEntity<HttpStatus> add(
+    @PostMapping("/rate")
+    public ResponseEntity<HttpStatus> rate(
             @RequestBody @Valid RatingRequest ratingRequest,
             BindingResult bindingResult,
             @AuthenticationPrincipal UserPrincipal userPrincipal
@@ -41,25 +44,25 @@ public class RatingsController {
         Rating rating = ratingModelMapper.convertToRating(ratingRequest);
         rating.setUserId(userPrincipal.getUserId());
 
-        ratingValidator.validate(rating, bindingResult);
+//        ratingValidator.validate(rating, bindingResult);
         DTOValidator.validate(bindingResult, RatingWrongValidationException::new);
         ratingsService.save(rating);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("")
-    public ResponseEntity<HttpStatus> update(
-            @RequestBody @Valid RatingRequest ratingRequest,
-            BindingResult bindingResult,
-            @AuthenticationPrincipal UserPrincipal userPrincipal
-    ) {
-        DTOValidator.validate(bindingResult, RatingWrongValidationException::new);
-        Rating rating = ratingModelMapper.convertToRating(ratingRequest);
-        rating.setUserId(userPrincipal.getUserId());
-
-        ratingsService.update(rating);
-        return ResponseEntity.ok().build();
-    }
+//    @PatchMapping("")
+//    public ResponseEntity<HttpStatus> update(
+//            @RequestBody @Valid RatingRequest ratingRequest,
+//            BindingResult bindingResult,
+//            @AuthenticationPrincipal UserPrincipal userPrincipal
+//    ) {
+//        DTOValidator.validate(bindingResult, RatingWrongValidationException::new);
+//        Rating rating = ratingModelMapper.convertToRating(ratingRequest);
+//        rating.setUserId(userPrincipal.getUserId());
+//
+//        ratingsService.update(rating);
+//        return ResponseEntity.ok().build();
+//    }
 
     @DeleteMapping("/{movieId}")
     public ResponseEntity<HttpStatus> delete(

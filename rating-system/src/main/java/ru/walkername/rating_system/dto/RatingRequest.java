@@ -9,7 +9,7 @@ public class RatingRequest {
 
     @Min(value = 0, message = "Rating should be greater than 0")
     @Max(value = 10, message = "Rating should not be greater than 10")
-    private double rating;
+    private int rating;
 
     public Long getMovieId() {
         return movieId;
@@ -19,11 +19,11 @@ public class RatingRequest {
         this.movieId = movieId;
     }
 
-    public double getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 }

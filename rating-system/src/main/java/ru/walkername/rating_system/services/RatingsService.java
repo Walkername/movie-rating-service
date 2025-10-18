@@ -54,12 +54,31 @@ public class RatingsService {
 
     @Transactional
     public void save(Rating rating) {
-        // Save to db new added rating
-        rating.setRatedAt(new Date());
-        ratingsRepository.save(rating);
+//        // Save to db new added rating
+//        rating.setRatedAt(new Date());
+//        ratingsRepository.save(rating);
+//
+//        // Kafka: send to User and Movie services
+//        registerRatingCreatedEvent(rating.getUserId(), rating.getMovieId(), rating.getRating());
 
-        // Kafka: send to User and Movie services
-        registerRatingCreatedEvent(rating.getUserId(), rating.getMovieId(), rating.getRating());
+        Optional<Rating> existingRating = ratingsRepository
+                .findByUserIdAndMovieId(rating.getUserId(), rating.getMovieId());
+
+        if (existingRating.isPresent()) {
+            // Update the existing rating
+            Rating existing = existingRating.get();
+            int oldRatingValue = existing.getRating();
+            existing.setRating(rating.getRating());
+            existing.setRatedAt(new Date());
+            ratingsRepository.save(existing);
+
+            registerRatingUpdatedEvent(existing.getUserId(), existing.getMovieId(), rating.getRating(), oldRatingValue);
+        } else {
+            // Create new rating
+            rating.setRatedAt(new Date());
+            ratingsRepository.save(rating);
+            registerRatingCreatedEvent(rating.getUserId(), rating.getMovieId(), rating.getRating());
+        }
     }
 
     private void registerRatingCreatedEvent(Long userId, Long movieId, int rating) {
@@ -77,29 +96,29 @@ public class RatingsService {
         });
     }
 
-    @Transactional
-    public void update(Rating updatedRating) {
-        // Getting user's rating
-        // userId from UserPrincipal, so
-        // you can't get rating other people, manually typing userId, and update it
-        Rating oldRating = ratingsRepository
-                .findByUserIdAndMovieId(updatedRating.getUserId(), updatedRating.getMovieId())
-                .orElseThrow(() -> new RatingNotFound("Rating not found"));
-
-        int oldRatingValue = oldRating.getRating();
-        // Save to DB updated rating
-        updatedRating.setRatingId(oldRating.getRatingId());
-        updatedRating.setRatedAt(new Date());
-        ratingsRepository.save(updatedRating);
-
-        // Kafka: send to User and Movie services
-        registerRatingUpdatedEvent(
-                updatedRating.getUserId(),
-                updatedRating.getMovieId(),
-                updatedRating.getRating(),
-                oldRatingValue
-        );
-    }
+//    @Transactional
+//    public void update(Rating updatedRating) {
+//        // Getting user's rating
+//        // userId from UserPrincipal, so
+//        // you can't get rating other people, manually typing userId, and update it
+//        Rating oldRating = ratingsRepository
+//                .findByUserIdAndMovieId(updatedRating.getUserId(), updatedRating.getMovieId())
+//                .orElseThrow(() -> new RatingNotFound("Rating not found"));
+//
+//        int oldRatingValue = oldRating.getRating();
+//        // Save to DB updated rating
+//        updatedRating.setRatingId(oldRating.getRatingId());
+//        updatedRating.setRatedAt(new Date());
+//        ratingsRepository.save(updatedRating);
+//
+//        // Kafka: send to User and Movie services
+//        registerRatingUpdatedEvent(
+//                updatedRating.getUserId(),
+//                updatedRating.getMovieId(),
+//                updatedRating.getRating(),
+//                oldRatingValue
+//        );
+//    }
 
     private void registerRatingUpdatedEvent(Long userId, Long movieId, int newRating, int oldRating) {
         RatingUpdated ratingUpdated = new RatingUpdated(
@@ -198,8 +217,8 @@ public class RatingsService {
         return new Sort.Order(direction, property);
     }
 
-    public List<Rating> getRatingsByMovie(Long id) {
-        return ratingsRepository.findByMovieId(id);
-    }
+//    public List<Rating> getRatingsByMovie(Long id) {
+//        return ratingsRepository.findByMovieId(id);
+//    }
 
 }
