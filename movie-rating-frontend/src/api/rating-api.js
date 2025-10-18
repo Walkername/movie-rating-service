@@ -1,29 +1,11 @@
 import customRequest from "./fetch-client";
 
-export const addRating = async (formData) => {
+export const rateMovie = async (formData) => {
     try {
         const response = await customRequest(
-            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings`,
+            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/rate`,
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData),
-            }
-        );
-        return response;
-    } catch (error) {
-        throw error;
-    }
-};
-
-export const updateRating = async (formData) => {
-    try {
-        const response = await customRequest(
-            `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings`,
-            {
-                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
