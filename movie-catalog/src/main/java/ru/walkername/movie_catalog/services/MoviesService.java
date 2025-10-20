@@ -13,13 +13,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.*;
-import ru.walkername.movie_catalog.events.FileUploaded;
-import ru.walkername.movie_catalog.events.RatingCreated;
-import ru.walkername.movie_catalog.events.RatingDeleted;
-import ru.walkername.movie_catalog.events.RatingUpdated;
+import ru.walkername.movie_catalog.events.*;
 import ru.walkername.movie_catalog.exceptions.MovieNotFound;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
@@ -36,16 +35,20 @@ public class MoviesService {
     private final String RATING_SERVICE_API;
     private final RestTemplate restTemplate;
     private final MovieModelMapper movieModelMapper;
+    private final KafkaProducerService kafkaProducerService;
 
     @Autowired
     public MoviesService(
             MoviesRepository moviesRepository,
             @Value("${rating.service.url}") String RATING_SERVICE_API,
-            RestTemplate restTemplate, MovieModelMapper movieModelMapper) {
+            RestTemplate restTemplate, MovieModelMapper movieModelMapper,
+            KafkaProducerService kafkaProducerService
+    ) {
         this.moviesRepository = moviesRepository;
         this.RATING_SERVICE_API = RATING_SERVICE_API;
         this.restTemplate = restTemplate;
         this.movieModelMapper = movieModelMapper;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
@@ -79,6 +82,9 @@ public class MoviesService {
 
             value.setScores(scores + 1);
             value.setAverageRating(newAverageRating);
+
+            // Publish Kafka event to UserLibrary
+            registerMovieRatingUpdatedEvent(value);
         });
     }
 
@@ -107,6 +113,9 @@ public class MoviesService {
             double newAverageRating = (averageRating * scores - oldRating + newRating) / scores;
 
             value.setAverageRating(newAverageRating);
+
+            // Publish Kafka event to UserLibrary
+            registerMovieRatingUpdatedEvent(value);
         });
     }
 
@@ -139,6 +148,24 @@ public class MoviesService {
                 double newAverageRating = (averageRating * scores - ratingToDelete) / (scores - 1);
                 value.setScores(scores - 1);
                 value.setAverageRating(newAverageRating);
+            }
+
+            // Publish Kafka event to UserLibrary
+            registerMovieRatingUpdatedEvent(value);
+        });
+    }
+
+    private void registerMovieRatingUpdatedEvent(Movie movie) {
+        MovieRatingUpdated movieRatingUpdated = new MovieRatingUpdated(
+                movie.getId(),
+                movie.getAverageRating(),
+                movie.getScores()
+        );
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                kafkaProducerService.publishMovieRatingUpdated(movieRatingUpdated);
             }
         });
     }

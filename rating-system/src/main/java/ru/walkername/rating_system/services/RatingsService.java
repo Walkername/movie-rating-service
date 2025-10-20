@@ -72,20 +72,21 @@ public class RatingsService {
             existing.setRatedAt(new Date());
             ratingsRepository.save(existing);
 
-            registerRatingUpdatedEvent(existing.getUserId(), existing.getMovieId(), rating.getRating(), oldRatingValue);
+            registerRatingUpdatedEvent(rating, oldRatingValue);
         } else {
             // Create new rating
             rating.setRatedAt(new Date());
             ratingsRepository.save(rating);
-            registerRatingCreatedEvent(rating.getUserId(), rating.getMovieId(), rating.getRating());
+            registerRatingCreatedEvent(rating);
         }
     }
 
-    private void registerRatingCreatedEvent(Long userId, Long movieId, int rating) {
+    private void registerRatingCreatedEvent(Rating rating) {
         RatingCreated ratingCreated = new RatingCreated(
-                userId,
-                movieId,
-                rating
+                rating.getUserId(),
+                rating.getMovieId(),
+                rating.getRating(),
+                rating.getRatedAt()
         );
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
@@ -96,36 +97,13 @@ public class RatingsService {
         });
     }
 
-//    @Transactional
-//    public void update(Rating updatedRating) {
-//        // Getting user's rating
-//        // userId from UserPrincipal, so
-//        // you can't get rating other people, manually typing userId, and update it
-//        Rating oldRating = ratingsRepository
-//                .findByUserIdAndMovieId(updatedRating.getUserId(), updatedRating.getMovieId())
-//                .orElseThrow(() -> new RatingNotFound("Rating not found"));
-//
-//        int oldRatingValue = oldRating.getRating();
-//        // Save to DB updated rating
-//        updatedRating.setRatingId(oldRating.getRatingId());
-//        updatedRating.setRatedAt(new Date());
-//        ratingsRepository.save(updatedRating);
-//
-//        // Kafka: send to User and Movie services
-//        registerRatingUpdatedEvent(
-//                updatedRating.getUserId(),
-//                updatedRating.getMovieId(),
-//                updatedRating.getRating(),
-//                oldRatingValue
-//        );
-//    }
-
-    private void registerRatingUpdatedEvent(Long userId, Long movieId, int newRating, int oldRating) {
+    private void registerRatingUpdatedEvent(Rating rating, int oldRating) {
         RatingUpdated ratingUpdated = new RatingUpdated(
-                userId,
-                movieId,
-                newRating,
-                oldRating
+                rating.getUserId(),
+                rating.getMovieId(),
+                rating.getRating(),
+                oldRating,
+                rating.getRatedAt()
         );
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
@@ -144,18 +122,14 @@ public class RatingsService {
 
         ratingsRepository.delete(currentRating);
 
-        registerRatingDeletedEvent(
-                currentRating.getUserId(),
-                currentRating.getMovieId(),
-                currentRating.getRating()
-        );
+        registerRatingDeletedEvent(currentRating);
     }
 
-    private void registerRatingDeletedEvent(Long userId, Long movieId, int rating) {
+    private void registerRatingDeletedEvent(Rating rating) {
         RatingDeleted ratingDeleted = new RatingDeleted(
-                userId,
-                movieId,
-                rating
+                rating.getUserId(),
+                rating.getMovieId(),
+                rating.getRating()
         );
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
@@ -176,13 +150,7 @@ public class RatingsService {
         // This is inefficient, so we need to make it impossible to delete the movie
         List<Rating> ratings = ratingsRepository.findByMovieId(movieDeleted.getMovieId());
         ratingsRepository.deleteAllByMovieId(movieDeleted.getMovieId());
-        ratings.forEach(rating ->
-                registerRatingDeletedEvent(
-                        rating.getUserId(),
-                        movieDeleted.getMovieId(),
-                        rating.getRating()
-                )
-        );
+        ratings.forEach(this::registerRatingDeletedEvent);
     }
 
     public RatingsResponse getRatingsByUser(Long id, int page, int moviesPerPage, String[] sort) {

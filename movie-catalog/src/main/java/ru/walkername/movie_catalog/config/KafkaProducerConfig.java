@@ -24,6 +24,12 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.movie-deleted-topic.name}")
     private String movieDeletedTopicName;
 
+    @Value("${spring.kafka.movie-updated-topic.name}")
+    private String movieUpdatedTopicName;
+
+    @Value("${spring.kafka.movie-rating-updated-topic.name}")
+    private String movieRatingUpdatedTopicName;
+
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
@@ -41,6 +47,16 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public NewTopic movieUpdatedTopic() {
+        return TopicBuilder.name(movieUpdatedTopicName).build();
+    }
+
+    @Bean
+    public NewTopic movieRatingUpdatedTopic() {
+        return TopicBuilder.name(movieRatingUpdatedTopicName).build();
     }
 
     @Bean

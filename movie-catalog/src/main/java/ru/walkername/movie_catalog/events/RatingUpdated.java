@@ -1,5 +1,7 @@
 package ru.walkername.movie_catalog.events;
 
+import java.util.Date;
+
 public class RatingUpdated {
 
     private Long userId;
@@ -10,14 +12,17 @@ public class RatingUpdated {
 
     private int oldRating;
 
+    private Date ratedAt;
+
     public RatingUpdated() {
     }
 
-    public RatingUpdated(Long userId, Long movieId, int rating, int oldRating) {
+    public RatingUpdated(Long userId, Long movieId, int rating, int oldRating, Date ratedAt) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
         this.oldRating = oldRating;
+        this.ratedAt = ratedAt;
     }
 
     public Long getUserId() {
@@ -52,4 +57,11 @@ public class RatingUpdated {
         this.oldRating = oldRating;
     }
 
+    public Date getRatedAt() {
+        return ratedAt;
+    }
+
+    public void setRatedAt(Date ratedAt) {
+        this.ratedAt = ratedAt;
+    }
 }
