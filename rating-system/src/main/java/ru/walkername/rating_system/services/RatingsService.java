@@ -68,9 +68,9 @@ public class RatingsService {
             // Update the existing rating
             Rating existing = existingRating.get();
             int oldRatingValue = existing.getRating();
-            existing.setRating(rating.getRating());
-            existing.setRatedAt(new Date());
-            ratingsRepository.save(existing);
+            rating.setRatingId(existing.getRatingId());
+            rating.setRatedAt(new Date());
+            ratingsRepository.save(rating);
 
             registerRatingUpdatedEvent(rating, oldRatingValue);
         } else {
