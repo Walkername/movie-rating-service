@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addRating, deleteRating, getRating, rateMovie, updateRating } from "../../../api/rating-api";
+import { deleteRating, getRating, rateMovie } from "../../../api/rating-api";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import AuthPopup from "../../auth-popup/auth-popup";
 import "./rate-movie.css";
