@@ -15,6 +15,8 @@ public class UserRatedMovie {
     @Version
     private Long version;
 
+    private boolean deleted = false;
+
     private Long userId;
 
     private Long movieId;
@@ -144,5 +146,13 @@ public class UserRatedMovie {
 
     public void setMovieCreatedAt(Date movieCreatedAt) {
         this.movieCreatedAt = movieCreatedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
