@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import validateDate from "../../../utils/date-validation/date-validation";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./rated-movies-list.css";
-import { getMoviesByUser } from "../../../api/user-library-api";
+import { getMoviesByUser, searchUserMoviesByTitle } from "../../../api/user-library-api";
 
 function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
@@ -82,9 +82,96 @@ function RatedMoviesList({ userId }) {
         window.history.pushState({}, '', newUrl);
     };
 
+    // Search movies by Title
+    const [searchValue, setSearchValue] = useState("");
+    const [foundMovies, setFoundMovies] = useState({
+        content: [],
+        page: 0,
+        limit: 10,
+        totalElements: 0,
+        totalPages: 0
+    });
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isFadingOut, setIsFadingOut] = useState(false);
+
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    };
+
+    const handleSearch = debounce((e) => {
+        const query = e.target.value;
+        if (query.trim() === "") {
+            setShowDropdown(false);
+            return;
+        }
+        searchUserMoviesByTitle(userId, query)
+            .then((data) => {
+                setFoundMovies(data);
+                setShowDropdown(true);
+                setIsFadingOut(false);
+            })
+            .catch(() => setShowDropdown(false));
+    }, 500);
+
+    const handleMovieSelect = () => {
+        setShowDropdown(false);
+        setSearchValue("");
+    };
+
+    const handleFocus = () => {
+        if (foundMovies.content.length > 0) {
+            setShowDropdown(true);
+            setIsFadingOut(false);
+        }
+    };
+
+    const handleBlur = () => {
+        // добавляем эффект исчезновения
+        setIsFadingOut(true);
+        setTimeout(() => {
+            setShowDropdown(false);
+            setIsFadingOut(false);
+        }, 150); // длительность совпадает с fadeOut
+    };
+
     return (
         <div className="rated-movies-container">
             <h3 className="rated-movies-title">Rated Movies List</h3>
+            <div className="search-container">
+                <input
+                    type="text"
+                    onChange={handleSearch}
+                    placeholder="Search"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                />
+                {showDropdown && foundMovies.content.length > 0 && (
+                    <div className={`search-results-dropdown ${isFadingOut ? "fade-out" : "fade-in"}`}>
+                        {foundMovies.content.length > 0 ? (
+                            foundMovies.content.map((movie, index) => (
+                                <Link
+                                    key={index}
+                                    className="search-result-item"
+                                    to={`/movie/${movie.movieId}`}
+                                    onClick={() => handleMovieSelect(movie.movieId)}
+                                >
+                                    <span className="search-result-title">{movie.movieTitle}</span>
+                                    <span className="search-result-year">({movie.movieReleaseYear})</span>
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="search-result-item disabled">No results</div>
+                        )}
+                    </div>
+                )}
+            </div>
+            <div></div>
             <select onChange={handleLimitButton}>
                 <option value={10}>10</option>
                 <option value={20}>20</option>
