@@ -29,7 +29,17 @@ public class UserRatedMoviesController {
             @RequestParam(value = "minRating", required = false) Double minRating
     ) {
         PageResponse<UserRatedMovieResponse> pageResponse =
-                userRatedMoviesService.searchUserRatedMovies(userId, page, limit, sort, minRating);
+                userRatedMoviesService.getUserRatedMovies(userId, page, limit, sort, minRating);
+        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/search")
+    public ResponseEntity<PageResponse<UserRatedMovieResponse>> searchUserRatedMovies(
+            @PathVariable("userId") Long userId,
+            @RequestParam("query") String query
+    ) {
+        PageResponse<UserRatedMovieResponse> pageResponse =
+                userRatedMoviesService.searchUserRatedMoviesByTitle(userId, query);
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 

@@ -2,6 +2,7 @@ package ru.walkername.user_library.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -267,7 +268,7 @@ public class UserRatedMoviesService {
         });
     }
 
-    public PageResponse<UserRatedMovieResponse> searchUserRatedMovies(
+    public PageResponse<UserRatedMovieResponse> getUserRatedMovies(
             Long userId,
             int page,
             int limit,
@@ -330,6 +331,27 @@ public class UserRatedMoviesService {
                 doc.getMovieAverageRating(),
                 doc.getMovieScores(),
                 doc.getMovieCreatedAt()
+        );
+    }
+
+    public PageResponse<UserRatedMovieResponse> searchUserRatedMoviesByTitle(Long userId, String query) {
+        int page = 0;
+        int limit = 10;
+        PageRequest pageRequest = PageRequest.of(page, limit);
+        Page<UserRatedMovie> docs = userRatedMoviesRepository
+                .findByUserIdAndMovieTitleContainingAndDeletedFalse(userId, query, pageRequest);
+
+        List<UserRatedMovieResponse> content = new ArrayList<>();
+        for (UserRatedMovie doc : docs.getContent()) {
+            content.add(toResponse(doc));
+        }
+
+        return new PageResponse<>(
+                content,
+                page,
+                limit,
+                docs.getTotalElements(),
+                docs.getTotalPages()
         );
     }
 

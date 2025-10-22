@@ -3,6 +3,8 @@ package ru.walkername.user_library.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 
@@ -27,6 +29,7 @@ public class UserRatedMovie {
 
     // Movie Fields
 
+    @Field(type = FieldType.Text, analyzer = "standard")
     private String movieTitle;
 
     private int movieReleaseYear;
