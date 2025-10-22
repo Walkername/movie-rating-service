@@ -27,12 +27,12 @@
 
 .movies-table th div {
     display: inline-flex;
-    align-items: center; 
-    width: auto; 
-    gap: 8px
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.movies-table th:hover {
+.movies-table th:nth-child(n + 3):hover {
     cursor: pointer;
     color: #1e323f;
 }
@@ -71,7 +71,6 @@
     font-family: Arial, sans-serif;
     font-size: 14px;
     color: #333;
-    transition: all 0.2s ease;
 }
 
 .sort-order-column:hover {

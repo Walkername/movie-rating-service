@@ -38,6 +38,13 @@ function MovieList() {
 
     const handlePageButton = (value) => {
         setPage(value);
+
+        // Update URL parameters
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('page', value);
+
+        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+        window.history.pushState({}, '', newUrl);
     };
 
     const handleSortButton = (e) => {

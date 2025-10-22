@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getMoviesByUser } from "../../../api/movie-api";
 import validateDate from "../../../utils/date-validation/date-validation";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./rated-movies-list.css";
+import { getMoviesByUser } from "../../../api/user-library-api";
 
 function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
@@ -73,6 +73,13 @@ function RatedMoviesList({ userId }) {
 
     const handlePageButton = (value) => {
         setPage(value);
+
+        // Update URL parameters
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('page', value);
+
+        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+        window.history.pushState({}, '', newUrl);
     };
 
     return (
@@ -88,32 +95,34 @@ function RatedMoviesList({ userId }) {
                     <tr>
                         <th>№</th>
                         <th>Title</th>
-                        <th>Release Year</th>
-                        <th>Average Rating</th>
-                        <th>
-                            <div onClick={() => handleSortButton("rating")}>
-                                <span>Rating</span>
-                                {
-                                    sortField === "rating" && (
-                                        <span className={`sort-order-column sort-order-${sortOrder}`}>
-                                            <span className="sort-order-column-icon"></span>
-                                        </span>
-                                    )
-                                }
-                            </div>
-                        </th>
-                        <th>
-                            <div onClick={() => handleSortButton("ratedAt")}>
-                                <span>Last Changed</span>
-                                {
-                                    sortField === "ratedAt" && (
-                                        <span className={`sort-order-column sort-order-${sortOrder}`}>
-                                            <span className="sort-order-column-icon"></span>
-                                        </span>
-                                    )
-                                }
-                            </div>
-                        </th>
+                        <TableTitleColumn
+                            title="Release Year"
+                            sortOrder={sortOrder}
+                            sortField={sortField}
+                            sortFieldToCheck="movieReleaseYear"
+                            onColumnClick={() => handleSortButton("movieReleaseYear")}
+                        />
+                        <TableTitleColumn
+                            title="Average Rating"
+                            sortOrder={sortOrder}
+                            sortField={sortField}
+                            sortFieldToCheck="movieAverageRating"
+                            onColumnClick={() => handleSortButton("movieAverageRating")}
+                        />
+                        <TableTitleColumn
+                            title="Rating"
+                            sortOrder={sortOrder}
+                            sortField={sortField}
+                            sortFieldToCheck="rating"
+                            onColumnClick={() => handleSortButton("rating")}
+                        />
+                        <TableTitleColumn
+                            title="Last Changed"
+                            sortOrder={sortOrder}
+                            sortField={sortField}
+                            sortFieldToCheck="ratedAt"
+                            onColumnClick={() => handleSortButton("ratedAt")}
+                        />
                     </tr>
                 </thead>
                 <tbody>
@@ -123,9 +132,9 @@ function RatedMoviesList({ userId }) {
                             onClick={() => navigate(`/movie/${element.movieId}`)}
                         >
                             <td>{index + 1 + limit * page}</td>
-                            <td>{element.title}</td>
-                            <td>{element.releaseYear}</td>
-                            <td>{element.averageRating}</td>
+                            <td>{element.movieTitle}</td>
+                            <td>{element.movieReleaseYear}</td>
+                            <td>{element.movieAverageRating}</td>
                             <td>{element.rating}</td>
                             <td>{validateDate(element.ratedAt)}</td>
                         </tr>
@@ -147,6 +156,28 @@ function RatedMoviesList({ userId }) {
                 }
             </div>
         </div>
+    );
+}
+
+function TableTitleColumn({
+    title,
+    sortOrder,
+    sortField,
+    sortFieldToCheck,
+    onColumnClick
+}) {
+    return (
+        <th onClick={onColumnClick}>
+            <div>
+                <span>{title}</span>
+                <span
+                    className={`sort-order-column sort-order-${sortOrder}`}
+                    style={{ visibility: sortField === sortFieldToCheck ? "visible" : "hidden" }}
+                >
+                    <span className="sort-order-column-icon"></span>
+                </span>
+            </div>
+        </th>
     );
 }
 
