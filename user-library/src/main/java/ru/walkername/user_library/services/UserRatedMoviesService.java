@@ -96,7 +96,7 @@ public class UserRatedMoviesService {
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
         System.out.println("RatingUpdated: movieId=" + ratingUpdated.getMovieId());
 
-        String userRatedMovieId = UserRatedMovie.generateId(ratingUpdated.getUserId(), ratingUpdated.getMovieId());
+        String docId = UserRatedMovie.generateId(ratingUpdated.getUserId(), ratingUpdated.getMovieId());
         Map<String, Object> params = new HashMap<>();
         params.put("rating", ratingUpdated.getRating());
         params.put("ratedAt", ratingUpdated.getRatedAt());
@@ -110,16 +110,11 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        UpdateQuery updateQuery = UpdateQuery.builder(userRatedMovieId)
-                .withScriptType(ScriptType.INLINE)
-                .withScript(script)
-                .withParams(params)
-                .build();
-
-        retryTemplate.execute(context -> {
-            elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
-            return null;
-        });
+        try {
+            updateWithScript(docId, params, script);
+        } catch (Exception e) {
+            updateUserRatingWithFullDocument(docId, ratingUpdated);
+        }
     }
 
     @KafkaListener(
@@ -128,7 +123,7 @@ public class UserRatedMoviesService {
             containerFactory = "ratingDeletedContainerFactory"
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
-        String id = UserRatedMovie.generateId(ratingDeleted.getUserId(), ratingDeleted.getMovieId());
+        String docId = UserRatedMovie.generateId(ratingDeleted.getUserId(), ratingDeleted.getMovieId());
         System.out.println("RatingDeleted: movieId=" + ratingDeleted.getMovieId());
 
         Map<String, Object> params = new HashMap<>();
@@ -140,14 +135,44 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        UpdateQuery updateQuery = UpdateQuery.builder(id)
+        try {
+            updateWithScript(docId, params, script);
+        } catch (Exception e) {
+            updateRatingDeletedWithFullDocument(docId);
+        }
+    }
+
+    private void updateWithScript(String docId, Map<String, Object> params, String script) {
+        UpdateQuery updateQuery = UpdateQuery.builder(docId)
                 .withScriptType(ScriptType.INLINE)
                 .withScript(script)
                 .withParams(params)
                 .build();
 
+        elasticsearchOperations.update(updateQuery, indexCoordinates);
+    }
+
+    private void updateUserRatingWithFullDocument(String docId, RatingUpdated ratingUpdated) {
+        UserRatedMovie existingDoc = userRatedMoviesRepository.findById(docId)
+                .orElseThrow(() -> new UserRatedMovieNotFound("Document not found: " + docId));
+
+        existingDoc.setRating(ratingUpdated.getRating());
+        existingDoc.setRatedAt(ratingUpdated.getRatedAt());
+
         retryTemplate.execute(context -> {
-            elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
+            userRatedMoviesRepository.save(existingDoc);
+            return null;
+        });
+    }
+
+    private void updateRatingDeletedWithFullDocument(String docId) {
+        UserRatedMovie existingDoc = userRatedMoviesRepository.findById(docId)
+                .orElseThrow(() -> new UserRatedMovieNotFound("Document not found: " + docId));
+
+        existingDoc.setDeleted(true);
+
+        retryTemplate.execute(context -> {
+            userRatedMoviesRepository.save(existingDoc);
             return null;
         });
     }
@@ -222,7 +247,6 @@ public class UserRatedMoviesService {
             elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
             return null;
         });
-
     }
 
     @KafkaListener(
