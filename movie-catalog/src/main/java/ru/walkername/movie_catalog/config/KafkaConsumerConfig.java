@@ -70,8 +70,8 @@ public class KafkaConsumerConfig {
     public ConsumerFactory<String, FileUploaded> fileUploadedFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-service-group");
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_profile.events");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "movie-service-group");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.movie_catalog.events");
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         return new DefaultKafkaConsumerFactory<>(
                 props,
