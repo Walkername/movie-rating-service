@@ -13,7 +13,7 @@ public class RefreshToken {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "refresh_token")
+    @Column(name = "token_hash")
     private String refreshToken;
 
     public RefreshToken() {

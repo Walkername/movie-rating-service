@@ -53,7 +53,7 @@ public class AuthController {
     ) {
         User user = userModelMapper.convertToUser(authDTO);
         userValidator.validate(user, bindingResult);
-        DTOValidator.validate(bindingResult, LoginException::new);
+        DTOValidator.validate(bindingResult, RegistrationException::new);
 
         authService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -65,7 +65,7 @@ public class AuthController {
             BindingResult bindingResult
     ) {
         User user = userModelMapper.convertToUser(authDTO);
-        DTOValidator.validate(bindingResult, RegistrationException::new);
+        DTOValidator.validate(bindingResult, LoginException::new);
 
         // If such a person exists in DB
         User userDB = authService.checkAndGet(user);

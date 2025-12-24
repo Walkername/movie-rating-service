@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="insert-user-profile-data" author="walkername">
+        <insert tableName="user_profile">
+            <column name="username" value="user123" />
+            <column name="password" value="$2a$12$0MeJYdBzY.Ksj0jRWglBy.MohVxVP.zxCb6Q0vwo3rFjlPc5XehVC"  />
+            <column name="description" value="Just a user with simple authority" />
+            <column name="role" value="USER" />
+        </insert>
+
+        <insert tableName="user_profile">
+            <column name="username" value="admin" />
+            <column name="password" value="$2a$12$Fd/rlYSQcCJxesoVM8qcseLKRY/A4nwlXpQ4nxcDBVKzqYJqs7O72"  />
+            <column name="description" value="Just a user with simple authority" />
+            <column name="role" value="ADMIN" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="fix-admin-description" author="walkername">
+        <update tableName="user_profile">
+            <column name="description" value="Administrator with full system access"/>
+            <where>username = 'admin'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

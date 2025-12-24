@@ -26,9 +26,16 @@
 		<tag/>
 		<url/>
 	</scm>
+
 	<properties>
 		<java.version>25</java.version>
+		<modelmapper.version>3.2.1</modelmapper.version>
+		<java-jwt.version>4.5.0</java-jwt.version>
+		<spring-kafka.version>4.0.0-M3</spring-kafka.version>
+		<jedis.version>6.1.0</jedis.version>
+		<liquibase-core.version>5.0.1</liquibase-core.version>
 	</properties>
+
 	<dependencies>
 
 		<dependency>
@@ -66,21 +73,21 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>3.2.1</version>
+			<version>${modelmapper.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>4.5.0</version>
+			<version>${java-jwt.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
-			<version>4.0.0-M3</version>
+			<version>${spring-kafka.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
@@ -93,7 +100,14 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>6.1.0</version>
+			<version>${jedis.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase-core.version}</version>
 		</dependency>
 
 	</dependencies>
