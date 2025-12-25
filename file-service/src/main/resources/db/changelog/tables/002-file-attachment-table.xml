@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-file-attachment-table" author="walkername">
+
+        <createTable tableName="file_attachment">
+            <column name="id" type="BIGINT" autoIncrement="true" generationType="BY DEFAULT" >
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="file_id" type="BIGINT" >
+                <constraints nullable="false" unique="true" foreignKeyName="fk_file_attachment_file_id" references="file(id)" />
+            </column>
+            <column name="entity_type" type="VARCHAR(50)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="entity_id" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="uploaded_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>
