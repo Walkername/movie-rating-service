@@ -10,7 +10,6 @@ import "./movie-list.css";
 
 function MovieList() {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -98,7 +97,6 @@ function MovieList() {
             })
             .catch((error) => {
                 console.error("Error fetching movies:", error);
-                setError(error.message);
                 setLoading(false);
             });
     }, [page, limit, sort]);
@@ -119,10 +117,7 @@ function MovieList() {
                 {
                     loading ? (
                         <div>Loading movies...</div>
-                    ) : error ? (
-                        <div>Error: {error}</div>
-                    ) :
-                        pageResponse.content.map((movie, index) => {
+                    ) : pageResponse.content.map((movie, index) => {
                             if (index < limit) {
                                 return viewMode ?
                                     (

@@ -11,6 +11,7 @@ import UserPhotoCatalog from './pages/user-photo-catalog/user-photo-catalog';
 import MoviePhotoCatalog from './pages/movie-photo-catalog/movie-photo-catalog';
 import LoginPage from './pages/login-page/login-page';
 import RegisterPage from './pages/register-page/register-page';
+import FeedPage from './pages/feed-page/feed-page';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/movie/:id" element={<MoviePage />} />
         <Route path="/movie/:id/photos" element={<MoviePhotoCatalog />} />
+        <Route path="/feed" element={<FeedPage />} />
         <Route path=""></Route>
       </Routes>
     </Router>

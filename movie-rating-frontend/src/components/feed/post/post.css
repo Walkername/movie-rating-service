@@ -1,0 +1,104 @@
+.post-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 500px;
+    padding: 5px;
+    margin: 10px;
+
+    border: 1px black solid;
+    border-radius: 15px;
+}
+
+.post-date {
+    margin-right: auto;
+    font-size: 11px;
+}
+
+.post-title {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.post-content {
+    text-align: justify;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.post-content-show-more {
+    margin-right: auto;
+    font-size: 12px;
+    background-color: rgb(216, 227, 255);
+    cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.post-content-show-more:hover {
+    color: azure;
+}
+
+.post-function-panel {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    border-top: 1px lightgray solid;
+}
+
+.post-function-like {
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+}
+
+.post-function-like:hover {
+    background-color: aliceblue;
+}
+
+.post-function-comment {
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+}
+
+.post-function-comment:hover {
+    background-color: aliceblue;
+}
+
+.post-function-more {
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+}
+
+.post-function-more:hover {
+    background-color: aliceblue;
+}
+
+.post-comment-section {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.post-comment-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-comment-date {
+    font-size: 11px;
+    text-align: center;
+    align-content: center;
+}
+
+.post-comment-input-field {
+    width: 100%;
+}

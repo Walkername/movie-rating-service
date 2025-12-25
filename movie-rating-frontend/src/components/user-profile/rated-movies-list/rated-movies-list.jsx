@@ -172,7 +172,7 @@ function RatedMoviesList({ userId }) {
                 )}
             </div>
             <div></div>
-            <select onChange={handleLimitButton}>
+            <select onChange={handleLimitButton} value={limit}>
                 <option value={10}>10</option>
                 <option value={20}>20</option>
                 <option value={50}>50</option>
