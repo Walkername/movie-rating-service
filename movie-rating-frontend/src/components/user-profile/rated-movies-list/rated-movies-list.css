@@ -169,6 +169,8 @@
 }
 
 .search-result-year {
+    display: flex;
+    align-items: center;
     color: #888;
     font-size: 13px;
 }
