@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-movie-table" author="walkername">
+
+        <createTable tableName="movie">
+            <column name="id" type="BIGINT" autoIncrement="true" generationType="BY DEFAULT" >
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="title" type="VARCHAR(50)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="release_year" type="INT" >
+                <constraints nullable="false" checkConstraint="release_year &gt; 0" />
+            </column>
+            <column name="description" type="VARCHAR(500)" defaultValue="" >
+                <constraints nullable="false" />
+            </column>
+            <column name="average_rating" type="NUMERIC(4, 2)" defaultValue="0" >
+                <constraints nullable="false" checkConstraint="average_rating &lt;= 10.00" />
+            </column>
+            <column name="scores" type="int" defaultValue="0" >
+                <constraints nullable="false" />
+            </column>
+            <column name="poster_pic_id" type="BIGINT" />
+            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <sql>
+            alter table movie
+                add constraint ck_movie_release_year
+                    check (release_year &gt;= 0)
+        </sql>
+
+        <sql>
+            alter table movie
+                add constraint ck_movie_average_rating
+                    check (average_rating &lt;= 10.00)
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
