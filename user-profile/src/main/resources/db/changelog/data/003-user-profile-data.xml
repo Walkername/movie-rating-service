@@ -16,17 +16,10 @@
         <insert tableName="user_profile">
             <column name="username" value="admin" />
             <column name="password" value="$2a$12$Fd/rlYSQcCJxesoVM8qcseLKRY/A4nwlXpQ4nxcDBVKzqYJqs7O72"  />
-            <column name="description" value="Just a user with simple authority" />
+            <column name="description" value="Administrator with full system access" />
             <column name="role" value="ADMIN" />
         </insert>
 
-    </changeSet>
-
-    <changeSet id="fix-admin-description" author="walkername">
-        <update tableName="user_profile">
-            <column name="description" value="Administrator with full system access"/>
-            <where>username = 'admin'</where>
-        </update>
     </changeSet>
 
 </databaseChangeLog>
