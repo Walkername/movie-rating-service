@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="insert-movie-data" author="walkername">
+
+        <insert tableName="movie">
+            <column name="title" value="Interstellar" />
+            <column name="release_year" value="2014" />
+            <column name="description" value="Movie about Matthew in the space in search of new home. And also Matt Damon." />
+        </insert>
+
+        <insert tableName="movie">
+            <column name="title" value="Avengers" />
+            <column name="release_year" value="2012" />
+            <column name="description" value="Superheroes are fighting against Loki" />
+        </insert>
+
+        <insert tableName="movie">
+            <column name="title" value="Squid Game" />
+            <column name="release_year" value="2025" />
+            <column name="description" value="Greedy people are eager to get gold in exchange for people's lives" />
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
