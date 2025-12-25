@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-rating-table" author="walkername">
+
+        <createTable tableName="rating">
+            <column name="id" type="BIGINT" autoIncrement="true" generationType="BY DEFAULT">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="user_id" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="movie_id" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="rating" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="rated_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <sql>
+            alter table rating
+                add constraint ck_rating_rating
+                    check (rating &gt;= 1 and rating &lt;= 10)
+        </sql>
+
+        <addUniqueConstraint
+                tableName="rating"
+                columnNames="user_id, movie_id"
+                constraintName="uq_rating_user_id_movie_id"
+        />
+
+    </changeSet>
+
+</databaseChangeLog>

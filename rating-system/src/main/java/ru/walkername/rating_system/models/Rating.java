@@ -14,7 +14,7 @@ public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rating_id")
+    @Column(name = "id")
     private Long ratingId;
 
     @Column(name = "user_id")
