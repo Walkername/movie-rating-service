@@ -1,7 +1,7 @@
 import NavigationBar from '../../components/navigation/navigation-bar/navigation-bar';
 import TopUser from '../../components/top-user/top-user';
 import MovieList from '../../components/movie-catalog/movie-list/movie-list';
-import PostList from '../../components/feed/post-list/post-list';
+import PostListPreview from '../../components/feed/post-list-preview/post-list-preview';
 
 function MainPage() {
 
@@ -15,9 +15,13 @@ function MainPage() {
                     <div>
                         <TopUser />
 
+                        <hr></hr>
+                        
                         <MovieList />
-
-                        <PostList display={"main"} />
+                        
+                        <hr></hr>
+                        
+                        <PostListPreview />
                     </div>
                 </div>
             </div>
