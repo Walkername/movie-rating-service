@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.feed_service.dto.PageResponse;
@@ -29,7 +30,8 @@ public class PostService {
     }
 
     public PageResponse<PostResponse> getPostsWithPagination(int page, int limit) {
-        Pageable pageable = PageRequest.of(page, limit);
+        Sort sorting = Sort.by(Sort.Direction.DESC, "publishedAt");
+        Pageable pageable = PageRequest.of(page, limit, sorting);
         Page<Post> postsPage = postRepository.findAll(pageable);
 
         List<PostResponse> postResponses = new ArrayList<>();
