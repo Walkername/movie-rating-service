@@ -70,25 +70,6 @@ function AdminUsersTool() {
     }, [user]);
 
     return (
-        <>
-            <NavigationBar />
-
-            <div className="background-page">
-                <h1>Admin Tools</h1>
-                <div className="profile-card">
-                    <div className="admin-content">
-                        <div className="admin-toolbar">
-                            <button
-                                onClick={() => handleNavigate("/admin/users-tool")}
-                            >
-                                Users
-                            </button>
-                            <button
-                                onClick={() => handleNavigate("/admin/movies-tool")}
-                            >
-                                Movies
-                            </button>
-                        </div>
                         <div>
                             <div>You can find user:</div>
                             <form onSubmit={handleGetUserById}>
@@ -134,11 +115,6 @@ function AdminUsersTool() {
                                 }
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-        </>
     );
 }
 

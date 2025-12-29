@@ -15,7 +15,6 @@ export default function PostList() {
     useEffect(() => {
         getPosts(0, 10)
             .then((data) => {
-                console.log(data);
                 setPosts(data);
             })
             .catch((error) => {
