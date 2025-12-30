@@ -1,32 +1,47 @@
 package ru.walkername.feed_service.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.walkername.feed_service.dto.PostResponse;
+import ru.walkername.feed_service.exceptions.PostNotFoundException;
 import ru.walkername.feed_service.models.Post;
 import ru.walkername.feed_service.repositories.PostRepository;
-import ru.walkername.feed_service.util.PostModelMapper;
 
 import java.time.Instant;
 
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class AdminPostService {
 
     private final PostRepository postRepository;
-    private final PostModelMapper postModelMapper;
 
-    @Autowired
-    public AdminPostService(PostRepository postRepository, PostModelMapper postModelMapper) {
-        this.postRepository = postRepository;
-        this.postModelMapper = postModelMapper;
+    @Transactional
+    public Post save(Post post) {
+        post.setPublishedAt(Instant.now());
+        return postRepository.save(post);
     }
 
     @Transactional
-    public PostResponse save(Post post) {
-        post.setPublishedAt(Instant.now());
-        return postModelMapper.toResponse(postRepository.save(post));
+    public Post update(Long id, Post post) {
+        Post dbPost = postRepository.findById(id).orElseThrow(
+                () -> new PostNotFoundException("Post not found")
+        );
+
+        post.setId(id);
+        post.setPublishedAt(dbPost.getPublishedAt());
+
+        return postRepository.save(post);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        boolean postsExists = postRepository.existsById(id);
+        if (!postsExists) {
+            throw new PostNotFoundException("Post not found");
+        }
+
+        postRepository.deleteById(id);
     }
 
 }

@@ -1,6 +1,6 @@
 package ru.walkername.feed_service.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,15 +15,11 @@ import ru.walkername.feed_service.security.JWTFilter;
 
 import java.util.Arrays;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
     private final JWTFilter jwtFilter;
-
-    @Autowired
-    public SecurityConfig(JWTFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -32,7 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/posts/").hasAuthority("ADMIN")
                         .requestMatchers(
-                                "/posts"
+                                "/posts", "/posts/{id}"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
