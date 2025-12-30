@@ -1,0 +1,166 @@
+.post-function-panel {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
+    margin-top: 8px;
+    position: relative;
+}
+
+.post-function-like,
+.post-function-comment,
+.post-function-more {
+    color: #666;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    user-select: none;
+    position: relative;
+}
+
+.post-function-like:hover,
+.post-function-comment:hover,
+.post-function-more:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.post-function-comment:active,
+.post-function-like:active,
+.post-function-more:active {
+    transform: scale(0.98);
+}
+
+/* More button container */
+.post-function-more-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown menu */
+.post-function-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    min-width: 160px;
+    z-index: 1000;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    margin-top: 8px;
+    animation: menuSlideDown 0.2s ease;
+}
+
+@keyframes menuSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Menu items */
+.post-function-menu-item {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    color: #333;
+}
+
+.post-function-menu-item:hover {
+    background-color: #f5f5f5;
+}
+
+.post-function-menu-update {
+    color: #3498db;
+    border-bottom: 1px solid #eee;
+}
+
+.post-function-menu-update:hover {
+    color: #2980b9;
+    background-color: #f0f7ff;
+}
+
+.post-function-menu-delete {
+    color: #e74c3c;
+}
+
+.post-function-menu-delete:hover {
+    color: #c0392b;
+    background-color: #fff5f5;
+}
+
+/* Arrow indicator */
+.post-function-menu::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 16px;
+    width: 16px;
+    height: 16px;
+    background-color: #ffffff;
+    transform: rotate(45deg);
+    border-top: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+    z-index: -1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .post-function-panel {
+        gap: 16px;
+    }
+    
+    .post-function-menu {
+        min-width: 140px;
+        right: -10px;
+    }
+    
+    .post-function-menu::before {
+        right: 20px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .post-function-menu {
+        background-color: #2d3436;
+        border-color: #444;
+    }
+    
+    .post-function-menu::before {
+        background-color: #2d3436;
+        border-color: #444;
+    }
+    
+    .post-function-menu-item {
+        color: #f5f5f5;
+    }
+    
+    .post-function-menu-item:hover {
+        background-color: #3d4346;
+    }
+    
+    .post-function-menu-update:hover {
+        background-color: #2c3e50;
+    }
+    
+    .post-function-menu-delete:hover {
+        background-color: #3d2727;
+    }
+}

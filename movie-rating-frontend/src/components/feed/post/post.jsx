@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import validateDate from "../../../utils/date-validation/date-validation";
+import CommentList from "../post-comment-list/post-comment-list";
+import PostFunctionPanel from "../post-function-panel/post-function-panel";
 import "./post.css";
 
 export default function Post({ post }) {
@@ -53,49 +55,8 @@ export default function Post({ post }) {
                     {showMoreText}
                 </p>
             )}
-            <div className="post-function-panel">
-                <span className="post-function-like">Like</span>
-                <span
-                    className="post-function-comment"
-                    onClick={toggleCommentSection}
-                >
-                    Comment
-                </span>
-                <span className="post-function-more">More...</span>
-            </div>
-            {commentSection && (
-                <div className="post-comment-section">
-                    <div className="post-comments">
-                        <div className="post-comment">
-                            <div className="post-comment-title">
-                                <span className="post-comment-username">
-                                    <b>User123</b>
-                                </span>{" "}
-                                <span className="post-comment-date">
-                                    25.01.2025 13:01
-                                </span>
-                            </div>
-                            <div className="post-comment-content">
-                                Hello, It's not so bad! You can continue your
-                                journey.
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr></hr>
-                    <div className="post-comment-input">
-                        <div className="post-comment-input-username">
-                            <b>walkername</b>
-                        </div>
-                        <textarea
-                            className="post-comment-input-field"
-                            placeholder="Type your comment"
-                        ></textarea>
-                        <br></br>
-                        <input type="submit" value="Send" />
-                    </div>
-                </div>
-            )}
+            <PostFunctionPanel onClickComment={() => toggleCommentSection()} postId={post.id} />
+            {commentSection && <CommentList />}
         </div>
     );
 }

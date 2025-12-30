@@ -1,5 +1,16 @@
 import customRequest from "./fetch-client";
 
+export const getPost = async (id) => {
+    try {
+        const response = await customRequest(
+            `${process.env.REACT_APP_FEED_SERVICE_URL}/posts/${id}`
+        );
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getPosts = async (page, limit) => {
     try {
         const response = await customRequest(
