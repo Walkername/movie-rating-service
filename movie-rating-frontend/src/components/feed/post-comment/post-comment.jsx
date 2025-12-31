@@ -1,18 +1,18 @@
+import validateDate from "../../../utils/date-validation/date-validation";
 
-export default function PostComment() {
+export default function PostComment({ comment }) {
     return (
         <div className="post-comment">
             <div className="post-comment-title">
                 <span className="post-comment-username">
-                    <b>User123</b>
+                    <b>{comment.username}</b>
                 </span>{" "}
                 <span className="post-comment-date">
-                    25.01.2025 13:01
+                    {validateDate(comment.publishedAt)}
                 </span>
             </div>
             <div className="post-comment-content">
-                Hello, It's not so bad! You can continue your
-                journey.
+                {comment.content}
             </div>
         </div>
     );

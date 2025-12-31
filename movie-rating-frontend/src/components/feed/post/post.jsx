@@ -1,15 +1,15 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import validateDate from "../../../utils/date-validation/date-validation";
-import CommentList from "../post-comment-list/post-comment-list";
+import PostCommentSection from "../post-comment-section/post-comment-section";
 import PostFunctionPanel from "../post-function-panel/post-function-panel";
 import "./post.css";
 
 export default function Post({ post }) {
     const briefContent =
-        post.content.length <= 100
+        post.content.length <= 300 // if size > 300 then limit is 200 // if size <= 300 then limit i
             ? post.content
-            : post.content.substring(0, 100) + "...";
+            : post.content.substring(0, 200) + "...";
     const [contentShown, setContentShown] = useState(briefContent);
     const [toggleContent, setToggleContent] = useState(false);
     const [showMoreText, setShowMoreText] = useState("Show more");
@@ -47,7 +47,7 @@ export default function Post({ post }) {
                     {contentShown}
                 </ReactMarkdown>
             </div>
-            {post.content.length > 100 && (
+            {post.content.length > 300 && (
                 <p
                     className="post-content-show-more"
                     onClick={toggleContentShown}
@@ -56,7 +56,7 @@ export default function Post({ post }) {
                 </p>
             )}
             <PostFunctionPanel onClickComment={() => toggleCommentSection()} postId={post.id} />
-            {commentSection && <CommentList />}
+            {commentSection && <PostCommentSection postId={post.id} />}
         </div>
     );
 }

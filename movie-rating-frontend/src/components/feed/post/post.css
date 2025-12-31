@@ -414,3 +414,110 @@ hr {
         box-shadow: 0 0 0 2px rgba(116, 185, 255, 0.1);
     }
 }
+
+.post-comment-input {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.post-comment-input-username {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.comment-input-wrapper {
+    position: relative;
+}
+
+.post-comment-input-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.3s;
+}
+
+.post-comment-input-field:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.post-comment-input-field.error {
+    border-color: #dc3545;
+    background-color: #fff8f8;
+}
+
+.post-comment-input-field:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.comment-input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.char-counter {
+    font-size: 12px;
+    color: #666;
+}
+
+.char-counter .warning {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.char-counter .danger {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.send-button {
+    padding: 8px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.send-button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.send-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.send-button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 5px;
+    background-color: #fff2f2;
+    border-radius: 4px;
+    border-left: 3px solid #dc3545;
+}
+
+.error-message.api-error {
+    margin-top: 10px;
+    padding: 8px;
+    font-size: 13px;
+}
