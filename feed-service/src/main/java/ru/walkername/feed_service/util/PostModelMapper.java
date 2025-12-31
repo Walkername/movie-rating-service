@@ -2,7 +2,6 @@ package ru.walkername.feed_service.util;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.walkername.feed_service.dto.PostRequest;
 import ru.walkername.feed_service.dto.PostResponse;

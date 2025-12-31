@@ -22,8 +22,6 @@ import ru.walkername.feed_service.services.CommentService;
 import ru.walkername.feed_service.util.CommentModelMapper;
 import ru.walkername.feed_service.util.DTOValidator;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/posts/{postId}/comments")
