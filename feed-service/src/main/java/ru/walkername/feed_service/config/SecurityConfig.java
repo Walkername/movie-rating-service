@@ -28,7 +28,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/posts/").hasAuthority("ADMIN")
                         .requestMatchers(
-                                "/posts", "/posts/{id}"
+                                "/posts", "/posts/{id}",
+                                "/comments"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
