@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: elasticsearch
 spec:
+  serviceName: "elasticsearch-service"
   replicas: 1
   selector:
     matchLabels:
@@ -22,5 +23,25 @@ spec:
               value: "false"
             - name: ES_JAVA_OPTS
               value: "-Xms512m -Xmx512m"
+            - name: "bootstrap.memory_lock"
+              value: "true"
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
           ports:
             - containerPort: 9200
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /usr/share/elasticsearch/data
+              name: elasticsearch-data
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - IPC_LOCK
+      volumes:
+        - name: elasticsearch-data
+          persistentVolumeClaim:
+            claimName: elasticsearch-pvc
