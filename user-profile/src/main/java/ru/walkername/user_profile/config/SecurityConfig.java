@@ -36,7 +36,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/login", "/auth/register", "/auth/refresh",
                                 "/users", "/users/{id}", "/users/movie/{id}", "/users/update-avg-rating/{id}",
-                                "/users/username/{username}"
+                                "/users/username/{username}",
+                                "/users/batch"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )

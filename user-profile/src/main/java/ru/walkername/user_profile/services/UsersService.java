@@ -4,10 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.walkername.user_profile.dto.PageResponse;
 import ru.walkername.user_profile.dto.UserDTO;
+import ru.walkername.user_profile.dto.UserResponse;
 import ru.walkername.user_profile.events.FileUploaded;
 import ru.walkername.user_profile.events.RatingCreated;
 import ru.walkername.user_profile.events.RatingDeleted;
@@ -18,6 +23,8 @@ import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.UsersRepository;
 import ru.walkername.user_profile.util.UserModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -232,6 +239,26 @@ public class UsersService {
     public User getTopUser() {
         return usersRepository.findUserWithHighestScores().orElseThrow(
                 () -> new UserNotFoundException("Top-user not found")
+        );
+    }
+
+    public PageResponse<UserResponse> getUsersByIds(int page, int limit, List<Long> userIds) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<User> usersPage = usersRepository.findByIdIn(userIds, pageable);
+
+        List<UserResponse> userResponses = new ArrayList<>();
+
+        for (User user : usersPage.getContent()) {
+            UserResponse userResponse = userModelMapper.convertToUserResponse(user);
+            userResponses.add(userResponse);
+        }
+
+        return new PageResponse<>(
+                userResponses,
+                page,
+                limit,
+                usersPage.getTotalElements(),
+                usersPage.getTotalPages()
         );
     }
 

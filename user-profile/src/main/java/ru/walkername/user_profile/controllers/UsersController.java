@@ -17,6 +17,8 @@ import ru.walkername.user_profile.util.DTOValidator;
 import ru.walkername.user_profile.util.UserModelMapper;
 import ru.walkername.user_profile.util.UserValidator;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
@@ -106,17 +108,20 @@ public class UsersController {
         return ResponseEntity.ok().build();
     }
 
-//    @GetMapping("/movie/{id}")
-//    public List<UserDetails> getUsersByMovie(
-//            @PathVariable("id") Long id
-//    ) {
-//        return usersService.getUsersByMovie(id);
-//    }
-
     @GetMapping("/top-user")
     public ResponseEntity<UserResponse> getTopUser() {
         UserResponse userResponse = userModelMapper.convertToUserResponse(usersService.getTopUser());
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<PageResponse<UserResponse>> getUsersByIds(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", defaultValue = "5") Integer limit,
+            @RequestBody List<Long> userIds
+    ) {
+        PageResponse<UserResponse> pageResponse = usersService.getUsersByIds(page, limit, userIds);
+        return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
 }
