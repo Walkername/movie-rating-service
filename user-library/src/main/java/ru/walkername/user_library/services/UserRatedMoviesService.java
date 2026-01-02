@@ -272,13 +272,13 @@ public class UserRatedMoviesService {
             Long userId,
             int page,
             int limit,
-            String[] sort,
+            String sort,
             Double minRating
     ) {
-        Criteria criteria = new Criteria("userId").is(userId.toString()).and("deleted").is(false);
+        Criteria criteria = new Criteria("userId").is(userId).and("deleted").is(false);
 
         if (minRating != null) {
-            criteria = criteria.and(new Criteria("minRating").greaterThanEqual(minRating));
+            criteria = criteria.and(new Criteria("rating").greaterThanEqual(minRating));
         }
 
         Sort sortObj = parseSort(sort);
@@ -287,7 +287,7 @@ public class UserRatedMoviesService {
 
         CriteriaQuery query = new CriteriaQuery(criteria).setPageable(pageRequest);
 
-        SearchHits<UserRatedMovie> hits = elasticsearchOperations.search(query, UserRatedMovie.class);
+        SearchHits<UserRatedMovie> hits = elasticsearchOperations.search(query, UserRatedMovie.class, indexCoordinates);
 
         List<UserRatedMovieResponse> responses = hits.getSearchHits().stream()
                 .map(hit -> toResponse(hit.getContent()))
@@ -304,19 +304,20 @@ public class UserRatedMoviesService {
         );
     }
 
-    private Sort parseSort(String[] sortParams) {
-        List<Sort.Order> orders = new ArrayList<>();
-
-        for (String param : sortParams) {
-            String[] parts = param.split(":");
-            String field = parts[0];
-            Sort.Direction direction = parts.length > 1 && parts[1].equalsIgnoreCase("asc")
-                    ? Sort.Direction.ASC
-                    : Sort.Direction.DESC;
-            orders.add(new Sort.Order(direction, field));
+    private Sort parseSort(String sort) {
+        if (sort.isBlank()) {
+            return Sort.by(Sort.Order.asc("ratedAt"));
         }
 
-        return Sort.by(orders);
+        String[] sortElements = sort.split(":");
+        String fieldSort = sortElements[0];
+        String sortDirection = sortElements[1];
+
+        if (sortDirection.equals("asc")) {
+            return Sort.by(fieldSort).ascending();
+        } else {
+            return Sort.by(fieldSort).descending();
+        }
     }
 
     private UserRatedMovieResponse toResponse(UserRatedMovie doc) {
@@ -338,20 +339,56 @@ public class UserRatedMoviesService {
         int page = 0;
         int limit = 10;
         PageRequest pageRequest = PageRequest.of(page, limit);
-        Page<UserRatedMovie> docs = userRatedMoviesRepository
-                .findByUserIdAndMovieTitleContainingAndDeletedFalse(userId, query, pageRequest);
 
-        List<UserRatedMovieResponse> content = new ArrayList<>();
-        for (UserRatedMovie doc : docs.getContent()) {
-            content.add(toResponse(doc));
-        }
+        var prefixQuery = QueryBuilders
+                .prefix(p -> p
+                        .field("movieTitle")
+                        .value(query.toLowerCase())
+                );
+
+        var fuzzyQuery = QueryBuilders
+                .match(m -> m
+                        .field("movieTitle")
+                        .query(query)
+                        .fuzziness("auto")
+                        .operator(Operator.Or)
+                );
+
+        var wildcardQuery = QueryBuilders
+                .wildcard(w -> w
+                        .field("movieTitle")
+                        .value("*" + query.toLowerCase() + "*")
+                );
+
+        var boolQuery = QueryBuilders
+                .bool(b -> b
+                        .should(prefixQuery)
+                        .should(fuzzyQuery)
+                        .should(wildcardQuery)
+                        .minimumShouldMatch("1")
+                        .filter(f -> f.term(t -> t.field("userId").value(userId)))
+                        .filter(f -> f.term(t -> t.field("deleted").value(false)))
+                );
+
+        Query nativeQuery = new NativeQueryBuilder()
+                .withQuery(boolQuery)
+                .withPageable(pageRequest)
+                .build();
+
+        SearchHits<UserRatedMovie> hits = elasticsearchOperations.search(nativeQuery, UserRatedMovie.class, indexCoordinates);
+
+        List<UserRatedMovieResponse> responses = hits.getSearchHits().stream()
+                .map(hit -> toResponse(hit.getContent()))
+                .toList();
+
+        long totalHits = hits.getTotalHits();
 
         return new PageResponse<>(
-                content,
+                responses,
                 page,
                 limit,
-                docs.getTotalElements(),
-                docs.getTotalPages()
+                totalHits,
+                (int) Math.ceil((double) totalHits / limit)
         );
     }
 

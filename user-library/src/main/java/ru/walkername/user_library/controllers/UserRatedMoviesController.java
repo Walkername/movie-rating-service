@@ -25,7 +25,7 @@ public class UserRatedMoviesController {
             @PathVariable("userId") Long userId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "limit", defaultValue = "10") Integer limit,
-            @RequestParam(value = "sort", defaultValue = "ratedAt:desc") String[] sort,
+            @RequestParam(value = "sort", defaultValue = "ratedAt:desc") String sort,
             @RequestParam(value = "minRating", required = false) Double minRating
     ) {
         PageResponse<UserRatedMovieResponse> pageResponse =

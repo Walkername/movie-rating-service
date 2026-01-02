@@ -15,7 +15,7 @@ function RatedMoviesList({ userId }) {
 
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
-    const [sort, setSort] = useState(sortPar);
+    const [sort, setSort] = useState(`${sortPar}:desc`);
     const sortParams = sortPar.split(":");
     const [sortField, setSortField] = useState(sortParams[0] ? sortParams[0] : "ratedAt");
     const [sortOrder, setSortOrder] = useState(sortParams[1] ? sortParams[1] : "desc");

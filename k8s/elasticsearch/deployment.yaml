@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: elasticsearch
-          image: elasticsearch:9.1.5
+          image: elasticsearch:9.2.2
           env:
             - name: discovery.type
               value: single-node
