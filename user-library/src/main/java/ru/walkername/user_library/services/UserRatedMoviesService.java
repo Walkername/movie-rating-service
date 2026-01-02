@@ -1,10 +1,12 @@
 package ru.walkername.user_library.services;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -21,7 +23,6 @@ import ru.walkername.user_library.exceptions.UserRatedMovieNotFound;
 import ru.walkername.user_library.models.UserRatedMovie;
 import ru.walkername.user_library.repositories.UserRatedMoviesRepository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,14 +119,29 @@ public class UserRatedMoviesService {
         }
     }
 
+    private void updateUserRatingWithFullDocument(String docId, RatingUpdated ratingUpdated) {
+        UserRatedMovie existingDoc = userRatedMoviesRepository.findById(docId).orElseThrow(
+                () -> new UserRatedMovieNotFound("Document not found: " + docId)
+        );
+
+        existingDoc.setRating(ratingUpdated.getRating());
+        existingDoc.setRatedAt(ratingUpdated.getRatedAt());
+
+        retryTemplate.execute(context -> {
+            userRatedMoviesRepository.save(existingDoc);
+            return null;
+        });
+    }
+
     @KafkaListener(
             topics = "ratings-deleted",
             groupId = "user-library-group",
             containerFactory = "ratingDeletedContainerFactory"
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
-        String docId = UserRatedMovie.generateId(ratingDeleted.getUserId(), ratingDeleted.getMovieId());
         System.out.println("RatingDeleted: movieId=" + ratingDeleted.getMovieId());
+
+        String docId = UserRatedMovie.generateId(ratingDeleted.getUserId(), ratingDeleted.getMovieId());
 
         Map<String, Object> params = new HashMap<>();
         params.put("deleted", true);
@@ -151,19 +167,6 @@ public class UserRatedMoviesService {
                 .build();
 
         elasticsearchOperations.update(updateQuery, indexCoordinates);
-    }
-
-    private void updateUserRatingWithFullDocument(String docId, RatingUpdated ratingUpdated) {
-        UserRatedMovie existingDoc = userRatedMoviesRepository.findById(docId)
-                .orElseThrow(() -> new UserRatedMovieNotFound("Document not found: " + docId));
-
-        existingDoc.setRating(ratingUpdated.getRating());
-        existingDoc.setRatedAt(ratingUpdated.getRatedAt());
-
-        retryTemplate.execute(context -> {
-            userRatedMoviesRepository.save(existingDoc);
-            return null;
-        });
     }
 
     private void updateRatingDeletedWithFullDocument(String docId) {
@@ -203,7 +206,6 @@ public class UserRatedMoviesService {
                 """;
 
         UpdateQuery updateQuery = UpdateQuery.builder(query)
-                .withScriptType(ScriptType.INLINE)
                 .withScript(script)
                 .withParams(params)
                 .build();

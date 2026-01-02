@@ -163,4 +163,22 @@ public class UserRatedMovie {
     public void setVersion(Long version) {
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "UserRatedMovie{" +
+                "id='" + id + '\'' +
+                ", version=" + version +
+                ", deleted=" + deleted +
+                ", userId=" + userId +
+                ", movieId=" + movieId +
+                ", rating=" + rating +
+                ", ratedAt=" + ratedAt +
+                ", movieTitle='" + movieTitle + '\'' +
+                ", movieReleaseYear=" + movieReleaseYear +
+                ", movieAverageRating=" + movieAverageRating +
+                ", movieScores=" + movieScores +
+                ", movieCreatedAt=" + movieCreatedAt +
+                '}';
+    }
 }

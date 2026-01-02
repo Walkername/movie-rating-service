@@ -9,7 +9,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import ru.walkername.user_library.events.*;
 
 import java.util.HashMap;
@@ -27,13 +27,13 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-library-service-group");
-        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
-        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JacksonJsonDeserializer<>(RatingCreated.class)
+                new JsonDeserializer<>(RatingCreated.class)
         );
     }
 
@@ -42,13 +42,13 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-library-service-group");
-        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
-        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JacksonJsonDeserializer<>(RatingUpdated.class)
+                new JsonDeserializer<>(RatingUpdated.class)
         );
     }
 
@@ -57,13 +57,13 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-library-service-group");
-        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
-        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JacksonJsonDeserializer<>(RatingDeleted.class)
+                new JsonDeserializer<>(RatingDeleted.class)
         );
     }
 
@@ -72,13 +72,13 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-library-service-group");
-        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
-        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JacksonJsonDeserializer<>(MovieUpdated.class)
+                new JsonDeserializer<>(MovieUpdated.class)
         );
     }
 
@@ -87,13 +87,13 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-library-service-group");
-        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
-        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JacksonJsonDeserializer<>(MovieRatingUpdated.class)
+                new JsonDeserializer<>(MovieRatingUpdated.class)
         );
     }
 
@@ -102,13 +102,13 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-library-service-group");
-        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
-        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "ru.walkername.user_library.events");
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JacksonJsonDeserializer<>(MovieDeleted.class)
+                new JsonDeserializer<>(MovieDeleted.class)
         );
     }
 
