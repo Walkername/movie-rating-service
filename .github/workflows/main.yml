@@ -1,0 +1,133 @@
+name: MovieCluster CI/CD
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+
+jobs:
+  # 1. Check changes
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      build-java: ${{ steps.check.outputs.build-java }}
+      build-js: ${{ steps.check.outputs.build-js }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check changes
+        id: check
+        run: |
+          JAVA_PROJECTS="user-profile movie-catalog rating-system file-service user-library feed-service"
+          BUILD_JAVA="false"
+          BUILD_JS="false"
+          
+          # Check changes in Java project
+          for project in $JAVA_PROJECTS; do
+            if git diff --name-only HEAD^ HEAD | grep -q "^$project/"; then
+              BUILD_JAVA="true"
+              echo "Java project was changed: $project"
+            fi
+          done
+          
+          # Check changes in React project
+          if git diff --name-only HEAD^ HEAD | grep -q "^react-app/"; then
+            BUILD_JS="true"
+            echo "React project was changed"
+          fi
+          
+          echo "build-java=$BUILD_JAVA" >> $GITHUB_OUTPUT
+          echo "build-js=$BUILD_JS" >> $GITHUB_OUTPUT
+
+  # 2. Build and test Java projects
+  build-java:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.build-java == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Java 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'oracle'
+          cache: maven
+
+      - name: Build all Java projects
+        run: |
+          JAVA_PROJECTS="user-profile movie-catalog rating-system file-service user-library feed-service"
+          
+          # Iterate all Java project directories
+          for dir in $JAVA_PROJECTS; do
+            if [ -f "$dir/pom.xml" ]; then
+              echo "=== Build $dir ==="
+              cd $dir
+              mvn clean compile -DskipTests
+              cd ..
+            fi
+          done
+
+      - name: Run Java tests
+        run: |
+          for dir in $JAVA_PROJECTS; do
+            if [ -f "$dir/pom.xml" ]; then
+              echo "=== Tests $dir ==="
+              cd $dir
+              mvn test
+              cd ..
+            fi
+          done
+
+  # 3. Build and test React project
+  build-react:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.build-js == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.14.0'
+          cache: 'npm'
+          cache-dependency-path: 'react-app/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./react-app
+        run: npm ci
+
+      - name: Build project
+        working-directory: ./react-app
+        run: npm run build
+
+      - name: Run tests
+        working-directory: ./react-app
+        run: npm test -- --watchAll=false
+
+  # 4. Check final status
+  check-status:
+    needs: [build-java, build-react]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Final results
+        run: |
+          echo "Java build result Java: ${{ needs.build-java.result }}"
+          echo "React build result: ${{ needs.build-react.result }}"
+          
+          if [[ "${{ needs.build-java.result }}" == "failure" ]]; then
+            echo "❌ Java build failed"
+          fi
+          
+          if [[ "${{ needs.build-react.result }}" == "failure" ]]; then
+            echo "❌ React build failed"
+          fi
+          
+          if [[ "${{ needs.build-java.result }}" == "success" && "${{ needs.build-react.result }}" == "success" ]]; then
+            echo "✅ All builds are successful!"
+          fi
