@@ -1,6 +1,5 @@
+import { useCallback } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import getClaimFromToken from "../../utils/token-validation/token-validation";
 
 export default function ImageViewer({
     isAccessToEdit,
@@ -10,16 +9,12 @@ export default function ImageViewer({
     setSelectedPhoto,
     additionalActions = []
 }) {
-    const { id } = useParams();
-    const token = localStorage.getItem("accessToken");
-    const tokenId = getClaimFromToken(token, "id");
-
-    const closeViewer = () => {
+    const closeViewer = useCallback(() => {
         setViewStatus(false);
         setTimeout(() => {
             setSelectedPhoto(null);
         }, 300);
-    };
+    }, [setSelectedPhoto, setViewStatus])
 
     useEffect(() => {
         const handleEsc = (event) => {
@@ -32,7 +27,7 @@ export default function ImageViewer({
         return () => {
             window.removeEventListener('keydown', handleEsc);
         };
-    }, [viewStatus]);
+    }, [viewStatus, closeViewer]);
 
     return (
         <>

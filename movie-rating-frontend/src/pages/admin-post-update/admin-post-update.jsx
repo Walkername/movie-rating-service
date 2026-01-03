@@ -280,52 +280,6 @@ export default function AdminPostUpdate() {
                     <div className="preview-container">{renderPreview()}</div>
                 </div>
 
-                {/* Markdown Help */}
-                <div className="markdown-help">
-                    <details>
-                        <summary>Markdown Quick Reference</summary>
-                        <div className="help-grid">
-                            <div>
-                                <code>**bold**</code> → <strong>bold</strong>
-                            </div>
-                            <div>
-                                <code>*italic*</code> → <em>italic</em>
-                            </div>
-                            <div>
-                                <code>`code`</code> → <code>code</code>
-                            </div>
-                            <div>
-                                <code># Header 1</code> →{" "}
-                                <h1
-                                    style={{
-                                        display: "inline",
-                                        fontSize: "1.2em",
-                                    }}
-                                >
-                                    Header 1
-                                </h1>
-                            </div>
-                            <div>
-                                <code>## Header 2</code> →{" "}
-                                <h2
-                                    style={{
-                                        display: "inline",
-                                        fontSize: "1.1em",
-                                    }}
-                                >
-                                    Header 2
-                                </h2>
-                            </div>
-                            <div>
-                                <code>[link](url)</code> →{" "}
-                                <a href="#" style={{ pointerEvents: "none" }}>
-                                    link
-                                </a>
-                            </div>
-                        </div>
-                    </details>
-                </div>
-
                 {/* Changes indicator */}
                 {hasChanges() && (
                     <div className="changes-indicator">

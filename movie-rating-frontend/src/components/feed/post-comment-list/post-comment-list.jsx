@@ -12,7 +12,7 @@ export default function PostCommentList({ postId, refreshTrigger }) {
         totalPages: 0
     });
 
-    const fetchComments = () => {
+    useEffect(() => {
         getAllCommentsForPost(postId)
             .then((data) => {
                 setComments(data);
@@ -20,10 +20,6 @@ export default function PostCommentList({ postId, refreshTrigger }) {
             .catch((error) => {
                 console.error("Error fetching comments:", error);
             });
-    };
-
-    useEffect(() => {
-        fetchComments();
     }, [postId, refreshTrigger]);
 
     return (

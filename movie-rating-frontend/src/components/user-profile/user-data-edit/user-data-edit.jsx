@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import getClaimFromToken from "../../../utils/token-validation/token-validation";
 import { updateMyUserData, updateMyUsername } from "../../../api/user-api";
 import { uploadMyFile } from "../../../api/file-api";
 import "./user-data-edit.css";
 import ImageUploadViewer from "../../image-upload-viewer/image-upload-viewer";
 
 function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
-    const token = localStorage.getItem("accessToken");
-    const id = getClaimFromToken(token, "id");
 
     const [errorUsername, setErrorUsername] = useState("");
     const [errorDescription, setErrorDescription] = useState("");

@@ -36,7 +36,7 @@ export default function ImageGallery({
                                     className="photo"
                                     key={index}
                                     src={photo.url}
-                                    alt={`Photo ${index + 1}`}
+                                    alt={`Photo#${index + 1}`}
                                 />
                             </div>
                         )

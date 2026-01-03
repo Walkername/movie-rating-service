@@ -35,7 +35,7 @@ export default function PhotoPreviewStrip({
             .then((data) => {
                 setPageResponse(data);
             });
-    }, [contextId, page, maxPhotos, sort]);
+    }, [contextId, page, maxPhotos, sort, context]);
 
     // Scrolling
     // Refs для контейнера прокрутки
@@ -68,7 +68,7 @@ export default function PhotoPreviewStrip({
     const [showLeftButton, setShowLeftButton] = useState(false);
     const [showRightButton, setShowRightButton] = useState(false);
 
-    const checkScrollButtons = () => {
+    const checkScrollButtons = useCallback(() => {
         if (scrollContainerRef.current) {
             const container = scrollContainerRef.current;
             setShowLeftButton(container.scrollLeft > 0);
@@ -76,7 +76,7 @@ export default function PhotoPreviewStrip({
                 container.scrollLeft < container.scrollWidth - container.clientWidth - 1
             );
         }
-    };
+    }, []);
 
     // Проверяем видимость кнопок при загрузке и изменении размера
     useEffect(() => {

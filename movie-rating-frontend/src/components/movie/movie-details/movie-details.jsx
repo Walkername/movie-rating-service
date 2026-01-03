@@ -16,7 +16,7 @@ function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
             .catch((error) => {
                 console.error("Error:", error);
             });
-    }, [movie.posterPicUrl]);
+    }, [movie.posterPicUrl, movie.posterPicId]);
 
     return (
         <div className="movie-info">

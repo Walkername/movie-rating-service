@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { searchMovieByTitle } from "../../../api/movie-api"
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./search-field.css";
 
 export default function SearchField() {
@@ -11,8 +11,6 @@ export default function SearchField() {
 
     const inputRef = useRef(null);
     const popupRef = useRef(null);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (isPopupVisible) {
@@ -25,14 +23,6 @@ export default function SearchField() {
             return () => clearTimeout(timer);
         }
     }, [isPopupVisible]);
-
-    const handleNavigate = (target) => {
-        // Blur the input field before navigating
-        if (inputRef.current) {
-            inputRef.current.blur();
-        }
-        navigate(target);
-    };
 
     const debounce = (func, delay) => {
         let timeoutId;
@@ -51,10 +41,6 @@ export default function SearchField() {
                 setFoundMovies(data);
             });
     }, 500);
-
-    const handleClosePopup = () => {
-        setIsPopupVisible(false);
-    };
 
     const handleInputBlur = (e) => {
         // Check if the related target (the element receiving focus) is inside the popup
@@ -87,7 +73,7 @@ export default function SearchField() {
                         {
                             foundMovies.length > 0 ? (
                                 foundMovies.map((movie, index) => {
-                                    let href = "/movies/" + movie.id;
+                                    let href = "/movie/" + movie.id;
                                     return (
                                         <Link className="search-popup-movie-card" key={index} to={href}>
                                             {movie.title} ({movie.releaseYear}):

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import MOVIES from "../../../props/props";
+// import MOVIES from "../../../props/props";
 import MovieCard from "../movie-card/movie-card";
 import MovieViewToggle from "../movie-list-view-toggle/movie-list-view-toggle";
 import MovieCardBar from "../movie-card-bar/movie-card-bar";
@@ -11,7 +11,7 @@ import "./movie-list.css";
 function MovieList() {
     const [loading, setLoading] = useState(true);
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     const pagePar = searchParams.get("page") ? searchParams.get("page") : 0;
     const limitPar = searchParams.get("limit") ? searchParams.get("limit") : 10;
@@ -60,7 +60,7 @@ function MovieList() {
         window.history.pushState({}, '', newUrl);
     };
 
-    const handleSortOrderButton = (e) => {
+    const handleSortOrderButton = () => {
         const order = sortOrder === "desc" ? "asc" : "desc";
         setSortOrder(order);
         setSort(`${sortField}:${order}`);
@@ -138,6 +138,7 @@ function MovieList() {
                                         />
                                     )
                             }
+                            return <></>
                         })
                 }
             </div>

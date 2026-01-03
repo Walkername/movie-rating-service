@@ -1,4 +1,3 @@
-import NavigationBar from "../../navigation/navigation-bar/navigation-bar";
 import { useNavigate } from "react-router-dom";
 import AddMovieForm from "../add-movie-form/add-movie-form";
 import { useState } from "react";
@@ -24,8 +23,6 @@ function AdminMoviesTool() {
 
     const [movies, setMovies] = useState([]);
 
-    const [statusMessage, setStatusMessage] = useState("");
-
     const handleGetMovieById = (e) => {
         e.preventDefault();
 
@@ -35,7 +32,6 @@ function AdminMoviesTool() {
             })
             .catch(() => {
                 setMovies([]);
-                setStatusMessage("Such movie was not found");
             });
     };
 
@@ -48,7 +44,6 @@ function AdminMoviesTool() {
             })
             .catch(() => {
                 setMovies([]);
-                setStatusMessage("No movies found with that title");
             });
     };
 
@@ -91,6 +86,8 @@ function AdminMoviesTool() {
                         <br></br>
                     </>
                 );
+            default:
+                return <AddMovieForm />;
         }
     };
 
@@ -113,7 +110,7 @@ function AdminMoviesTool() {
 
             <br></br>
             <div>
-                {movies.length == 1 ? (
+                {movies.length === 1 ? (
                     <MovieDetails movie={movies[0]} />
                 ) : (
                     movies.map((movie, index) => {

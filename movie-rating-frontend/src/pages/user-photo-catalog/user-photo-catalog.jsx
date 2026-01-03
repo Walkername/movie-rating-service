@@ -13,11 +13,11 @@ export default function UserPhotoCatalog() {
     const { id } = useParams();
     const token = localStorage.getItem("accessToken");
     const tokenId = getClaimFromToken(token, "id");
-    const isAccessToEdit = id == tokenId;
+    const isAccessToEdit = id === tokenId;
 
-    const [page, setPage] = useState(0);
+    const [page] = useState(0);
     const [limit, setLimit] = useState(10);
-    const [sort, setSort] = useState("uploadedAt:desc");
+    const [sort] = useState("uploadedAt:desc");
 
     const [pageResponse, setPageResponse] = useState({
         content: [],

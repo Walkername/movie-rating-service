@@ -191,7 +191,7 @@ export default function RegisterForm() {
                 {
                     errorMessages.length !== 0 &&
                     errorMessages.map((message, index) => {
-                        return message != "" && (
+                        return message !== "" && (
                             <span key={index} style={{ color: "red" }}>{message}</span>
                         );
                     })

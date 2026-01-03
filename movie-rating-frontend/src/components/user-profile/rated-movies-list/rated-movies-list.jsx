@@ -2,30 +2,40 @@ import { useEffect, useState } from "react";
 import validateDate from "../../../utils/date-validation/date-validation";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./rated-movies-list.css";
-import { getMoviesByUser, searchUserMoviesByTitle } from "../../../api/user-library-api";
+import {
+    getMoviesByUser,
+    searchUserMoviesByTitle,
+} from "../../../api/user-library-api";
+import { useRef } from "react";
 
 function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     const pagePar = searchParams.get("page") ? searchParams.get("page") : 0;
     const limitPar = searchParams.get("limit") ? searchParams.get("limit") : 10;
-    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "ratedAt";
+    const sortPar = searchParams.get("sort")
+        ? searchParams.get("sort")
+        : "ratedAt";
 
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(`${sortPar}:desc`);
     const sortParams = sortPar.split(":");
-    const [sortField, setSortField] = useState(sortParams[0] ? sortParams[0] : "ratedAt");
-    const [sortOrder, setSortOrder] = useState(sortParams[1] ? sortParams[1] : "desc");
+    const [sortField, setSortField] = useState(
+        sortParams[0] ? sortParams[0] : "ratedAt",
+    );
+    const [sortOrder, setSortOrder] = useState(
+        sortParams[1] ? sortParams[1] : "desc",
+    );
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
         limit: limit,
         page: page,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
 
     const handleSortButton = (columnName) => {
@@ -40,10 +50,10 @@ function RatedMoviesList({ userId }) {
 
         // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('sort', newSort);
+        searchParams.set("sort", newSort);
 
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+        window.history.pushState({}, "", newUrl);
     };
 
     const handleLimitButton = (e) => {
@@ -54,11 +64,11 @@ function RatedMoviesList({ userId }) {
 
         // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('limit', limitValue);
-        searchParams.set('page', newPage);
+        searchParams.set("limit", limitValue);
+        searchParams.set("page", newPage);
 
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+        window.history.pushState({}, "", newUrl);
     };
 
     useEffect(() => {
@@ -76,20 +86,20 @@ function RatedMoviesList({ userId }) {
 
         // Update URL parameters
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('page', value);
+        searchParams.set("page", value);
 
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+        window.history.pushState({}, "", newUrl);
     };
 
     // Search movies by Title
-    const [searchValue, setSearchValue] = useState("");
+    const inputRef = useRef(null);
     const [foundMovies, setFoundMovies] = useState({
         content: [],
         page: 0,
         limit: 10,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
     const [showDropdown, setShowDropdown] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
@@ -108,6 +118,13 @@ function RatedMoviesList({ userId }) {
         const query = e.target.value;
         if (query.trim() === "") {
             setShowDropdown(false);
+            setFoundMovies({
+                content: [],
+                limit: limit,
+                page: page,
+                totalElements: 0,
+                totalPages: 0,
+            });
             return;
         }
         searchUserMoviesByTitle(userId, query)
@@ -121,7 +138,6 @@ function RatedMoviesList({ userId }) {
 
     const handleMovieSelect = () => {
         setShowDropdown(false);
-        setSearchValue("");
     };
 
     const handleFocus = () => {
@@ -147,26 +163,37 @@ function RatedMoviesList({ userId }) {
                 <input
                     type="text"
                     onChange={handleSearch}
+                    ref={inputRef}
                     placeholder="Search"
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                 />
                 {showDropdown && foundMovies.content.length > 0 && (
-                    <div className={`search-results-dropdown ${isFadingOut ? "fade-out" : "fade-in"}`}>
+                    <div
+                        className={`search-results-dropdown ${isFadingOut ? "fade-out" : "fade-in"}`}
+                    >
                         {foundMovies.content.length > 0 ? (
                             foundMovies.content.map((movie, index) => (
                                 <Link
                                     key={index}
                                     className="search-result-item"
                                     to={`/movie/${movie.movieId}`}
-                                    onClick={() => handleMovieSelect(movie.movieId)}
+                                    onClick={() =>
+                                        handleMovieSelect(movie.movieId)
+                                    }
                                 >
-                                    <span className="search-result-title">{movie.movieTitle}</span>
-                                    <span className="search-result-year">({movie.movieReleaseYear})</span>
+                                    <span className="search-result-title">
+                                        {movie.movieTitle}
+                                    </span>
+                                    <span className="search-result-year">
+                                        ({movie.movieReleaseYear})
+                                    </span>
                                 </Link>
                             ))
                         ) : (
-                            <div className="search-result-item disabled">No results</div>
+                            <div className="search-result-item disabled">
+                                No results
+                            </div>
                         )}
                     </div>
                 )}
@@ -187,14 +214,18 @@ function RatedMoviesList({ userId }) {
                             sortOrder={sortOrder}
                             sortField={sortField}
                             sortFieldToCheck="movieReleaseYear"
-                            onColumnClick={() => handleSortButton("movieReleaseYear")}
+                            onColumnClick={() =>
+                                handleSortButton("movieReleaseYear")
+                            }
                         />
                         <TableTitleColumn
                             title="Average Rating"
                             sortOrder={sortOrder}
                             sortField={sortField}
                             sortFieldToCheck="movieAverageRating"
-                            onColumnClick={() => handleSortButton("movieAverageRating")}
+                            onColumnClick={() =>
+                                handleSortButton("movieAverageRating")
+                            }
                         />
                         <TableTitleColumn
                             title="Rating"
@@ -216,7 +247,9 @@ function RatedMoviesList({ userId }) {
                     {pageResponse.content.map((element, index) => (
                         <tr
                             key={index}
-                            onClick={() => navigate(`/movie/${element.movieId}`)}
+                            onClick={() =>
+                                navigate(`/movie/${element.movieId}`)
+                            }
                         >
                             <td>{index + 1 + limit * page}</td>
                             <td>{element.movieTitle}</td>
@@ -229,18 +262,23 @@ function RatedMoviesList({ userId }) {
                 </tbody>
             </table>
             <div>
-                {
-                    Math.ceil(pageResponse.totalElements / limit) > 1 &&
-                    Array.from({ length: Math.ceil(pageResponse.totalElements / limit) }, (_, index) => (
-                        <button
-                            className="page-button"
-                            key={index}
-                            onClick={() => handlePageButton(index)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))
-                }
+                {Math.ceil(pageResponse.totalElements / limit) > 1 &&
+                    Array.from(
+                        {
+                            length: Math.ceil(
+                                pageResponse.totalElements / limit,
+                            ),
+                        },
+                        (_, index) => (
+                            <button
+                                className="page-button"
+                                key={index}
+                                onClick={() => handlePageButton(index)}
+                            >
+                                {index + 1}
+                            </button>
+                        ),
+                    )}
             </div>
         </div>
     );
@@ -251,7 +289,7 @@ function TableTitleColumn({
     sortOrder,
     sortField,
     sortFieldToCheck,
-    onColumnClick
+    onColumnClick,
 }) {
     return (
         <th onClick={onColumnClick}>
@@ -259,7 +297,12 @@ function TableTitleColumn({
                 <span>{title}</span>
                 <span
                     className={`sort-order-column sort-order-${sortOrder}`}
-                    style={{ visibility: sortField === sortFieldToCheck ? "visible" : "hidden" }}
+                    style={{
+                        visibility:
+                            sortField === sortFieldToCheck
+                                ? "visible"
+                                : "hidden",
+                    }}
                 >
                     <span className="sort-order-column-icon"></span>
                 </span>

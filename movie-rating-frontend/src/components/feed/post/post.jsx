@@ -38,10 +38,12 @@ export default function Post({ post }) {
             <div className="post-content">
                 <ReactMarkdown
                     components={{
-                        // Downscale all headers by one level
-                        h1: ({ node, ...props }) => <h3 {...props} />,
-                        h2: ({ node, ...props }) => <h4 {...props} />,
-                        h3: ({ node, ...props }) => <h5 {...props} />,
+                        h1: ({ node, children, ...props }) => 
+                            children ? <h3 {...props}>{children}</h3> : null,
+                        h2: ({ node, children, ...props }) => 
+                            children ? <h4 {...props}>{children}</h4> : null,
+                        h3: ({ node, children, ...props }) => 
+                            children ? <h5 {...props}>{children}</h5> : null,
                     }}
                 >
                     {contentShown}

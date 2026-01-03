@@ -1,12 +1,18 @@
 .admin-content {
-    display: grid;
-    grid-template-columns: 1fr 6fr;
+    padding: 2rem;
 }
 
-.admin-toolbar {
-    width: 100px;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    
+    .admin-content {
+        padding: 1.5rem;
+    }
 }
 
-.admin-toolbar button {
-    width: 80px;
+@media (max-width: 480px) {
+    
+    .admin-content {
+        padding: 1rem;
+    }
 }
