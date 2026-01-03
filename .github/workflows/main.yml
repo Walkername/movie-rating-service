@@ -2,9 +2,9 @@ name: MovieCluster CI/CD
 
 on:
   push:
-    branches: [master, develop]
+    branches: [ master, develop ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   # 1. Check changes
@@ -111,7 +111,7 @@ jobs:
 
   # 4. Check final status
   check-status:
-    needs: [build-java, build-react]
+    needs: [ build-java, build-react ]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -122,12 +122,26 @@ jobs:
           
           if [[ "${{ needs.build-java.result }}" == "failure" ]]; then
             echo "❌ Java build failed"
+            EXIT_CODE=1
           fi
           
           if [[ "${{ needs.build-react.result }}" == "failure" ]]; then
             echo "❌ React build failed"
+            EXIT_CODE=1
           fi
           
           if [[ "${{ needs.build-java.result }}" == "success" && "${{ needs.build-react.result }}" == "success" ]]; then
             echo "✅ All builds are successful!"
           fi
+          
+          if [[ "${{ needs.build-java.result }}" == "cancelled" || "${{ needs.build-react.result }}" == "cancelled" ]]; then
+            echo "⚠️ Some jobs were cancelled"
+            EXIT_CODE=1
+          fi
+
+          if [[ "${{ needs.build-java.result }}" == "skipped" || "${{ needs.build-react.result }}" == "skipped" ]]; then
+            echo "⚠️ Some jobs were skipped"
+            EXIT_CODE=1
+          fi
+
+          exit $EXIT_CODE
