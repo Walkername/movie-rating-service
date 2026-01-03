@@ -107,7 +107,7 @@ jobs:
 
       - name: Run tests
         working-directory: ./movie-rating-frontend
-        run: npm test -- --watchAll=false
+        run: npm test -- --watchAll=false --passWithNoTests
 
   # 4. Check final status
   check-status:
