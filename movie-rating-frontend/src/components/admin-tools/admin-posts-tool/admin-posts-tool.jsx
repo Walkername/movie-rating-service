@@ -174,8 +174,7 @@ export default function AdminPostsTool() {
                             rows={12}
                             disabled={isSubmitting}
                         />
-                        
-                        {/* Character limit warning */}
+
                         {post.content.length > CONTENT_LIMIT * 0.9 && (
                             <div className="limit-warning">
                                 ⚠️ Approaching character limit
