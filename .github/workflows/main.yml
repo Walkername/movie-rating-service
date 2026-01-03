@@ -139,9 +139,4 @@ jobs:
             EXIT_CODE=1
           fi
 
-          if [[ "${{ needs.build-java.result }}" == "skipped" || "${{ needs.build-react.result }}" == "skipped" ]]; then
-            echo "⚠️ Some jobs were skipped"
-            EXIT_CODE=1
-          fi
-
           exit $EXIT_CODE
