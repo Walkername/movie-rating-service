@@ -124,12 +124,12 @@ export default function AdminPostsTool() {
     
     return (
         <div className="create-post-container">
-            <div className="create-post-header">
-                <h2>Create New Post</h2>
-                <p className="subtitle">Share updates with your audience</p>
-            </div>
-            
             <form onSubmit={handleSubmit} className="create-post-form">
+                <div className="create-post-header">
+                    <h2>Create New Post</h2>
+                    <p className="subtitle">Share updates with your audience</p>
+                </div>
+                
                 {/* Title Field */}
                 <div className="form-group">
                     <label htmlFor="title">
