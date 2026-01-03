@@ -14,7 +14,7 @@ export default function MoviePhotoCatalog() {
     const { id } = useParams();
     const token = localStorage.getItem("accessToken");
     const tokenRole = getClaimFromToken(token, "role");
-    const isAccessToEdit = tokenRole == "ADMIN";
+    const isAccessToEdit = tokenRole === "ADMIN";
 
     const [page] = useState(0);
     const [limit, setLimit] = useState(10);

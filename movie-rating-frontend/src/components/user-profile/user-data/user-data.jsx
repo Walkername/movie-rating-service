@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import RatedMoviesList from "../rated-movies-list/rated-movies-list";
 import { downloadFile } from "../../../api/file-api";
-import styles from "./user-data.css";
 import unknownProfilePic from "../../../assets/images/unknown-profile-avatar.png";
 import PhotoPreviewStrip from "../../photo-preview-strip/photo-preview-strip";
 import { updateMyProfilePictureId } from "../../../api/user-api";
