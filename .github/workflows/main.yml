@@ -34,7 +34,7 @@ jobs:
           done
           
           # Check changes in React project
-          if git diff --name-only HEAD^ HEAD | grep -q "^react-app/"; then
+          if git diff --name-only HEAD^ HEAD | grep -q "^movie-rating-frontend/"; then
             BUILD_JS="true"
             echo "React project was changed"
           fi
@@ -95,18 +95,18 @@ jobs:
         with:
           node-version: '22.14.0'
           cache: 'npm'
-          cache-dependency-path: 'react-app/package-lock.json'
+          cache-dependency-path: 'movie-rating-frontend/package-lock.json'
 
       - name: Install dependencies
-        working-directory: ./react-app
+        working-directory: ./movie-rating-frontend
         run: npm ci
 
       - name: Build project
-        working-directory: ./react-app
+        working-directory: ./movie-rating-frontend
         run: npm run build
 
       - name: Run tests
-        working-directory: ./react-app
+        working-directory: ./movie-rating-frontend
         run: npm test -- --watchAll=false
 
   # 4. Check final status
