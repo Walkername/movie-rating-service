@@ -1,5 +1,7 @@
 package ru.walkername.user_profile.dto;
 
+import java.util.Date;
+
 public class UserResponse {
 
     private Long id;
@@ -13,6 +15,8 @@ public class UserResponse {
     private double averageRating;
 
     private int scores;
+
+    private Date createdAt;
 
     public Long getId() {
         return id;
@@ -60,5 +64,13 @@ public class UserResponse {
 
     public void setProfilePicId(Integer profilePicId) {
         this.profilePicId = profilePicId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }
