@@ -179,13 +179,10 @@ function RatedMoviesList({ userId }) {
         
         return (
             <span className="rated-movies__sort-indicator">
-                <span className={`rated-movies__sort-arrow ${sortOrder === 'asc' ? 'rated-movies__sort-arrow--active' : ''}`}>
-                    ↑
-                </span>
-                <span className={`rated-movies__sort-arrow ${sortOrder === 'desc' ? 'rated-movies__sort-arrow--active' : ''}`}>
-                    ↓
-                </span>
-            </span>
+                        <span className={`rated-movies__sort-arrow ${sortOrder === 'asc' ? 'rated-movies__sort-arrow--asc' : 'rated-movies__sort-arrow--desc'}`}>
+                            ▲
+                        </span>
+                    </span>
         );
     };
 
@@ -305,12 +302,7 @@ function RatedMoviesList({ userId }) {
                 </div>
             </div>
 
-            {isLoading ? (
-                <div className="rated-movies__loading">
-                    <div className="rated-movies__spinner"></div>
-                    <p>Loading rated movies...</p>
-                </div>
-            ) : error ? (
+            {error ? (
                 <div className="rated-movies__error">
                     <p>{error}</p>
                 </div>

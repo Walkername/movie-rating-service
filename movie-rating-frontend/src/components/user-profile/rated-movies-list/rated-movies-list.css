@@ -1,10 +1,14 @@
 /* Rated Movies List Component */
 .rated-movies {
-    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(10, 10, 10, 0.95));
+    background: linear-gradient(
+        135deg,
+        rgba(20, 20, 20, 0.95),
+        rgba(10, 10, 10, 0.95)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
+    box-shadow:
         var(--shadow-md),
         0 0 30px rgba(0, 180, 216, 0.2),
         inset 0 0 20px rgba(0, 0, 0, 0.3);
@@ -23,14 +27,18 @@
 }
 
 .rated-movies__title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    background: linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-secondary)
+    );
     border-radius: 2px;
 }
 
@@ -40,21 +48,23 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-lg);
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
     flex-wrap: wrap;
+    padding: 0 var(--spacing-sm);
 }
 
 /* Search */
 .rated-movies__search {
     flex: 1;
     min-width: 300px;
+    max-width: 25%;
     position: relative;
 }
 
 .rated-movies__search-input {
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
-    padding-left: var(--spacing-xxl);
+    padding-left: calc(var(--spacing-xxl) + var(--spacing-md));
     background-color: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
@@ -78,6 +88,7 @@
 .rated-movies__search-results {
     position: absolute;
     top: 100%;
+    width: 100%;
     left: 0;
     right: 0;
     background-color: rgba(10, 10, 10, 0.98);
@@ -162,6 +173,13 @@
     background-color: rgba(255, 255, 255, 0.08);
 }
 
+.rated-movies__limit-select option {
+    background-color: rgba(10, 10, 10, 0.98);
+    color: var(--color-text-light);
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
 /* Table */
 .rated-movies__table-container {
     overflow-x: auto;
@@ -199,22 +217,32 @@
 
 .rated-movies__sort-indicator {
     display: inline-flex;
-    flex-direction: column;
-    margin-left: var(--spacing-xs);
+    align-items: center;
+    margin-left: var(--spacing-sm);
     vertical-align: middle;
     line-height: 1;
 }
 
 .rated-movies__sort-arrow {
-    font-size: var(--font-size-xs);
-    line-height: 0.8;
-    opacity: 0.3;
+    display: inline-block;
+    font-size: var(--font-size-sm); /* Увеличиваем размер */
+    line-height: 1;
+    opacity: 0.8; /* Делаем более заметным */
+    color: var(--color-text-gray);
     transition: all var(--transition-fast);
+    transform-origin: center;
 }
 
-.rated-movies__sort-arrow--active {
+.rated-movies__sort-arrow--asc {
     opacity: 1;
-    color: var(--color-accent);
+    color: var(--color-text-light);
+    transform: rotate(0deg);
+}
+
+.rated-movies__sort-arrow--desc {
+    opacity: 1;
+    color: var(--color-text-light);
+    transform: rotate(180deg);
 }
 
 .rated-movies__table td {
@@ -231,7 +259,6 @@
 .rated-movies__table-row:hover {
     background-color: rgba(255, 255, 255, 0.03);
     cursor: pointer;
-    transform: translateX(2px);
 }
 
 .rated-movies__table-row:last-child td {
@@ -371,7 +398,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Error State */
@@ -413,7 +442,11 @@
     align-items: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-md) var(--spacing-xl);
-    background: linear-gradient(135deg, var(--color-primary), rgba(229, 9, 20, 0.8));
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        rgba(229, 9, 20, 0.8)
+    );
     color: white;
     text-decoration: none;
     border-radius: var(--border-radius-md);
@@ -464,11 +497,11 @@
         align-items: stretch;
         gap: var(--spacing-lg);
     }
-    
+
     .rated-movies__search {
         min-width: auto;
     }
-    
+
     .rated-movies__limit {
         justify-content: flex-end;
     }
@@ -478,28 +511,28 @@
     .rated-movies {
         padding: var(--spacing-lg);
     }
-    
+
     .rated-movies__title {
         font-size: var(--font-size-lg);
     }
-    
+
     .rated-movies__table th,
     .rated-movies__table td {
         padding: var(--spacing-sm);
         font-size: var(--font-size-sm);
     }
-    
+
     .rated-movies__pagination {
         flex-direction: column;
         gap: var(--spacing-md);
     }
-    
+
     .rated-movies__page-button--prev,
     .rated-movies__page-button--next {
         width: 100%;
         order: 3;
     }
-    
+
     .rated-movies__page-numbers {
         order: 2;
     }
@@ -509,19 +542,19 @@
     .rated-movies {
         padding: var(--spacing-md);
     }
-    
+
     .rated-movies__table th,
     .rated-movies__table td {
         padding: var(--spacing-xs) var(--spacing-sm);
         font-size: var(--font-size-xs);
     }
-    
+
     .rated-movies__page-button {
         min-width: 32px;
         padding: var(--spacing-xs) var(--spacing-sm);
         font-size: var(--font-size-xs);
     }
-    
+
     .rated-movies__summary {
         flex-direction: column;
         gap: var(--spacing-sm);
@@ -531,13 +564,15 @@
 
 /* Cinematic Effects */
 .rated-movies__table-container::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(0, 180, 216, 0.05) 50%, 
-        transparent 100%);
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 180, 216, 0.05) 50%,
+        transparent 100%
+    );
     pointer-events: none;
     opacity: 0;
     transition: opacity var(--transition-medium);
