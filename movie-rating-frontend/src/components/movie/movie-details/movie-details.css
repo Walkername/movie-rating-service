@@ -1,33 +1,246 @@
+/* Блок информации о фильме */
+.movie-details {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--spacing-xxl);
+  align-items: start;
+}
 
-.movie-info {
-    display: flex;
-    gap: 20px;
+/* Постер фильма */
+.movie-details__poster {
+  position: relative;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 2/3;
+  background: linear-gradient(135deg, #222, #111);
+}
+
+.movie-details__poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-medium);
+}
+
+.movie-details__poster:hover .movie-details__poster-img {
+  transform: scale(1.05);
+}
+
+/* Бейдж на постере */
+.movie-details__poster-badge {
+  position: absolute;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  background: var(--gradient-primary);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 2;
+}
+
+/* Контент информации */
+.movie-details__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Заголовок */
+.movie-details__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.movie-details__title {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-black);
+  color: var(--color-text-light);
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.movie-details__year {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+  margin-left: var(--spacing-sm);
+}
+
+/* Основная информация */
+.movie-details__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.movie-details__description {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.movie-details__stats {
+  display: flex;
+  gap: var(--spacing-xl);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-md);
+}
+
+.movie-details__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  min-width: 100px;
+}
+
+.movie-details__stat-value {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.movie-details__stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+  margin-top: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Рейтинг с цветовой индикацией */
+.movie-details__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-pill);
+  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: var(--font-weight-bold);
+}
+
+.movie-details__rating--high {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: var(--rating-color-high);
+}
+
+.movie-details__rating--medium {
+  background-color: rgba(255, 170, 0, 0.1);
+  color: var(--rating-color-medium);
+}
+
+.movie-details__rating--low {
+  background-color: rgba(255, 68, 68, 0.1);
+  color: var(--rating-color-low);
+}
+
+.movie-details__rating::before {
+  content: '★';
+  color: inherit;
+}
+
+/* Мета-информация */
+.movie-details__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movie-details__meta-item {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+.movie-details__meta-item strong {
+  color: var(--color-text-light);
+  font-weight: var(--font-weight-medium);
+  margin-right: var(--spacing-xs);
+}
+
+/* Кнопка редактирования */
+.movie-details__actions {
+  margin-top: var(--spacing-xl);
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.movie-details__edit-button {
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.movie-details__edit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.movie-details__edit-button::before {
+  content: '✎';
+  font-size: var(--font-size-lg);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .movie-details {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+  
+  .movie-details__poster {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  
+  .movie-details__title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .movie-details__stats {
+    gap: var(--spacing-md);
+  }
+  
+  .movie-details__stat {
+    min-width: 80px;
+    padding: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-details__header {
+    flex-direction: column;
     align-items: flex-start;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 20px;
-}
-
-.poster-pic {
-    width: 200px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 3px solid #eee;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-.movie-info-right-side {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.movie-description {
-    width: 500px;
-    max-width: 100%;
-    box-sizing: border-box;
-    margin: 1px;
-    height: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
+    gap: var(--spacing-sm);
+  }
+  
+  .movie-details__stats {
+    justify-content: center;
+  }
 }

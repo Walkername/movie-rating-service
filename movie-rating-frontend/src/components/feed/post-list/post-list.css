@@ -1,44 +1,68 @@
-
+/* Блок списка постов */
 .post-list-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
 }
 
-.post-list-container-title {
-    margin-top: 10px;
-    margin-bottom: 10px;
+/* Состояние загрузки */
+.post-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--color-text-gray);
+  font-size: var(--font-size-lg);
 }
 
-/* Кнопка "View All" */
-.move-to-feed-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #f8f9fa;
-    color: #495057;
-    text-decoration: none;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
+.post-list-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
 }
 
-.move-to-feed-button:hover {
-    background: #e9ecef;
-    color: #212529;
-    border-color: #adb5bd;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.move-to-feed-button:active {
+/* Сообщение об отсутствии постов */
+.post-list-empty {
+  text-align: center;
+  padding: var(--spacing-xxl);
+  color: var(--color-text-gray);
+  font-size: var(--font-size-lg);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Анимация появления постов */
+@keyframes postAppear {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
     transform: translateY(0);
+  }
 }
+
+.post-list-container > * {
+  animation: postAppear 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.post-list-container > *:nth-child(1) { animation-delay: 0.1s; }
+.post-list-container > *:nth-child(2) { animation-delay: 0.2s; }
+.post-list-container > *:nth-child(3) { animation-delay: 0.3s; }
+.post-list-container > *:nth-child(4) { animation-delay: 0.4s; }
+.post-list-container > *:nth-child(5) { animation-delay: 0.5s; }
+.post-list-container > *:nth-child(n+6) { animation-delay: 0.6s; }

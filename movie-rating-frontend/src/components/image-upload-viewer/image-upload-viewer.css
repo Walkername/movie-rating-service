@@ -1,0 +1,276 @@
+/* Модальное окно загрузки изображения */
+.image-upload-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-index-modal);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-medium);
+}
+
+.image-upload-modal--active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Контент модального окна */
+.image-upload-modal__content {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(10, 10, 10, 0.95));
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  position: relative;
+  border: 1px solid rgba(229, 9, 20, 0.3);
+  box-shadow: 
+    var(--shadow-lg),
+    0 0 60px rgba(229, 9, 20, 0.2),
+    0 0 120px rgba(0, 180, 216, 0.1);
+  transform: scale(0.9);
+  transition: transform var(--transition-medium);
+}
+
+.image-upload-modal--active .image-upload-modal__content {
+  transform: scale(1);
+}
+
+/* Кнопка закрытия */
+.image-upload-modal__close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: var(--color-text-light);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  z-index: 2;
+}
+
+.image-upload-modal__close:hover {
+  background-color: var(--color-primary);
+  transform: rotate(90deg);
+}
+
+/* Изображение превью */
+.image-upload-modal__preview {
+  margin-bottom: var(--spacing-xl);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  max-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.image-upload-modal__image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Действия с фотографией */
+.image-upload-modal__actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.image-upload-modal__button {
+  padding: var(--spacing-md) var(--spacing-xl);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Кнопка подтверждения */
+.image-upload-modal__button--confirm {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.image-upload-modal__button--confirm:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, #ff1a1a 0%, #cc0000 100%);
+}
+
+.image-upload-modal__button--confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Кнопка отмены */
+.image-upload-modal__button--cancel {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-light);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.image-upload-modal__button--cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-secondary);
+}
+
+/* Информация о файле */
+.image-upload-modal__info {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.image-upload-modal__filename {
+  font-size: var(--font-size-md);
+  color: var(--color-text-light);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+  word-break: break-all;
+}
+
+.image-upload-modal__filesize {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+/* Индикатор загрузки */
+.image-upload-modal__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  gap: var(--spacing-md);
+}
+
+.image-upload-modal__spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.image-upload-modal__loading-text {
+  color: var(--color-text-light);
+  font-size: var(--font-size-md);
+}
+
+/* Состояние ошибки */
+.image-upload-modal__error {
+  text-align: center;
+  padding: var(--spacing-lg);
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid var(--color-error);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.image-upload-modal__error-text {
+  color: var(--color-error);
+  font-size: var(--font-size-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.image-upload-modal__error-text::before {
+  content: '⚠';
+  font-size: var(--font-size-lg);
+}
+
+/* Иконки в кнопках */
+.image-upload-modal__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.image-upload-modal__button--confirm .image-upload-modal__icon {
+  fill: currentColor;
+}
+
+/* Анимации */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.image-upload-modal__content {
+  animation: modalFadeIn var(--transition-medium) ease-out;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .image-upload-modal__content {
+    padding: var(--spacing-lg);
+    width: 95%;
+  }
+  
+  .image-upload-modal__actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .image-upload-modal__button {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .image-upload-modal__preview {
+    max-height: 50vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-upload-modal__content {
+    padding: var(--spacing-md);
+  }
+  
+  .image-upload-modal__close {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 36px;
+    height: 36px;
+  }
+}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PostCommentInput from "../post-comment-input/post-comment-input";
 import PostCommentList from "../post-comment-list/post-comment-list";
+import "./post-comment-section.css";
 
 export default function PostCommentSection({ postId }) {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -12,9 +13,11 @@ export default function PostCommentSection({ postId }) {
     return (
         <div className="post-comment-section">
             <PostCommentList postId={postId} refreshTrigger={refreshTrigger} />
-
             <hr></hr>
-            <PostCommentInput postId={postId} onCommentPublished={handleCommentPublished} />
+            <PostCommentInput 
+                postId={postId} 
+                onCommentPublished={handleCommentPublished} 
+            />
         </div>
     );
 }

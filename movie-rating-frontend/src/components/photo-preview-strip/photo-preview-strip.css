@@ -1,232 +1,319 @@
-/* photo-preview-strip.css */
-.photo-preview-strip {
-    margin: 20px 0;
+/* Блок полосы превью фотографий */
+.photo-strip {
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.9));
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.photo-strip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+/* Заголовок полосы */
+.photo-strip__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Кнопка "View All" */
-.view-all-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #f8f9fa;
-    color: #495057;
-    text-decoration: none;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
+.photo-strip__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-light);
+  margin: 0;
 }
 
-.view-all-button:hover {
-    background: #e9ecef;
-    color: #212529;
-    border-color: #adb5bd;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
+.photo-strip__view-all {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
 }
 
-.view-all-button:active {
-    transform: translateY(0);
+.photo-strip__view-all:hover {
+  color: var(--color-secondary-light);
+  gap: var(--spacing-sm);
 }
 
-.photo-strip-title {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-    margin-top: 12px;
-    text-align: center;
-    align-items: center;
-    color: #333;
-    font-weight: 600;
+.photo-strip__view-all svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--transition-fast);
 }
 
-.photo-strip-wrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
+.photo-strip__view-all:hover svg {
+  transform: translateX(4px);
 }
 
-.photo-strip-container {
-    overflow-x: auto;
-    padding: 20px 30px 20px 0; /* Больше padding справа */
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+/* Обертка для прокрутки */
+.photo-strip__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.photo-strip-container::-webkit-scrollbar {
-    display: none;
+/* Кнопки прокрутки */
+.photo-strip__scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: var(--color-text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  z-index: 10;
 }
 
-.photo-strip-scroll {
-    display: flex;
-    gap: 12px;
-    padding: 4px 8px;
+.photo-strip__scroll-button:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
 }
 
-.photo-strip-scroll::after {
-    content: '';
-    flex: 0 0 12px; /* Добавляем пространство справа */
-    height: 1px;
+.photo-strip__scroll-button--left {
+  left: -20px;
 }
 
-.photo-strip-item {
-    flex: 0 0 auto;
-    width: 120px;
-    height: 120px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.photo-strip__scroll-button--right {
+  right: -20px;
 }
 
-.photo-strip-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.photo-strip__scroll-button svg {
+  width: 20px;
+  height: 20px;
 }
 
-.photo-strip-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
+/* Контейнер для фотографий */
+.photo-strip__container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) rgba(255, 255, 255, 0.1);
+  flex: 1;
 }
 
-/* Стили для карточки "More" */
-.photo-strip-more-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-decoration: none;
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+.photo-strip__container::-webkit-scrollbar {
+  height: 6px;
 }
 
-.photo-strip-more-card:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: white;
-    text-decoration: none;
+.photo-strip__container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 
-.more-card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    text-align: center;
+.photo-strip__container::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
 }
 
-.more-card-icon {
-    opacity: 0.9;
-    margin-bottom: 4px;
+/* Внутренний контейнер для фотографий */
+.photo-strip__scroll {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  min-height: 150px;
 }
 
-.more-card-text {
-    font-weight: 600;
-    font-size: 0.9rem;
-    opacity: 0.9;
+/* Элемент фотографии */
+.photo-strip__item {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 150px;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
 }
 
-.more-card-count {
-    font-size: 0.75rem;
-    opacity: 0.7;
-    font-weight: 500;
+.photo-strip__item:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Стили для кнопок прокрутки */
-.scroll-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: all 0.2s ease;
-    color: #333;
+.photo-strip__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-medium);
 }
 
-.scroll-button:hover {
-    background: #f8f9fa;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-50%) scale(1.1);
+.photo-strip__item:hover .photo-strip__image {
+  transform: scale(1.1);
 }
 
-.scroll-button:active {
-    transform: translateY(-50%) scale(0.95);
+/* Карточка "еще" */
+.photo-strip__more-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(10, 10, 10, 0.9));
+  text-decoration: none;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
 }
 
-.scroll-button-left {
-    left: -20px;
+.photo-strip__more-card:hover {
+  border-color: var(--color-secondary);
+  background: linear-gradient(135deg, rgba(36, 36, 36, 0.9), rgba(20, 20, 20, 0.9));
 }
 
-.scroll-button-right {
-    right: -20px;
+.photo-strip__more-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-text-gray);
 }
 
-/* Адаптивность для мобильных устройств */
+.photo-strip__more-icon {
+  width: 32px;
+  height: 32px;
+  opacity: 0.7;
+}
+
+.photo-strip__more-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.photo-strip__more-count {
+  font-size: var(--font-size-xs);
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  margin-top: var(--spacing-xs);
+}
+
+/* Оверлей при наведении */
+.photo-strip__item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 50%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.photo-strip__item:hover::after {
+  opacity: 1;
+}
+
+/* Количество фотографий */
+.photo-strip__count {
+  position: absolute;
+  bottom: var(--spacing-sm);
+  left: var(--spacing-sm);
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  z-index: 2;
+}
+
+.photo-strip__item:hover .photo-strip__count {
+  opacity: 1;
+}
+
+/* Состояние загрузки */
+.photo-strip__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  color: var(--color-text-gray);
+  font-size: var(--font-size-md);
+}
+
+.photo-strip__spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: var(--spacing-md);
+}
+
+/* Состояние без фотографий */
+.photo-strip__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  color: var(--color-text-gray);
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+.photo-strip__empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.3;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
-    .photo-strip-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-    
-    .view-all-button {
-        align-self: flex-start;
-    }
-    
-    .photo-strip-wrapper {
-        padding: 0 30px;
-        margin: 0 -30px;
-    }
-    
-    .photo-strip-container {
-        padding: 20px 30px 20px 0;
-    }
-    
-    .photo-strip-scroll::after {
-        flex: 0 0 30px;
-    }
-    
-    .photo-strip-more-card {
-        margin-right: 15px;
-    }
-    
-    .photo-strip-more-card:hover {
-        margin-right: 20px;
-    }
-    
-    .scroll-button {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .photo-strip-item {
-        width: 110px;
-        height: 110px;
-    }
+  .photo-strip {
+    padding: var(--spacing-lg);
+  }
+  
+  .photo-strip__item {
+    width: 160px;
+    height: 120px;
+  }
+  
+  .photo-strip__scroll-button {
+    display: none; /* Скрываем кнопки на мобильных */
+  }
+  
+  .photo-strip__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .photo-strip__item {
+    width: 120px;
+    height: 90px;
+  }
+  
+  .photo-strip__more-content {
+    gap: 2px;
+  }
+  
+  .photo-strip__more-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .photo-strip__more-text {
+    font-size: var(--font-size-xs);
+  }
 }

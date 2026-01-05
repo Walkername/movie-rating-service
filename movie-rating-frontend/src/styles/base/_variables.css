@@ -1,0 +1,261 @@
+:root {
+    /* Цветовая палитра - кинотема */
+    --color-dark: #0a0a0a;
+    --color-dark-hover: #1a1a1a;
+    --color-primary: #e50914; /* Netflix red */
+    --color-secondary: #00b4d8; /* Cyan */
+    --color-accent: #ffd60a; /* Желтый для акцентов */
+    --color-text-light: #ffffff;
+    --color-text-gray: #8c8c8c;
+    --color-error: #e63946;
+    --color-success: #2a9d8f;
+    --color-warning: #f4a261;
+
+    /* Градиенты для кинематографичного вида */
+    --gradient-cinematic: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    --gradient-primary: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+
+    /* Тени */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
+    --shadow-cinematic: 0 0 20px rgba(229, 9, 20, 0.3);
+
+    /* Отступы */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --spacing-xxl: 32px;
+
+    /* Типографика */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 24px;
+    --font-size-xxl: 32px;
+
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+
+    /* Прочее */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-pill: 999px;
+
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    --z-index-navigation: 1000;
+    --z-index-modal: 2000;
+    --z-index-tooltip: 3000;
+
+    /* Цвета рейтингов */
+    --rating-high: #00ff00; /* Высокий рейтинг */
+    --rating-medium: #ffaa00; /* Средний рейтинг */
+    --rating-low: #ff4444; /* Низкий рейтинг */
+
+    /* Иконки */
+    --icon-search: url("data:image/svg+xml;utf8,<svg>...</svg>");
+
+    /* Для форм */
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --input-focus-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+
+    /* Для валидации */
+    --valid-color: #2a9d8f;
+    --invalid-color: #e63946;
+    --warning-color: #f4a261;
+
+    /* Состояния кнопок */
+    --button-loading-bg: linear-gradient(
+        90deg,
+        var(--color-primary) 25%,
+        var(--color-secondary) 50%,
+        var(--color-primary) 75%
+    );
+
+    /* Анимации */
+    --loading-animation: loading 1.5s ease-in-out infinite;
+    
+    /* Галерея */
+    --gallery-grid-gap: var(--spacing-lg);
+    --gallery-grid-columns: 4;
+    
+    /* Загрузка файлов */
+    --file-upload-max-size: 10MB;
+    
+    /* Анимации галереи */
+    --transition-gallery: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Для каталога фильмов */
+    --catalog-grid-gap: var(--spacing-lg);
+    --catalog-grid-columns: 4;
+
+    /* Рейтинги */
+    --rating-color-high: #00ff00;
+    --rating-color-medium: #ffaa00;
+    --rating-color-low: #ff4444;
+
+    /* Жанры */
+    --genre-action: #ff4757;
+    --genre-drama: #3742fa;
+    --genre-comedy: #ffa502;
+    --genre-horror: #2f3542;
+    --genre-scifi: #00d2d3;
+    --genre-romance: #ff6b81;
+    --genre-thriller: #a4b0be;
+    
+    /* Спиннеры */
+    --spinner-size-sm: 24px;
+    --spinner-size-md: 40px;
+    --spinner-size-lg: 60px;
+    --spinner-border-width: 3px;
+    
+    /* Модальные окна */
+    --modal-backdrop: rgba(0, 0, 0, 0.9);
+    --modal-border: 1px solid rgba(255, 255, 255, 0.1);
+    --modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    
+    /* Анимации */
+    --transition-modal: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Адаптивные переменные для сетки галереи */
+@media (max-width: 1200px) {
+  :root {
+    --gallery-grid-columns: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --gallery-grid-columns: 2;
+    --gallery-grid-gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --gallery-grid-columns: 1;
+  }
+}
+
+@keyframes loading {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: 200px 0;
+    }
+}
+
+.auth-form__submit--loading {
+    background: var(--button-loading-bg);
+    background-size: 200px 100%;
+    animation: var(--loading-animation);
+    pointer-events: none;
+}
+
+/* Медиа-запросы для сетки */
+@media (max-width: 1200px) {
+    :root {
+        --catalog-grid-columns: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --catalog-grid-columns: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --catalog-grid-columns: 1;
+    }
+}
+
+/* Анимации спиннеров */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Классы спиннеров */
+.movie-page__spinner,
+.movie-details__poster-spinner,
+.rate-movie__spinner {
+    border: var(--spinner-border-width) solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.movie-page__spinner {
+    width: var(--spinner-size-lg);
+    height: var(--spinner-size-lg);
+    margin: 0 auto var(--spacing-lg);
+}
+
+.movie-details__poster-spinner {
+    width: var(--spinner-size-md);
+    height: var(--spinner-size-md);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.rate-movie__spinner {
+    width: var(--spinner-size-md);
+    height: var(--spinner-size-md);
+    margin: 0 auto var(--spacing-md);
+}
+
+/* Состояния загрузки */
+.movie-page__loading,
+.movie-details__poster-loading {
+    text-align: center;
+    color: var(--color-text-gray);
+}
+
+.movie-details__poster-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(10, 10, 10, 0.8);
+}
+
+/* Спиннер для кнопок */
+@keyframes buttonSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.delete-confirm-modal__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: buttonSpin 0.6s linear infinite;
+  margin-right: var(--spacing-xs);
+}

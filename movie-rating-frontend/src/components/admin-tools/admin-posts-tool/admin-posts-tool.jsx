@@ -16,6 +16,7 @@ export default function AdminPostsTool() {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
+    const [submitSuccess, setSubmitSuccess] = useState(false);
     
     // Constants
     const TITLE_LIMIT = 50;
@@ -44,6 +45,7 @@ export default function AdminPostsTool() {
         
         // Clear general submit error
         if (submitError) setSubmitError("");
+        if (submitSuccess) setSubmitSuccess(false);
     };
     
     // Validate form
@@ -74,17 +76,25 @@ export default function AdminPostsTool() {
         
         setIsSubmitting(true);
         setSubmitError("");
+        setSubmitSuccess(false);
         
         try {
-            // API call to create post
-            const response = await createPost({
+            await createPost({
                 title: post.title.trim(),
                 content: post.content.trim()
             });
             
-            // Success - navigate to feed
-            console.log("Post created successfully:", response);
-            navigate("/feed");
+            // Success
+            setSubmitSuccess(true);
+            
+            // Reset form after delay
+            setTimeout(() => {
+                setPost({ title: "", content: "" });
+                setSubmitSuccess(false);
+                
+                // Optional: navigate to feed
+                // navigate("/feed");
+            }, 2000);
             
         } catch (error) {
             console.error("Failed to create post:", error);
@@ -99,27 +109,46 @@ export default function AdminPostsTool() {
         setPost({ title: "", content: "" });
         setErrors({});
         setSubmitError("");
+        setSubmitSuccess(false);
     };
     
     // Preview markdown (basic)
     const renderPreview = () => {
-        if (!post.content) return <p className="preview-placeholder">Start typing to see preview...</p>;
+        if (!post.content) return (
+            <div className="preview-placeholder">
+                <div className="placeholder-icon">👀</div>
+                <p>Start typing to see preview...</p>
+            </div>
+        );
         
         return (
             <div className="markdown-preview">
                 <h3>Preview:</h3>
-                <div dangerouslySetInnerHTML={{ 
-                    __html: post.content
-                        .replace(/\n/g, '<br>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                        .replace(/`(.*?)`/g, '<code>$1</code>')
-                        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-                        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-                }} />
+                <div className="preview-content">
+                    <h4>{post.title || "Untitled Post"}</h4>
+                    <div dangerouslySetInnerHTML={{ 
+                        __html: post.content
+                            .replace(/\n/g, '<br>')
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                            .replace(/`(.*?)`/g, '<code>$1</code>')
+                            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                    }} />
+                </div>
             </div>
         );
+    };
+
+    const handleKeyDown = (e) => {
+        // Submit on Ctrl+Enter or Cmd+Enter
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+            e.preventDefault();
+            if (post.title.trim() && post.content.trim()) {
+                handleSubmit(e);
+            }
+        }
     };
     
     return (
@@ -134,7 +163,7 @@ export default function AdminPostsTool() {
                 <div className="form-group">
                     <label htmlFor="title">
                         Title *
-                        <span className="char-counter">
+                        <span className={`char-counter ${post.title.length > TITLE_LIMIT * 0.8 ? 'warning' : ''}`}>
                             {post.title.length}/{TITLE_LIMIT}
                         </span>
                     </label>
@@ -158,7 +187,7 @@ export default function AdminPostsTool() {
                 <div className="form-group">
                     <label htmlFor="content">
                         Content (Markdown) *
-                        <span className="char-counter">
+                        <span className={`char-counter ${post.content.length > CONTENT_LIMIT * 0.8 ? 'warning' : ''}`}>
                             {post.content.length}/{CONTENT_LIMIT}
                         </span>
                     </label>
@@ -168,7 +197,10 @@ export default function AdminPostsTool() {
                             name="content"
                             value={post.content}
                             onChange={handleChange}
-                            placeholder="Write your post content here... You can use markdown: **bold**, *italic*, `code`, # headers"
+                            onKeyDown={handleKeyDown}
+                            placeholder="Write your post content here... You can use markdown: **bold**, *italic*, `code`, # headers
+                            
+Ctrl+Enter to publish"
                             className={`markdown-editor ${errors.content ? 'error' : ''}`}
                             maxLength={CONTENT_LIMIT}
                             rows={12}
@@ -184,6 +216,17 @@ export default function AdminPostsTool() {
                     {errors.content && (
                         <div className="error-message">{errors.content}</div>
                     )}
+                    
+                    <div className="markdown-tips">
+                        <h4>Markdown Tips:</h4>
+                        <ul>
+                            <li><code>**bold**</code> → <strong>bold</strong></li>
+                            <li><code>*italic*</code> → <em>italic</em></li>
+                            <li><code>`code`</code> → <code>code</code></li>
+                            <li><code># Header 1</code> → Large header</li>
+                            <li><code>## Header 2</code> → Medium header</li>
+                        </ul>
+                    </div>
                 </div>
                 
                 {/* Preview Section */}
@@ -192,6 +235,14 @@ export default function AdminPostsTool() {
                         {renderPreview()}
                     </div>
                 </div>
+                
+                {/* Success Message */}
+                {submitSuccess && (
+                    <div className="submit-success">
+                        <span className="success-icon">✅</span>
+                        Post created successfully! Redirecting...
+                    </div>
+                )}
                 
                 {/* Submit Error */}
                 {submitError && (
@@ -223,7 +274,7 @@ export default function AdminPostsTool() {
                                 Publishing...
                             </>
                         ) : (
-                            "Publish Post"
+                            'Publish Post'
                         )}
                     </button>
                 </div>

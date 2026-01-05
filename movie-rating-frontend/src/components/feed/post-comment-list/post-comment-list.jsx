@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getAllCommentsForPost } from "../../../api/post-comment-api";
 import PostComment from "../post-comment/post-comment";
+import "./post-comment-list.css";
 
 export default function PostCommentList({ postId, refreshTrigger }) {
     const [comments, setComments] = useState({
@@ -22,13 +22,15 @@ export default function PostCommentList({ postId, refreshTrigger }) {
             });
     }, [postId, refreshTrigger]);
 
+    if (comments.content.length === 0) {
+        return null;
+    }
+
     return (
-        comments.content.length !== 0 && (
-            <div className="post-comments">
-                {comments.content.map((comment) => (
-                    <PostComment key={comment.id} comment={comment} />
-                ))}
-            </div>
-        )
+        <div className="post-comments">
+            {comments.content.map((comment) => (
+                <PostComment key={comment.id} comment={comment} />
+            ))}
+        </div>
     );
 }

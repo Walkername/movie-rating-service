@@ -1,0 +1,29 @@
+/* Блок секции комментариев */
+.post-comment-section {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  animation: commentSectionAppear 0.3s ease-out;
+}
+
+@keyframes commentSectionAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Разделитель */
+.post-comment-section hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent);
+  margin: var(--spacing-xl) 0;
+}

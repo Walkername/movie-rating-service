@@ -1,0 +1,90 @@
+/* Блок комментария */
+.post-comment {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.post-comment:hover {
+  border-color: rgba(229, 9, 20, 0.2);
+  transform: translateX(4px);
+}
+
+.post-comment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, 
+    rgba(229, 9, 20, 0.3), 
+    rgba(0, 180, 216, 0.3));
+  border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+}
+
+/* Заголовок комментария */
+.post-comment-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+/* Имя пользователя */
+.post-comment-username {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.post-comment-username::before {
+  content: '👤';
+  font-size: var(--font-size-xs);
+}
+
+/* Дата комментария */
+.post-comment-date {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-xs);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Содержимое комментария */
+.post-comment-content {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  margin: 0;
+  padding-left: var(--spacing-sm);
+  border-left: 2px solid rgba(229, 9, 20, 0.2);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .post-comment-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .post-comment-username,
+  .post-comment-date {
+    font-size: var(--font-size-xs);
+  }
+  
+  .post-comment-content {
+    font-size: var(--font-size-xs);
+  }
+}

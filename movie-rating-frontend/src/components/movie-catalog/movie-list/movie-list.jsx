@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-// import MOVIES from "../../../props/props";
 import MovieCard from "../movie-card/movie-card";
 import MovieViewToggle from "../movie-list-view-toggle/movie-list-view-toggle";
 import MovieCardBar from "../movie-card-bar/movie-card-bar";
@@ -10,20 +9,23 @@ import "./movie-list.css";
 
 function MovieList() {
     const [loading, setLoading] = useState(true);
-
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
-    const pagePar = searchParams.get("page") ? searchParams.get("page") : 0;
-    const limitPar = searchParams.get("limit") ? searchParams.get("limit") : 10;
-    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "averageRating";
+    // Параметры из URL
+    const pagePar = searchParams.get("page") ? parseInt(searchParams.get("page")) : 0;
+    const limitPar = searchParams.get("limit") ? parseInt(searchParams.get("limit")) : 12;
+    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "averageRating:desc";
     const viewmodePar = searchParams.get("viewmode") ? searchParams.get("viewmode") === "true" : false;
+    const genrePar = searchParams.get("genre") || "all";
 
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(sortPar);
     const sortParams = sortPar.split(":");
-    const [sortField, setSortField] = useState(sortParams[0] ? sortParams[0] : "uploadedAt");
-    const [sortOrder, setSortOrder] = useState(sortParams[1] ? sortParams[1] : "desc");
+    const [sortField, setSortField] = useState(sortParams[0] || "averageRating");
+    const [sortOrder, setSortOrder] = useState(sortParams[1] || "desc");
+    const [selectedGenre, setSelectedGenre] = useState(genrePar);
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -35,15 +37,21 @@ function MovieList() {
 
     const [viewMode, setViewMode] = useState(viewmodePar);
 
-    const handlePageButton = (value) => {
-        setPage(value);
+    // Жанры для фильтрации (можно получать с API)
+    const genres = ["all", "action", "drama", "comedy", "horror", "sci-fi", "romance", "thriller"];
 
-        // Update URL parameters
+    const updateURL = (params) => {
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('page', value);
-
+        Object.entries(params).forEach(([key, value]) => {
+            searchParams.set(key, value);
+        });
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
         window.history.pushState({}, '', newUrl);
+    };
+
+    const handlePageButton = (value) => {
+        setPage(value);
+        updateURL({ page: value });
     };
 
     const handleSortButton = (e) => {
@@ -51,132 +59,186 @@ function MovieList() {
         const newSort = `${field}:${sortOrder}`;
         setSortField(field);
         setSort(newSort);
-
-        // Update URL parameters
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('sort', newSort);
-
-        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+        updateURL({ sort: newSort });
     };
 
     const handleSortOrderButton = () => {
         const order = sortOrder === "desc" ? "asc" : "desc";
         setSortOrder(order);
-        setSort(`${sortField}:${order}`);
-
-        // Update URL parameters
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('sort', `${sortField}:${order}`);
-        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+        const newSort = `${sortField}:${order}`;
+        setSort(newSort);
+        updateURL({ sort: newSort });
     };
 
     const handleLimitButton = (e) => {
-        const limitValue = e.target.value;
-        const newPage = Math.floor((limit * page + 1) / limitValue);
+        const limitValue = parseInt(e.target.value);
+        const newPage = Math.floor((limit * page) / limitValue);
         setPage(newPage);
-        setLimit(e.target.value);
+        setLimit(limitValue);
+        updateURL({ limit: limitValue, page: newPage });
+    };
 
-        // Update URL parameters
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('limit', limitValue);
-        searchParams.set('page', newPage);
-
-        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+    const handleGenreFilter = (genre) => {
+        setSelectedGenre(genre);
+        setPage(0);
+        updateURL({ genre, page: 0 });
     };
 
     useEffect(() => {
+        setLoading(true);
+        // Здесь можно добавить фильтрацию по жанру, когда будет API
         getMoviesWithPagination(page, limit, sort)
             .then((data) => {
                 setPageResponse(data);
                 setLoading(false);
-                // Movie props
-                // setMovies(MOVIES);
             })
             .catch((error) => {
                 console.error("Error fetching movies:", error);
                 setLoading(false);
             });
-    }, [page, limit, sort]);
+    }, [page, limit, sort, selectedGenre]);
 
-    const navigate = useNavigate();
-
-    const handleNavigate = (target) => {
-        window.open(target, "_blank");
-        navigate(target);
-    };
+    const totalPages = Math.ceil(pageResponse.totalElements / limit);
+    const startItem = page * limit + 1;
+    const endItem = Math.min((page + 1) * limit, pageResponse.totalElements);
 
     return (
-        <div className="movie-list-container">
-            <h2 style={{ textAlign: "center" }}>Catalog</h2>
-            <MovieViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+        <div className="movie-catalog">
+            <div className="movie-catalog__header">
+                <h2 className="movie-catalog__title">Movie Catalog</h2>
+                <div className="movie-catalog__controls">
+                    <div className="movie-catalog__filters">
+                        {genres.map(genre => (
+                            <button
+                                key={genre}
+                                className={`movie-catalog__filter ${selectedGenre === genre ? 'movie-catalog__filter--active' : ''}`}
+                                onClick={() => handleGenreFilter(genre)}
+                            >
+                                {genre.charAt(0).toUpperCase() + genre.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+                    <MovieViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+                </div>
+            </div>
 
-            <div className="movie-card-container" style={{ display: viewMode ? 'block' : 'grid' }}>
-                {
-                    loading ? (
-                        <div>Loading movies...</div>
-                    ) : pageResponse.content.map((movie, index) => {
-                            if (index < limit) {
-                                return viewMode ?
-                                    (
-                                        <MovieCardBar
-                                            movie={movie}
-                                            key={index}
-                                            index={index + limit * page}
-                                            handleNavigate={handleNavigate}
-                                        />
-                                    )
-                                    :
-                                    (
-                                        <MovieCard
-                                            movie={movie}
-                                            key={index}
-                                            index={index + limit * page}
-                                            handleNavigate={handleNavigate}
-                                        />
-                                    )
-                            }
-                            return <></>
-                        })
-                }
-            </div>
-            <div>
-                {
-                    Math.ceil(pageResponse.totalElements / limit) > 1 &&
-                    Array.from({ length: Math.ceil(pageResponse.totalElements / limit) }, (_, index) => (
-                        <button
-                            className="page-button"
-                            key={index}
-                            onClick={() => handlePageButton(index)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))
-                }
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    gap: "5px",
-                    margin: "5px"
-                }}
-            >
-                <select onChange={handleSortButton} value={sortField}>
+            <div className="movie-catalog__sort-controls">
+                <select 
+                    className="movie-catalog__select" 
+                    onChange={handleSortButton} 
+                    value={sortField}
+                >
                     <option value="averageRating">Rating</option>
                     <option value="releaseYear">Release Year</option>
-                    <option value="createdAt">Date added</option>
+                    <option value="createdAt">Date Added</option>
                 </select>
-                <SortButton sortOrder={sortOrder} handleSortOrderButton={handleSortOrderButton} />
-                <select onChange={handleLimitButton} value={limit}>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
+                
+                <SortButton 
+                    sortOrder={sortOrder} 
+                    handleSortOrderButton={handleSortOrderButton} 
+                />
+                
+                <select 
+                    className="movie-catalog__select" 
+                    onChange={handleLimitButton} 
+                    value={limit}
+                >
+                    <option value={12}>12 per page</option>
+                    <option value={24}>24 per page</option>
+                    <option value={48}>48 per page</option>
                 </select>
             </div>
+
+            <div className="movie-catalog__container">
+                {loading ? (
+                    <div className="movie-catalog__loading">
+                        <div className="movie-catalog__spinner"></div>
+                        <div>Loading movies...</div>
+                    </div>
+                ) : (
+                    <div className={viewMode ? 'movie-catalog__list' : 'movie-catalog__grid'}>
+                        {viewMode ? (
+                            // Список
+                            pageResponse.content.map((movie, index) => (
+                                <MovieCardBar
+                                    movie={movie}
+                                    key={movie.id}
+                                    index={index + limit * page}
+                                />
+                            ))
+                        ) : (
+                            // Сетка
+                            <div className="movie-catalog__grid-container">
+                                {pageResponse.content.map((movie, index) => (
+                                    <MovieCard
+                                        movie={movie}
+                                        key={movie.id}
+                                        index={index + limit * page}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {!loading && pageResponse.content.length > 0 && (
+                <>
+                    <div className="movie-catalog__stats">
+                        <div>
+                            Showing {startItem} - {endItem} of {pageResponse.totalElements} movies
+                        </div>
+                        <div>
+                            Page {page + 1} of {totalPages}
+                        </div>
+                    </div>
+
+                    {totalPages > 1 && (
+                        <div className="movie-catalog__pagination">
+                            <button
+                                className={`movie-catalog__page-button ${page === 0 ? 'movie-catalog__page-button--disabled' : ''}`}
+                                onClick={() => handlePageButton(Math.max(0, page - 1))}
+                                disabled={page === 0}
+                            >
+                                Previous
+                            </button>
+                            
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                let pageNum;
+                                if (totalPages <= 5) {
+                                    pageNum = i;
+                                } else if (page < 3) {
+                                    pageNum = i;
+                                } else if (page > totalPages - 4) {
+                                    pageNum = totalPages - 5 + i;
+                                } else {
+                                    pageNum = page - 2 + i;
+                                }
+                                
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        className={`movie-catalog__page-button ${page === pageNum ? 'movie-catalog__page-button--active' : ''}`}
+                                        onClick={() => handlePageButton(pageNum)}
+                                    >
+                                        {pageNum + 1}
+                                    </button>
+                                );
+                            })}
+                            
+                            <button
+                                className={`movie-catalog__page-button ${page === totalPages - 1 ? 'movie-catalog__page-button--disabled' : ''}`}
+                                onClick={() => handlePageButton(Math.min(totalPages - 1, page + 1))}
+                                disabled={page === totalPages - 1}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                </>
+            )}
         </div>
-    )
+    );
 }
 
 export default MovieList;

@@ -1,43 +1,137 @@
-
+/* Блок карточки фильма (список) */
 .movie-card-bar {
-    display: grid;
-    grid-template-columns: 1fr 5fr 2fr 2fr 1fr;
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid #d4d4d4;
-    border-radius: 10px;
-    text-decoration: none;
-    color: inherit;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(10, 10, 10, 0.9));
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  color: var(--color-text-light);
+  transition: all var(--transition-fast);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--spacing-sm);
 }
 
 .movie-card-bar:hover {
-    background-color: #d4d4d4;
+  background: linear-gradient(135deg, rgba(36, 36, 36, 0.9), rgba(20, 20, 20, 0.9));
+  border-color: var(--color-primary);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
 }
 
-.movie-card-bar-index {
-    text-align: center;
-    align-content: center;
+/* Индекс в списке */
+.movie-card-bar__index {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-gray);
+  min-width: 40px;
+  text-align: center;
 }
 
-.movie-card-bar-description {
-    padding-top: 5px;
-    padding-right: 15px;
-    font-size: 10px;
-    height: auto;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
+/* Контент карточки */
+.movie-card-bar__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
-.movie-card-bar-rating {
-    text-align: center;
-    align-content: center;
+/* Заголовок */
+.movie-card-bar__header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
 }
 
-.movie-card-bar-scores {
-    text-align: center;
-    align-content: center;
-    font-size: 12px;
+.movie-card-bar__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-light);
+}
+
+.movie-card-bar__year {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-md);
+}
+
+/* Описание */
+.movie-card-bar__description {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Рейтинг и статистика */
+.movie-card-bar__stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+  min-width: 120px;
+}
+
+.movie-card-bar__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+}
+
+.movie-card-bar__rating::before {
+  content: '★';
+  color: var(--color-accent);
+  font-size: var(--font-size-md);
+}
+
+.movie-card-bar__scores {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+/* Дополнительная информация */
+.movie-card-bar__meta {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+.movie-card-bar__genre {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(229, 9, 20, 0.2);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(229, 9, 20, 0.3);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .movie-card-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+  
+  .movie-card-bar__index {
+    align-self: flex-start;
+  }
+  
+  .movie-card-bar__stats {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .movie-card-bar__meta {
+    flex-wrap: wrap;
+  }
 }

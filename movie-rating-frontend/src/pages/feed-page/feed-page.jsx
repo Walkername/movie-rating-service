@@ -4,16 +4,12 @@ import "./feed-page.css";
 
 export default function FeedPage() {
     return (
-        <>
+        <div className="feed-page">
             <NavigationBar />
-
-            <div className="background-page">
-                <div className="feed-container">
-                    <h1 className="post-list-container-title">News Feed</h1>
-                    <PostList />
-                </div>
+            <div className="feed-container">
+                <h1 className="post-list-container-title">News Feed</h1>
+                <PostList />
             </div>
-            
-        </>
+        </div>
     );
-};
+}

@@ -9,71 +9,78 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
     const [errorTitle, setErrorTitle] = useState("");
     const [errorDescription, setErrorDescription] = useState("");
     const [errorReleaseYear, setErrorReleaseYear] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     const [formData, setFormData] = useState({
         title: movie.title,
         releaseYear: movie.releaseYear,
-        description: movie.description
+        description: movie.description,
     });
 
     const validateTitle = () => {
         let errors = "";
-        errors += formData.title.length === 0 ? "Title should not be empty;" : "";
-        errors += formData.title.length > 50 ? "Title should be less or equal than 50;" : "";
+        if (formData.title.length === 0) errors = "Title should not be empty";
+        if (formData.title.length > 50)
+            errors = "Title should be 50 characters or less";
 
-        if (errors !== "") {
-            setErrorTitle(errors);
-            return false;
-        }
-
-        return true;
+        setErrorTitle(errors);
+        return !errors;
     };
 
     const validateDescription = () => {
         if (formData.description.length > 500) {
-            setErrorDescription("Description should be less or equal than 500");
+            setErrorDescription("Description should be 500 characters or less");
             return false;
-        } else {
-            return true;
         }
+        setErrorDescription("");
+        return true;
     };
 
     const validateReleaseYear = () => {
         if (formData.releaseYear < 0) {
-            setErrorReleaseYear("Release year cannot be negative")
+            setErrorReleaseYear("Release year cannot be negative");
             return false;
-        } else {
-            return true;
         }
+        if (formData.releaseYear > new Date().getFullYear() + 10) {
+            setErrorReleaseYear("Release year seems unrealistic");
+            return false;
+        }
+        setErrorReleaseYear("");
+        return true;
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const newValue = name === "releaseYear" ? parseInt(value) || 0 : value;
+        setFormData({ ...formData, [name]: newValue });
+
+        // Валидация в реальном времени
+        if (name === "title") validateTitle();
+        if (name === "description") validateDescription();
+        if (name === "releaseYear") validateReleaseYear();
     };
 
     const handleUpdate = (evt) => {
         evt.preventDefault();
 
-        if (validateTitle()
-            && validateDescription()
-            && validateReleaseYear()
-        ) {
+        if (validateTitle() && validateDescription() && validateReleaseYear()) {
+            setIsSubmitting(true);
+
             updateMovie(movie.id, formData)
                 .then(() => {
-                    setErrorTitle("");
-                    setErrorDescription("");
-                    setErrorReleaseYear("");
+                    // Успешное обновление
                     window.location.reload();
                 })
                 .catch((error) => {
-                    setErrorDescription("Some error has occured");
-                })
+                    console.error("Update error:", error);
+                    setErrorDescription("An error occurred while updating");
+                    setIsSubmitting(false);
+                });
         }
     };
 
-    // MOVIE POSTER
-    // ImageUploadViewer
+    // MOVIE POSTER UPLOAD
     const [previewStatus, setPreviewStatus] = useState(false);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -82,8 +89,20 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            setSelectedFile(file);
 
+            // Проверка типа файла
+            if (!file.type.startsWith("image/")) {
+                alert("Please select an image file");
+                return;
+            }
+
+            // Проверка размера (макс 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size should be less than 5MB");
+                return;
+            }
+
+            setSelectedFile(file);
             const fileUrl = URL.createObjectURL(file);
             setPreviewUrl(fileUrl);
             setPreviewStatus(true);
@@ -95,12 +114,13 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
 
         if (!selectedFile) return;
 
-        const formData = new FormData();
-        formData.append("file", selectedFile);
+        setIsUploading(true);
+        const uploadFormData = new FormData();
+        uploadFormData.append("file", selectedFile);
 
-        // Uploading file
-        uploadFile(formData, "movie-poster", movie.id)
+        uploadFile(uploadFormData, "movie-poster", movie.id)
             .then(() => {
+                // Очистка предпросмотра
                 if (previewUrl) {
                     URL.revokeObjectURL(previewUrl);
                 }
@@ -108,99 +128,213 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
                 setSelectedFile(null);
                 setPreviewUrl(null);
                 if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
+                    fileInputRef.current.value = "";
                 }
+                setIsUploading(false);
+
+                // Перезагрузка страницы для отображения нового постера
                 window.location.reload();
             })
             .catch((error) => {
-                console.log(error);
+                console.error("Upload error:", error);
+                setIsUploading(false);
             });
     };
 
+    const handleCancelUpload = () => {
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        setPreviewStatus(false);
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const isFormValid = !errorTitle && !errorDescription && !errorReleaseYear;
+
     return (
-        <div className="edit-container">
-            <div className="edit-container-top-bar">
-                <DeleteButton id={movie.id} />
-                {
-                    isAccessToEdit &&
-                    <div>
-                        <button className="edit-button" onClick={handleEdit}>
-                            Back
-                        </button>
-                    </div>
-                }
+        <div className="movie-edit">
+            <div className="movie-edit__header">
+                <h2 className="movie-edit__title">Edit Movie: {movie.title}</h2>
+                <div className="movie-edit__actions">
+                    <button
+                        className="movie-edit__button movie-edit__button--back"
+                        onClick={handleEdit}
+                        type="button"
+                    >
+                        ← Back to Movie
+                    </button>
+                </div>
             </div>
-            <div className="edit-card">
-                <h3>Movie Poster</h3>
-                {
-                    selectedFile && (
-                        <img
-                            className="edit-poster"
-                            src={URL.createObjectURL(selectedFile)}
-                            alt={selectedFile.name}
-                        />
-                    )
-                }
-                <form onSubmit={handleUploadMoviePoster} className="upload-form">
-                    <div className="file-input-container">
+
+            {/* Секция загрузки постера */}
+            <div className="movie-edit__card">
+                <h3 className="movie-edit__card-title">Movie Poster</h3>
+                <div className="movie-edit__poster-section">
+                    {selectedFile ? (
+                        <div className="movie-edit__poster-preview">
+                            <img src={previewUrl} alt="Poster preview" />
+                        </div>
+                    ) : (
+                        <p className="movie-edit__file-info">
+                            Current poster is displayed on the movie page
+                        </p>
+                    )}
+
+                    <div className="movie-edit__file-upload">
                         <input
                             ref={fileInputRef}
                             id="movie-poster"
                             type="file"
                             onChange={handleFileChange}
-                            className="file-input"
-                            accept="/image/*"
+                            className="movie-edit__file-input"
+                            accept="image/*"
                         />
-                        <label htmlFor="movie-poster" className="file-input-label">
-                            Choose Photo
+                        <label
+                            htmlFor="movie-poster"
+                            className="movie-edit__file-label"
+                        >
+                            Choose New Poster
                         </label>
-                    </div>
 
-                </form>
+                        {selectedFile && (
+                            <div className="movie-edit__upload-actions">
+                                <button
+                                    type="button"
+                                    className="movie-edit__upload-button"
+                                    onClick={handleUploadMoviePoster}
+                                    disabled={isUploading}
+                                >
+                                    {isUploading
+                                        ? "Uploading..."
+                                        : "Upload Poster"}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="movie-edit__button movie-edit__button--back"
+                                    onClick={handleCancelUpload}
+                                    style={{ marginTop: "var(--spacing-sm)" }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
+
+                        {selectedFile && (
+                            <p className="movie-edit__file-info">
+                                Selected: {selectedFile.name} (
+                                {Math.round(selectedFile.size / 1024)} KB)
+                            </p>
+                        )}
+                    </div>
+                </div>
             </div>
 
+            {/* Форма редактирования деталей */}
             <form onSubmit={handleUpdate}>
-                <div className="edit-card">
-                    <h3>Title:</h3>
-                    <input
-                        type="text"
-                        min="1"
-                        max="50"
-                        name="title"
-                        placeholder="title"
-                        value={formData.title}
-                        onChange={handleChange} required
-                    />
-                    {errorTitle !== "" && <p className="error-text">{errorTitle}</p>}
+                <div className="movie-edit__card">
+                    <h3 className="movie-edit__card-title">Movie Details</h3>
 
-                    <h3>Release Year:</h3>
-                    <input
-                        type="number"
-                        name="releaseYear"
-                        min="0"
-                        placeholder="2000"
-                        value={formData.releaseYear}
-                        onChange={handleChange} required
-                    />
-                    {errorReleaseYear !== "" && <p style={{ color: "red" }}>{errorReleaseYear}</p>}
+                    <div className="movie-edit__field">
+                        <label className="movie-edit__label" htmlFor="title">
+                            Title *
+                        </label>
+                        <input
+                            className="movie-edit__input"
+                            id="title"
+                            type="text"
+                            name="title"
+                            placeholder="Movie title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            required
+                            maxLength={50}
+                        />
+                        <div className="movie-edit__char-count">
+                            {formData.title.length}/50 characters
+                        </div>
+                        {errorTitle && (
+                            <div className="movie-edit__error">
+                                {errorTitle}
+                            </div>
+                        )}
+                    </div>
 
-                    <h3>Description:</h3>
-                    <textarea
-                        type="text"
-                        max="500"
-                        name="description"
-                        rows="5"
-                        placeholder="..."
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                    ></textarea>
-                    {errorDescription !== "" && <span style={{ color: "red" }}>{errorDescription}</span>}
+                    <div className="movie-edit__field">
+                        <label
+                            className="movie-edit__label"
+                            htmlFor="releaseYear"
+                        >
+                            Release Year *
+                        </label>
+                        <input
+                            className="movie-edit__input"
+                            id="releaseYear"
+                            type="number"
+                            name="releaseYear"
+                            placeholder="e.g., 2023"
+                            value={formData.releaseYear}
+                            onChange={handleChange}
+                            required
+                            min="1888"
+                            max={new Date().getFullYear() + 10}
+                        />
+                        {errorReleaseYear && (
+                            <div className="movie-edit__error">
+                                {errorReleaseYear}
+                            </div>
+                        )}
+                    </div>
 
-                    <button type="submit" className="edit-btn">Update</button>
+                    <div className="movie-edit__field">
+                        <label
+                            className="movie-edit__label"
+                            htmlFor="description"
+                        >
+                            Description *
+                        </label>
+                        <textarea
+                            className="movie-edit__textarea"
+                            id="description"
+                            name="description"
+                            placeholder="Movie description..."
+                            value={formData.description}
+                            onChange={handleChange}
+                            required
+                            maxLength={500}
+                            rows={5}
+                        />
+                        <div className="movie-edit__char-count">
+                            {formData.description.length}/500 characters
+                        </div>
+                        {errorDescription && (
+                            <div className="movie-edit__error">
+                                {errorDescription}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="movie-edit__actions">
+                        <button
+                            type="submit"
+                            className="movie-edit__button movie-edit__button--update"
+                            disabled={!isFormValid || isSubmitting}
+                        >
+                            {isSubmitting ? "Updating..." : "Update Movie"}
+                        </button>
+                    </div>
                 </div>
             </form>
 
+            {/* Секция удаления */}
+            <div className="movie-edit__delete-section">
+                <DeleteButton id={movie.id} movieTitle={movie.title} />
+            </div>
+
+            {/* Модальное окно загрузки (если используется) */}
             <ImageUploadViewer
                 previewStatus={previewStatus}
                 setPreviewStatus={setPreviewStatus}
@@ -209,6 +343,8 @@ function MovieDetailsEdit({ isAccessToEdit, movie, handleEdit }) {
                 fileInputRef={fileInputRef}
                 previewUrl={previewUrl}
                 setPreviewUrl={setPreviewUrl}
+                selectedFile={selectedFile}
+                isUploading={isUploading}
             />
         </div>
     );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { publishComment } from "../../../api/post-comment-api";
 import getClaimFromToken from "../../../utils/token-validation/token-validation";
+import "./post-comment-input.css";
 
 export default function PostCommentInput({ postId, onCommentPublished }) {
     const token = localStorage.getItem("accessToken");
@@ -101,7 +102,33 @@ export default function PostCommentInput({ postId, onCommentPublished }) {
         comment.content.length <= CONTENT_LIMIT &&
         comment.content.trim() !== "";
 
-    return (isAuth &&
+    if (!isAuth) {
+        return (
+            <div className="post-comment-input">
+                <div className="comment-input-wrapper">
+                    <textarea
+                        className="post-comment-input-field"
+                        placeholder="Please log in to leave a comment..."
+                        disabled
+                        rows={4}
+                    />
+                    <div className="comment-input-footer">
+                        <div className="char-counter">
+                            <span>0/{CONTENT_LIMIT}</span>
+                        </div>
+                        <button
+                            className="send-button"
+                            disabled
+                        >
+                            Login to Comment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
         <div className="post-comment-input">
             <div className="post-comment-input-username">
                 <b>{tokenUsername}</b>

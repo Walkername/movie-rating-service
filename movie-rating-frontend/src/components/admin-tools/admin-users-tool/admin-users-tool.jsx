@@ -12,19 +12,24 @@ function AdminUsersTool() {
     const [user, setUser] = useState(null);
     const [profilePicUrl, setProfilePicUrl] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [activeSearchMethod, setActiveSearchMethod] = useState("id"); // 'id' or 'username'
+    const [activeSearchMethod, setActiveSearchMethod] = useState("id");
 
     const handleIdInput = (e) => {
         setIdToSend(e.target.value);
+        setStatusMessage("");
     };
 
     const handleUsernameInput = (e) => {
         setUsernameToSend(e.target.value);
+        setStatusMessage("");
     };
 
     const handleGetUserById = async (e) => {
         e.preventDefault();
-        if (!idToSend.trim()) return;
+        if (!idToSend.trim()) {
+            setStatusMessage("Please enter a user ID");
+            return;
+        }
         
         setIsLoading(true);
         setActiveSearchMethod("id");
@@ -34,10 +39,11 @@ function AdminUsersTool() {
         try {
             const data = await getUser(idToSend);
             setUser(data);
-            setStatusMessage("");
+            setStatusMessage(`User found: ${data.username}`);
         } catch (error) {
             setUser(null);
             setStatusMessage("User not found. Please check the ID and try again.");
+            console.error("Error fetching user:", error);
         } finally {
             setIsLoading(false);
         }
@@ -45,7 +51,10 @@ function AdminUsersTool() {
 
     const handleGetUserByUsername = async (e) => {
         e.preventDefault();
-        if (!usernameToSend.trim()) return;
+        if (!usernameToSend.trim()) {
+            setStatusMessage("Please enter a username");
+            return;
+        }
         
         setIsLoading(true);
         setActiveSearchMethod("username");
@@ -55,18 +64,32 @@ function AdminUsersTool() {
         try {
             const data = await getUserByUsername(usernameToSend);
             setUser(data);
-            setStatusMessage("");
+            setStatusMessage(`User found: ${data.username}`);
         } catch (error) {
             setUser(null);
             setStatusMessage("User not found. Please check the username and try again.");
+            console.error("Error fetching user:", error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    // DOWNLOAD PROFILE PICTURE
+    // Сброс формы
+    const handleResetSearch = () => {
+        setIdToSend("");
+        setUsernameToSend("");
+        setUser(null);
+        setStatusMessage("");
+        setProfilePicUrl(null);
+    };
+
+    // Загрузка фото профиля
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            setProfilePicUrl(null);
+            return;
+        }
+        
         if (!user.profilePicId) {
             setProfilePicUrl(null);
             return;
@@ -95,12 +118,14 @@ function AdminUsersTool() {
                         <button
                             className={`tab-button ${activeSearchMethod === 'id' ? 'active' : ''}`}
                             onClick={() => setActiveSearchMethod('id')}
+                            type="button"
                         >
                             Search by ID
                         </button>
                         <button
                             className={`tab-button ${activeSearchMethod === 'username' ? 'active' : ''}`}
                             onClick={() => setActiveSearchMethod('username')}
+                            type="button"
                         >
                             Search by Username
                         </button>
@@ -121,14 +146,28 @@ function AdminUsersTool() {
                                         disabled={isLoading}
                                     />
                                 </div>
-                                <button 
-                                    type="submit" 
-                                    className="search-button"
-                                    disabled={!idToSend.trim() || isLoading}
-                                >
-                                    {isLoading ? 'Searching...' : 'Search User'}
-                                    {isLoading && <span className="loading-spinner"></span>}
-                                </button>
+                                <div className="search-form-actions">
+                                    <button 
+                                        type="submit" 
+                                        className="search-button"
+                                        disabled={!idToSend.trim() || isLoading}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <span className="loading-spinner"></span>
+                                                Searching...
+                                            </>
+                                        ) : 'Search User'}
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="search-button secondary"
+                                        onClick={handleResetSearch}
+                                        disabled={isLoading}
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
                             </form>
                         ) : (
                             <form onSubmit={handleGetUserByUsername} className="search-form">
@@ -144,21 +183,35 @@ function AdminUsersTool() {
                                         disabled={isLoading}
                                     />
                                 </div>
-                                <button 
-                                    type="submit" 
-                                    className="search-button"
-                                    disabled={!usernameToSend.trim() || isLoading}
-                                >
-                                    {isLoading ? 'Searching...' : 'Search User'}
-                                    {isLoading && <span className="loading-spinner"></span>}
-                                </button>
+                                <div className="search-form-actions">
+                                    <button 
+                                        type="submit" 
+                                        className="search-button"
+                                        disabled={!usernameToSend.trim() || isLoading}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <span className="loading-spinner"></span>
+                                                Searching...
+                                            </>
+                                        ) : 'Search User'}
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        className="search-button secondary"
+                                        onClick={handleResetSearch}
+                                        disabled={isLoading}
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
                             </form>
                         )}
                     </div>
                 </div>
 
                 {statusMessage && (
-                    <div className={`status-message ${user ? 'success' : 'error'}`}>
+                    <div className={`status-message ${user ? 'success' : user === null && statusMessage.includes('found') ? 'error' : 'info'}`}>
                         {statusMessage}
                     </div>
                 )}
@@ -174,6 +227,10 @@ function AdminUsersTool() {
                                         className="profile-pic"
                                         src={profilePicUrl}
                                         alt={`${user.username}'s profile`}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            // e.target.nextSibling?.style.display = 'flex';
+                                        }}
                                     />
                                 ) : (
                                     <div className="profile-pic-placeholder">
@@ -187,6 +244,7 @@ function AdminUsersTool() {
                                         className="username-link"
                                         to={`/user/${user.id}`}
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                     >
                                         {user.username}
                                         <svg className="external-link-icon" viewBox="0 0 24 24" width="16" height="16">
@@ -201,11 +259,17 @@ function AdminUsersTool() {
                                     </div>
                                     <div className="stat">
                                         <span className="stat-label">Average Rating:</span>
-                                        <span className="stat-value rating-value">{user.averageRating}</span>
+                                        <span className="stat-value rating-value">
+                                            {user.averageRating ? user.averageRating.toFixed(1) : 'N/A'}
+                                        </span>
                                     </div>
                                     <div className="stat">
                                         <span className="stat-label">Scores:</span>
-                                        <span className="stat-value">{user.scores}</span>
+                                        <span className="stat-value">{user.scores || 0}</span>
+                                    </div>
+                                    <div className="stat">
+                                        <span className="stat-label">Status:</span>
+                                        <span className="stat-value status-active">Active</span>
                                     </div>
                                 </div>
                             </div>
@@ -224,13 +288,19 @@ function AdminUsersTool() {
                         </div>
                     </div>
                 ) : (
-                    statusMessage && (
+                    statusMessage && !statusMessage.includes("Please enter") && (
                         <div className="no-user-found">
                             <div className="empty-state">
                                 <svg className="empty-state-icon" viewBox="0 0 24 24" width="48" height="48">
                                     <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
                                 </svg>
                                 <p>{statusMessage}</p>
+                                <button 
+                                    className="empty-state-button"
+                                    onClick={handleResetSearch}
+                                >
+                                    Try Again
+                                </button>
                             </div>
                         </div>
                     )

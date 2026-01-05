@@ -5,19 +5,20 @@ import AdminToolBar from "../../components/admin-tools/admin-tool-bar/admin-tool
 
 export default function AdminPage() {
     return (
-        <>
+        <div className="admin-page">
             <NavigationBar />
-            <div className="background-page">
-                <h1>Admin Tools</h1>
+            <div className="admin-content">
+                <div className="admin-content__header">
+                    <h1 className="admin-content__title">Admin Tools</h1>
+                    <p className="admin-content__subtitle">
+                        Manage users, movies, and posts with administrative privileges
+                    </p>
+                </div>
                 <div className="profile-card">
-                    <div className="admin-content">
-                        <AdminToolBar />
-                        
-                        <Outlet />
-                    </div>
+                    <AdminToolBar />
+                    <Outlet />
                 </div>
             </div>
-
-        </>
+        </div>
     );
 }

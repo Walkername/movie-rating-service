@@ -1,132 +1,160 @@
+/* Блок панели инструментов админа */
 .admin-toolbar {
-    width: 100%;
-    padding: 1rem 0;
-    margin-bottom: 2rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid #eaeaea;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(10, 10, 10, 0.98));
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-toolbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
 }
 
 .admin-toolbar__container {
     display: flex;
-    gap: 0.25rem;
-    padding: 0 1rem;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
+/* Кнопки инструментов */
 .admin-toolbar__button {
     position: relative;
-    padding: 0.875rem 1.5rem;
-    background: transparent;
-    border: none;
-    color: #64748b;
-    font-size: 0.95rem;
-    font-weight: 500;
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
     cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    transition: all var(--transition-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+    overflow: hidden;
+}
+
+.admin-toolbar__button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left var(--transition-slow);
 }
 
 .admin-toolbar__button:hover {
-    background: #f8fafc;
-    color: #475569;
-    transform: translateY(-1px);
+    color: var(--color-text-light);
+    border-color: rgba(229, 9, 20, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.admin-toolbar__button:active {
-    transform: translateY(0);
+.admin-toolbar__button:hover::before {
+    left: 100%;
 }
 
+/* Активная кнопка */
 .admin-toolbar__button--active {
-    color: #3b82f6;
-    background: #eff6ff;
+    background: var(--gradient-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
+    transform: translateY(-2px);
 }
 
 .admin-toolbar__button--active:hover {
-    background: #eff6ff;
-    color: #2563eb;
+    background: linear-gradient(135deg, var(--color-primary), #c40815);
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.4);
 }
 
-.admin-toolbar__button:disabled {
-    cursor: default;
-    opacity: 1;
-}
-
-.admin-toolbar__button:disabled:hover {
-    background: #eff6ff;
-    transform: none;
-}
-
+/* Индикатор активной кнопки */
 .admin-toolbar__button-indicator {
     position: absolute;
-    bottom: -0.5rem;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    background: #3b82f6;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
+    width: 30px;
+    height: 3px;
+    background: white;
+    border-radius: var(--border-radius-pill);
+    animation: indicatorPulse 2s infinite;
 }
 
+@keyframes indicatorPulse {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Текст кнопки */
 .admin-toolbar__button-text {
     position: relative;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-        transform: translateX(-50%) scale(1);
-    }
-    50% {
-        opacity: 0.5;
-        transform: translateX(-50%) scale(1.2);
-    }
+/* Иконки для кнопок (опционально) */
+.admin-toolbar__button--users .admin-toolbar__button-text::before {
+    content: '👥';
+    font-size: var(--font-size-sm);
 }
 
-/* Focus styles for accessibility */
-.admin-toolbar__button:focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
+.admin-toolbar__button--movies .admin-toolbar__button-text::before {
+    content: '🎬';
+    font-size: var(--font-size-sm);
 }
 
-/* Responsive design */
+.admin-toolbar__button--posts .admin-toolbar__button-text::before {
+    content: '📝';
+    font-size: var(--font-size-sm);
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
     .admin-toolbar__container {
-        padding: 0 0.5rem;
-        gap: 0.125rem;
+        flex-direction: column;
     }
     
     .admin-toolbar__button {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .admin-toolbar__button-indicator {
+        width: 100%;
+        left: 0;
+        transform: none;
+        border-radius: 0;
     }
 }
 
 @media (max-width: 480px) {
     .admin-toolbar {
-        border-radius: 8px;
-    }
-    
-    .admin-toolbar__container {
-        flex-direction: column;
-        gap: 0.5rem;
+        padding: var(--spacing-sm);
     }
     
     .admin-toolbar__button {
-        width: 100%;
-        justify-content: center;
-        padding: 1rem;
-    }
-    
-    .admin-toolbar__button-indicator {
-        bottom: 0.25rem;
-        left: auto;
-        right: 1rem;
-        transform: none;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
     }
 }

@@ -13,6 +13,9 @@ import "./movie-page.css";
 function MoviePage() {
     const { id } = useParams();
     const [movie, setMovie] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const token = localStorage.getItem("accessToken");
     let isAccessToEdit = false;
     if (token != null) {
@@ -21,12 +24,18 @@ function MoviePage() {
     }
 
     useEffect(() => {
+        setIsLoading(true);
         getMovie(id)
             .then((data) => {
                 setMovie(data);
+                setError(null);
             })
             .catch((error) => {
-                console.error(error);
+                console.error("Error fetching movie:", error);
+                setError("Movie not found or error loading data");
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, [id]);
 
@@ -35,54 +44,93 @@ function MoviePage() {
 
     const handleEdit = () => {
         setIsEditing(!isEditing);
-    }
+    };
 
     // PhotoPreviewStrip
     const setMoviePoster = (photo) => {
-        updateMoviePoster(id, photo.fileId);
+        updateMoviePoster(id, photo.fileId)
+            .then(() => {
+                // Обновляем данные фильма после смены постера
+                return getMovie(id);
+            })
+            .then((data) => {
+                setMovie(data);
+            })
+            .catch((error) => {
+                console.error("Error updating poster:", error);
+            });
     };
 
     const movieActions = [
         {
             label: "Set as Movie Poster",
-            handler: setMoviePoster
+            handler: setMoviePoster,
         }
     ];
 
     return (
-        <>
+        <div className="movie-page">
             <NavigationBar />
-            <div className="background-page">
-                <div className="profile-card">
-                    {
-                        movie == null
-                            ? <h1>Error: Movie was not found</h1>
-                            : <>
-                                {
-                                    !isEditing
-                                        ? (
-                                            <>
-                                                <MovieDetails isAccessToEdit={isAccessToEdit} movie={movie} handleEdit={handleEdit} />
-                                                <PhotoPreviewStrip
-                                                    isAccessToEdit={isAccessToEdit}
-                                                    context={"movie"}
-                                                    contextId={movie.id}
-                                                    addionalActions={movieActions}
-                                                />
-                                                <RateMovie movieId={id} isAccessToEdit={isAccessToEdit} />
-                                            </>
-                                        )
-                                        : (
-                                            isAccessToEdit && <MovieDetailsEdit isAccessToEdit={isAccessToEdit} movie={movie} handleEdit={handleEdit} />
-                                        )
 
-                                }
-                            </>
-                    }
+            <div className="movie-page__content">
+                <div className="movie-page__film-strip"></div>
+
+                <div className="movie-page__card">
+                    {isLoading ? (
+                        <div className="movie-page__loading">
+                            <div className="movie-page__spinner"></div>
+                            <p>Loading movie details...</p>
+                        </div>
+                    ) : error ? (
+                        <div className="movie-page__error">
+                            <h2>Error: Movie was not found</h2>
+                            <p>
+                                The movie you're looking for doesn't exist or
+                                cannot be loaded.
+                            </p>
+                        </div>
+                    ) : movie ? (
+                        <>
+                            {!isEditing ? (
+                                <>
+                                    <MovieDetails
+                                        isAccessToEdit={isAccessToEdit}
+                                        movie={movie}
+                                        handleEdit={handleEdit}
+                                    />
+
+                                    <hr className="movie-page__divider" />
+
+                                    <PhotoPreviewStrip
+                                        isAccessToEdit={isAccessToEdit}
+                                        context={"movie"}
+                                        contextId={movie.id}
+                                        addionalActions={movieActions}
+                                    />
+
+                                    <hr className="movie-page__divider" />
+
+                                    <RateMovie
+                                        movieId={id}
+                                        isAccessToEdit={isAccessToEdit}
+                                    />
+                                </>
+                            ) : (
+                                isAccessToEdit && (
+                                    <MovieDetailsEdit
+                                        isAccessToEdit={isAccessToEdit}
+                                        movie={movie}
+                                        handleEdit={handleEdit}
+                                    />
+                                )
+                            )}
+                        </>
+                    ) : null}
                 </div>
-            </div>
 
-        </>
+                <div className="movie-page__film-strip movie-page__film-strip--bottom"></div>
+            </div>
+        </div>
     );
 }
 

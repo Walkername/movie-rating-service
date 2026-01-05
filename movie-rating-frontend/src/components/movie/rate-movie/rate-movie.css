@@ -1,387 +1,252 @@
-/* rate-movie.css */
-.rate-movie-container {
-    padding: 20px 0;
-    border-top: 1px solid #e9ecef;
-    border-bottom: 1px solid #e9ecef;
-    margin: 20px 0;
+/* Блок оценки фильма */
+.rate-movie {
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.9));
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xxl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.rating-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+/* Заголовок секции */
+.rate-movie__header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
 }
 
-.rating-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-    text-align: center;
+.rate-movie__title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.rating-stars {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 1080px;
+.rate-movie__subtitle {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-md);
 }
 
-.star-button {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
-    background: white;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    overflow: hidden;
+/* Контейнер звезд */
+.rate-movie__stars {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
 }
 
-.star-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.5s ease;
+/* Кнопка звезды */
+.rate-movie__star-button {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
 }
 
-.star-button:hover::before {
-    left: 100%;
+.rate-movie__star-button:hover {
+  transform: scale(1.2);
 }
 
-/* Базовые стили для активных кнопок */
-.star-button.active {
-    color: white;
-    transform: translateY(-2px);
+/* SVG звезды */
+.rate-movie__star-icon {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  transition: all var(--transition-fast);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-/* Красный цвет для рейтинга 1-4 */
-.rating-stars.color-red .star-button.active {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-    border-color: #dc3545;
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+/* Цветовые состояния звезд */
+.rate-movie__star-button--default .rate-movie__star-icon {
+  color: rgba(255, 255, 255, 0.2);
 }
 
-.rating-stars.color-red .star-button.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
-    border-radius: 10px;
+.rate-movie__star-button--low .rate-movie__star-icon {
+  color: var(--color-error);
 }
 
-/* Серый цвет для рейтинга 5-6 */
-.rating-stars.color-gray .star-button.active {
-    background: linear-gradient(135deg, #adb5bd 0%, #6c757d 100%);
-    border-color: #495057;
-    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+.rate-movie__star-button--medium .rate-movie__star-icon {
+  color: var(--color-warning);
 }
 
-.rating-stars.color-gray .star-button.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
-    border-radius: 10px;
+.rate-movie__star-button--high .rate-movie__star-icon {
+  color: var(--color-success);
 }
 
-/* Зеленый цвет для рейтинга 7-8 */
-.rating-stars.color-green .star-button.active {
-    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-    border-color: #2f9e44;
-    box-shadow: 0 4px 15px rgba(64, 192, 87, 0.3);
+.rate-movie__star-button--excellent .rate-movie__star-icon {
+  color: var(--color-accent);
 }
 
-.rating-stars.color-green .star-button.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
-    border-radius: 10px;
+/* Текущая оценка (выделение) */
+.rate-movie__star-button--current {
+  transform: scale(1.1);
 }
 
-/* Золотой цвет для рейтинга 9-10 */
-.rating-stars.color-gold .star-button.active {
-    background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%);
-    border-color: #fab005;
-    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.4);
-    position: relative;
+.rate-movie__star-button--current .rate-movie__star-icon {
+  filter: drop-shadow(0 0 10px currentColor);
 }
 
-.rating-stars.color-gold .star-button.active::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #ffd43b, #fff3bf, #ffd43b, #fff3bf);
-    border-radius: 14px;
-    z-index: -1;
-    animation: goldGlow 2s ease-in-out infinite alternate;
+/* Номер внутри звезды */
+.rate-movie__star-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 1;
 }
 
-@keyframes goldGlow {
-    0% {
-        opacity: 0.6;
-        transform: scale(1);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1.02);
-    }
+/* Информация о текущей оценке */
+.rate-movie__info {
+  text-align: center;
+  padding: var(--spacing-lg);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-lg);
 }
 
-/* Эффекты при наведении */
-.star-button:hover {
-    transform: translateY(-3px) scale(1.05);
+.rate-movie__current-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
-.rating-stars.color-red .star-button:hover {
-    border-color: #dc3545;
-    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+.rate-movie__rating-text {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-light);
+  font-weight: var(--font-weight-medium);
 }
 
-.rating-stars.color-gray .star-button:hover {
-    border-color: #495057;
-    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+.rate-movie__rating-value {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
 }
 
-.rating-stars.color-green .star-button:hover {
-    border-color: #2f9e44;
-    box-shadow: 0 6px 20px rgba(64, 192, 87, 0.4);
+/* Кнопка удаления оценки */
+.rate-movie__delete-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(230, 57, 70, 0.2);
+  border: 1px solid var(--color-error);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.rating-stars.color-gold .star-button:hover {
-    border-color: #fab005;
-    box-shadow: 0 6px 25px rgba(255, 193, 7, 0.5);
+.rate-movie__delete-button:hover {
+  background-color: rgba(230, 57, 70, 0.4);
+  transform: translateY(-1px);
 }
 
-/* Текущий рейтинг - усиленные эффекты */
-.star-button.current-rating {
-    border-width: 3px;
-    transform: translateY(-2px);
-    animation: pulse 2s infinite;
+.rate-movie__delete-icon {
+  width: 16px;
+  height: 16px;
 }
 
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-    }
+/* Сообщение без оценки */
+.rate-movie__no-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  color: var(--color-text-gray);
+  font-size: var(--font-size-lg);
 }
 
-.star-number {
-    font-size: 0.75rem;
-    font-weight: 700;
-    line-height: 1;
-    position: relative;
-    z-index: 1;
+.rate-movie__no-rating-icon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.5;
 }
 
-.star-icon {
-    width: 16px;
-    height: 16px;
-    opacity: 0.8;
-    position: relative;
-    z-index: 1;
+/* Легенда оценки */
+.rate-movie__legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
 }
 
-.star-button.active .star-icon {
-    opacity: 1;
+.rate-movie__legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
 }
 
-/* Стили для отображения текущего рейтинга */
-.rating-info {
-    min-height: 40px;
-    display: flex;
-    align-items: center;
+.rate-movie__legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
 
-.current-rating-display {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #f8f9fa;
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
+.rate-movie__legend-color--low {
+  background-color: var(--color-error);
 }
 
-.current-rating-display.color-red {
-    border-left: 4px solid #dc3545;
-    background: linear-gradient(135deg, #ffeaea 0%, #ffffff 100%);
+.rate-movie__legend-color--medium {
+  background-color: var(--color-warning);
 }
 
-.current-rating-display.color-gray {
-    border-left: 4px solid #6c757d;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+.rate-movie__legend-color--high {
+  background-color: var(--color-success);
 }
 
-.current-rating-display.color-green {
-    border-left: 4px solid #40c057;
-    background: linear-gradient(135deg, #ebfbee 0%, #ffffff 100%);
-}
-
-.current-rating-display.color-gold {
-    border-left: 4px solid #fab005;
-    background: linear-gradient(135deg, #fff9db 0%, #ffffff 100%);
-}
-
-.rating-text {
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 500;
-}
-
-.rating-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 2px solid;
-    transition: all 0.3s ease;
-}
-
-.current-rating-display.color-red .rating-value {
-    color: #dc3545;
-    border-color: #dc3545;
-    background: rgba(220, 53, 69, 0.1);
-}
-
-.current-rating-display.color-gray .rating-value {
-    color: #495057;
-    border-color: #6c757d;
-    background: rgba(108, 117, 125, 0.1);
-}
-
-.current-rating-display.color-green .rating-value {
-    color: #2f9e44;
-    border-color: #40c057;
-    background: rgba(64, 192, 87, 0.1);
-}
-
-.current-rating-display.color-gold .rating-value {
-    color: #e67700;
-    border-color: #fab005;
-    background: linear-gradient(135deg, #fff3bf 0%, #ffec99 100%);
-    font-weight: 800;
-}
-
-.delete-rating-button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.delete-rating-button:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
-}
-
-.no-rating {
-    padding: 8px 16px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 1px dashed #dee2e6;
-}
-
-.no-rating .rating-text {
-    color: #6c757d;
-    font-style: italic;
+.rate-movie__legend-color--excellent {
+  background-color: var(--color-accent);
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .rate-movie-container {
-        padding: 16px 0;
-        margin: 16px 0;
-    }
-    
-    .rating-stars {
-        gap: 3px;
-        max-width: 100%;
-    }
-    
-    .star-button {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .star-number {
-        font-size: 0.7rem;
-    }
-    
-    .star-icon {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .current-rating-display {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-    }
-    
-    .rating-title {
-        font-size: 1.1rem;
-    }
+  .rate-movie {
+    padding: var(--spacing-xl);
+  }
+  
+  .rate-movie__star-button {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .rate-movie__stars {
+    gap: var(--spacing-xs);
+  }
 }
 
 @media (max-width: 480px) {
-    .rating-stars {
-        gap: 2px;
-    }
-    
-    .star-button {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .star-number {
-        font-size: 0.65rem;
-    }
-    
-    .star-icon {
-        width: 12px;
-        height: 12px;
-    }
+  .rate-movie__stars {
+    gap: 2px;
+  }
+  
+  .rate-movie__star-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .rate-movie__star-number {
+    font-size: var(--font-size-xs);
+  }
+  
+  .rate-movie__legend {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
 }

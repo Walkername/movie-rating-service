@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import "./image-upload-viewer.css";
 
 export default function ImageUploadViewer({
     previewStatus,
@@ -9,88 +9,169 @@ export default function ImageUploadViewer({
     fileInputRef,
     previewUrl,
     setPreviewUrl,
+    selectedFile = null,
+    isUploading = false,
+    uploadError = null
 }) {
-    const closePreview = useCallback(() => {
-        setPreviewStatus(false);
-        setTimeout(() => {
-            setSelectedFile(null);
+    const [localSelectedFile, setLocalSelectedFile] = useState(selectedFile);
+    const [isClosing, setIsClosing] = useState(false);
 
-            // Copy ref value to variable to avoid cleanup issues
-            const currentFileInput = fileInputRef.current;
-            if (currentFileInput) {
-                currentFileInput.value = "";
+    const closePreview = useCallback(() => {
+        setIsClosing(true);
+        
+        setTimeout(() => {
+            setPreviewStatus(false);
+            setSelectedFile(null);
+            setLocalSelectedFile(null);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
             }
 
             if (previewUrl) {
                 URL.revokeObjectURL(previewUrl);
+                setPreviewUrl(null);
             }
-            setPreviewUrl(null);
+            
+            setIsClosing(false);
         }, 300);
-    }, [
-        setPreviewStatus,
-        setSelectedFile,
-        fileInputRef,
-        previewUrl,
-        setPreviewUrl,
-    ]);
+    }, [setPreviewStatus, setSelectedFile, fileInputRef, previewUrl, setPreviewUrl]);
 
     useEffect(() => {
         const handleEsc = (event) => {
-            if (event.keyCode === 27) {
-                if (previewStatus) closePreview();
+            if (event.key === 'Escape' && previewStatus && !isUploading) {
+                closePreview();
             }
         };
+
         window.addEventListener("keydown", handleEsc);
-        const currentFileInput = fileInputRef.current;
 
         return () => {
             window.removeEventListener("keydown", handleEsc);
-
-            if (currentFileInput) {
-                currentFileInput.value = "";
-            }
-
+            
+            // Cleanup preview URL on unmount
             if (previewUrl) {
                 URL.revokeObjectURL(previewUrl);
             }
         };
-    }, [previewStatus, closePreview, fileInputRef, previewUrl]);
+    }, [previewStatus, closePreview, isUploading, previewUrl]);
+
+    // Update local state when selectedFile prop changes
+    useEffect(() => {
+        if (selectedFile) {
+            setLocalSelectedFile(selectedFile);
+        }
+    }, [selectedFile]);
+
+    if (!previewStatus) return null;
+
+    const formatFileSize = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
+    const modalClass = `image-upload-modal ${previewStatus ? 'image-upload-modal--active' : ''} ${isClosing ? 'image-upload-modal--closing' : ''}`;
 
     return (
-        <>
-            {previewStatus && (
-                <div className="photo-modal-overlay" onClick={closePreview}>
-                    <div
-                        className="photo-modal-content"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button className="close-button" onClick={closePreview}>
-                            ×
-                        </button>
+        <div 
+            className={modalClass}
+            onClick={!isUploading ? closePreview : undefined}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image upload preview"
+        >
+            <div
+                className="image-upload-modal__content"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button 
+                    className="image-upload-modal__close"
+                    onClick={closePreview}
+                    disabled={isUploading}
+                    aria-label="Close preview"
+                >
+                    ×
+                </button>
+                
+                <div className="image-upload-modal__header">
+                    <h3 className="image-upload-modal__title">Image Preview</h3>
+                    {localSelectedFile && (
+                        <div className="image-upload-modal__info">
+                            <div className="image-upload-modal__filename">
+                                {localSelectedFile.name}
+                            </div>
+                            <div className="image-upload-modal__filesize">
+                                {formatFileSize(localSelectedFile.size)}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {uploadError && (
+                    <div className="image-upload-modal__error">
+                        <div className="image-upload-modal__error-text">
+                            {uploadError}
+                        </div>
+                    </div>
+                )}
+
+                {isUploading ? (
+                    <div className="image-upload-modal__loading">
+                        <div className="image-upload-modal__spinner"></div>
+                        <div className="image-upload-modal__loading-text">
+                            Uploading image...
+                        </div>
+                    </div>
+                ) : (
+                    <>
                         {previewUrl && (
-                            <img
-                                src={previewUrl}
-                                alt="Preview"
-                                className="fullscreen-photo"
-                            />
+                            <div className="image-upload-modal__preview">
+                                <img
+                                    src={previewUrl}
+                                    alt="Preview"
+                                    className="image-upload-modal__image"
+                                    onError={(e) => {
+                                        e.target.src = 'https://via.placeholder.com/800x600/333/666?text=Image+Preview+Error';
+                                    }}
+                                />
+                            </div>
                         )}
-                        <div className="photo-actions">
+
+                        <div className="image-upload-modal__actions">
                             <button
                                 onClick={handleUploadPhoto}
-                                className="upload-confirm-button"
+                                className="image-upload-modal__button image-upload-modal__button--confirm"
+                                disabled={isUploading || !localSelectedFile}
                             >
-                                Upload Photo
+                                <svg 
+                                    className="image-upload-modal__icon" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                </svg>
+                                Upload Image
                             </button>
+                            
                             <button
                                 onClick={closePreview}
-                                className="cancel-button"
+                                className="image-upload-modal__button image-upload-modal__button--cancel"
+                                disabled={isUploading}
                             >
+                                <svg 
+                                    className="image-upload-modal__icon" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                                </svg>
                                 Cancel
                             </button>
                         </div>
-                    </div>
-                </div>
-            )}
-        </>
+                    </>
+                )}
+            </div>
+        </div>
     );
 }

@@ -1,102 +1,113 @@
-.login-form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    width: 100%;
-}
-
+/* Специфичные стили для формы логина */
 .login-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 400px;
+  /* Наследуем все общие стили из auth-form.css */
 }
 
-.form-field {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 15px;
+/* Стиль для кнопки логина (может отличаться) */
+.login-form__submit {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
 }
 
-.login-username-label,
-.login-password-label {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    width: 100%;
-    text-align: left;
+.login-form__submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00c6ff, #ff1a1a);
 }
 
-.login-username-input,
-.login-password-input {
-    margin-top: 2px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-    padding: 8px 16px;
-    border: 1px solid #dee2e6;
-    transition: all 0.3s ease;
-    width: 100%;
-    box-sizing: border-box;
+/* Чекбокс "Remember me" */
+.login-form__remember {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
 }
 
-.login-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px 16px;
-    margin: 8px 0;
-    background: #f8f9fa;
-    color: #495057;
-    text-decoration: none;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    cursor: pointer;
-    width: 100%;
+.login-form__remember-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
 }
 
-.login-button:hover:not(:disabled) {
-    background: #e9ecef;
-    color: #212529;
-    border-color: #adb5bd;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
+.login-form__remember-label {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  user-select: none;
 }
 
-.error-text {
-    color: red;
-    font-size: 0.9rem;
+/* Сообщение при успешной регистрации */
+.login-form__success-message {
+  background-color: rgba(42, 157, 143, 0.1);
+  border: 1px solid var(--color-success);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
-.login-username-input.error,
-.login-password-input.error {
-    border-color: #ff4444;
-    box-shadow: 0 0 5px rgba(255, 68, 68, 0.3);
+.login-form__success-text {
+  color: var(--color-success);
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
-.field-error {
-    color: #ff4444;
-    font-size: 0.8em;
-    margin-top: 0.25rem;
-    display: block;
-    text-align: left;
-    width: 100%;
+.login-form__success-text::before {
+  content: '✓';
+  font-size: var(--font-size-md);
 }
 
-.login-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+/* Быстрый вход для демо (опционально) */
+.login-form__demo-accounts {
+  margin-top: var(--spacing-xl);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: var(--spacing-lg);
 }
 
-.form-errors {
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    margin-top: 10px;
+.login-form__demo-title {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.login-form__demo-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.login-form__demo-button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.login-form__demo-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-light);
+  border-color: var(--color-secondary);
+}
+
+/* Иконки в полях ввода */
+.login-form__field--with-icon {
+  position: relative;
+}
+
+.login-form__icon {
+  position: absolute;
+  left: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-gray);
+  pointer-events: none;
+}
+
+.login-form__input--with-icon {
+  padding-left: calc(var(--spacing-lg) * 2);
 }

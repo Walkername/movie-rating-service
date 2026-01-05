@@ -8,17 +8,12 @@ export default function PhotoPreviewStrip({
     isAccessToEdit,
     context,
     contextId,
-    addionalActions = [],
+    additionalActions = [],
     maxPhotos = 10
 }) {
-    // ImageViewer
+    const [isLoading, setIsLoading] = useState(true);
     const [viewStatus, setViewStatus] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
-
-    const handlePhotoClick = (photo) => {
-        setSelectedPhoto(photo);
-        setViewStatus(true);
-    };
 
     const page = 0;
     const sort = "uploadedAt:desc";
@@ -30,24 +25,34 @@ export default function PhotoPreviewStrip({
         totalPages: 0
     });
 
+    const handlePhotoClick = (photo) => {
+        setSelectedPhoto(photo);
+        setViewStatus(true);
+    };
+
     useEffect(() => {
+        setIsLoading(true);
         downloadFiles(context, contextId, page, maxPhotos, sort)
             .then((data) => {
                 setPageResponse(data);
+            })
+            .catch((error) => {
+                console.error("Error loading photos:", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, [contextId, page, maxPhotos, sort, context]);
 
-    // Scrolling
-    // Refs для контейнера прокрутки
+    // Scrolling functionality
     const scrollContainerRef = useRef(null);
+    const [showLeftButton, setShowLeftButton] = useState(false);
+    const [showRightButton, setShowRightButton] = useState(false);
 
-    // Функции прокрутки
     const scrollLeft = () => {
         if (scrollContainerRef.current) {
-            const container = scrollContainerRef.current;
-            const scrollAmount = container.clientWidth * 0.8; // Прокручиваем 80% ширины контейнера
-            container.scrollBy({
-                left: -scrollAmount,
+            scrollContainerRef.current.scrollBy({
+                left: -300,
                 behavior: 'smooth'
             });
         }
@@ -55,140 +60,204 @@ export default function PhotoPreviewStrip({
 
     const scrollRight = () => {
         if (scrollContainerRef.current) {
-            const container = scrollContainerRef.current;
-            const scrollAmount = container.clientWidth * 0.8;
-            container.scrollBy({
-                left: scrollAmount,
+            scrollContainerRef.current.scrollBy({
+                left: 300,
                 behavior: 'smooth'
             });
         }
     };
 
-    // Проверяем, можно ли прокручивать влево/вправо
-    const [showLeftButton, setShowLeftButton] = useState(false);
-    const [showRightButton, setShowRightButton] = useState(false);
-
     const checkScrollButtons = useCallback(() => {
         if (scrollContainerRef.current) {
             const container = scrollContainerRef.current;
-            setShowLeftButton(container.scrollLeft > 0);
+            setShowLeftButton(container.scrollLeft > 10);
             setShowRightButton(
-                container.scrollLeft < container.scrollWidth - container.clientWidth - 1
+                container.scrollLeft < container.scrollWidth - container.clientWidth - 10
             );
         }
     }, []);
 
-    // Проверяем видимость кнопок при загрузке и изменении размера
     useEffect(() => {
         checkScrollButtons();
-
+        
         const container = scrollContainerRef.current;
+        const handleScroll = () => checkScrollButtons();
+        
         if (container) {
-            container.addEventListener('scroll', checkScrollButtons);
+            container.addEventListener('scroll', handleScroll);
             window.addEventListener('resize', checkScrollButtons);
         }
 
         return () => {
             if (container) {
-                container.removeEventListener('scroll', checkScrollButtons);
+                container.removeEventListener('scroll', handleScroll);
             }
             window.removeEventListener('resize', checkScrollButtons);
         };
     }, [pageResponse.content, checkScrollButtons]);
 
-    return (
-        <div className="photo-preview-strip">
-            <div className="photo-strip-header">
-                <h3 className="photo-strip-title">Recent Photos</h3>
-                <Link
-                    to={`/${context}/${contextId}/photos`}
-                    className="view-all-button"
-                >
-                    <span>View All</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+    if (isLoading) {
+        return (
+            <div className="photo-strip">
+                <div className="photo-strip__loading">
+                    <div className="photo-strip__spinner"></div>
+                    <span>Loading photos...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (pageResponse.content.length === 0) {
+        return (
+            <div className="photo-strip">
+                <div className="photo-strip__header">
+                    <h3 className="photo-strip__title">Photos</h3>
+                    <Link
+                        to={`/${context}/${contextId}/photos`}
+                        className="photo-strip__view-all"
+                    >
+                        <span>View All ({pageResponse.totalElements})</span>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                        </svg>
+                    </Link>
+                </div>
+                <div className="photo-strip__empty">
+                    <svg 
+                        className="photo-strip__empty-icon" 
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                    >
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
                     </svg>
-                </Link>
+                    <p>No photos yet</p>
+                </div>
+            </div>
+        );
+    }
+
+    const remainingPhotos = pageResponse.totalElements - maxPhotos;
+
+    return (
+        <div className="photo-strip">
+            <div className="photo-strip__header">
+                <h3 className="photo-strip__title">Recent Photos</h3>
+                {pageResponse.totalElements > 0 && (
+                    <Link
+                        to={`/${context}/${contextId}/photos`}
+                        className="photo-strip__view-all"
+                    >
+                        <span>View All ({pageResponse.totalElements})</span>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                        </svg>
+                    </Link>
+                )}
             </div>
 
-            <div className="photo-strip-wrapper">
-                {/* Кнопка прокрутки влево */}
+            <div className="photo-strip__wrapper">
                 {showLeftButton && (
                     <button
-                        className="scroll-button scroll-button-left"
+                        className="photo-strip__scroll-button photo-strip__scroll-button--left"
                         onClick={scrollLeft}
                         aria-label="Scroll left"
                     >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                         </svg>
                     </button>
                 )}
 
-                {/* Контейнер с фотографиями */}
                 <div
-                    className="photo-strip-container"
+                    className="photo-strip__container"
                     ref={scrollContainerRef}
                 >
-                    <div className="photo-strip-scroll">
+                    <div className="photo-strip__scroll">
                         {pageResponse.content.map((photo, index) => (
-                            <div key={index} className="photo-strip-item" onClick={() => handlePhotoClick(photo)}>
+                            <div 
+                                key={photo.id || index} 
+                                className="photo-strip__item" 
+                                onClick={() => handlePhotoClick(photo)}
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handlePhotoClick(photo);
+                                    }
+                                }}
+                            >
                                 <img
                                     src={photo.url}
-                                    alt={photo.title}
-                                    className="photo-strip-image"
+                                    alt={photo.title || `Photo ${index + 1}`}
+                                    className="photo-strip__image"
                                     loading="lazy"
+                                    onError={(e) => {
+                                        e.target.src = 'https://via.placeholder.com/200x150/333/666?text=Photo+Error';
+                                    }}
                                 />
+                                {index === 0 && (
+                                    <span className="photo-strip__count">
+                                        {index + 1}/{pageResponse.content.length}
+                                    </span>
+                                )}
                             </div>
                         ))}
-                        <Link
-                            to={`/${context}/${contextId}/photos`}
-                            className="photo-strip-item photo-strip-more-card"
-                        >
-                            <div className="more-card-content">
-                                <svg
-                                    width="32"
-                                    height="32"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="more-card-icon"
-                                >
-                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                                </svg>
-                                <span className="more-card-text">More</span>
-                                <span className="more-card-count">
-                                    {pageResponse.totalElements > maxPhotos
-                                        ? `+${pageResponse.totalElements - maxPhotos}`
-                                        : 'All'
-                                    }
-                                </span>
-                            </div>
-                        </Link>
+                        
+                        {pageResponse.totalElements > maxPhotos && (
+                            <Link
+                                to={`/${context}/${contextId}/photos`}
+                                className="photo-strip__item photo-strip__more-card"
+                            >
+                                <div className="photo-strip__more-content">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className="photo-strip__more-icon"
+                                    >
+                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                                    </svg>
+                                    <span className="photo-strip__more-text">View All</span>
+                                    {remainingPhotos > 0 && (
+                                        <span className="photo-strip__more-count">
+                                            +{remainingPhotos}
+                                        </span>
+                                    )}
+                                </div>
+                            </Link>
+                        )}
                     </div>
                 </div>
 
-                {/* Кнопка прокрутки вправо */}
                 {showRightButton && (
                     <button
-                        className="scroll-button scroll-button-right"
+                        className="photo-strip__scroll-button photo-strip__scroll-button--right"
                         onClick={scrollRight}
                         aria-label="Scroll right"
                     >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                         </svg>
                     </button>
                 )}
+            </div>
 
+            {viewStatus && selectedPhoto && (
                 <ImageViewer
                     isAccessToEdit={isAccessToEdit}
                     viewStatus={viewStatus}
                     setViewStatus={setViewStatus}
                     selectedPhoto={selectedPhoto}
                     setSelectedPhoto={setSelectedPhoto}
-                    additionalActions={addionalActions}
+                    additionalActions={additionalActions}
+                    photos={pageResponse.content} // Передаем все фотографии для навигации
+                    currentIndex={pageResponse.content.findIndex(photo => 
+                        selectedPhoto && (photo.id === selectedPhoto.id || photo.url === selectedPhoto.url)
+                    )}
+                    onIndexChange={(newIndex) => {
+                        // Можно обновить состояние, если нужно
+                    }}
                 />
-            </div>
+            )}
         </div>
     );
 }

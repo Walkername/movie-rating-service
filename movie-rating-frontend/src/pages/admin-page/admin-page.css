@@ -1,18 +1,157 @@
-.admin-content {
-    padding: 2rem;
+/* Блок страницы админа */
+.admin-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.98), rgba(5, 5, 5, 0.98));
+    position: relative;
+    overflow-x: hidden;
 }
 
-/* Responsive adjustments */
+.admin-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(229, 9, 20, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(0, 180, 216, 0.05) 0%, transparent 25%),
+        linear-gradient(45deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%);
+    z-index: 0;
+}
+
+/* Основной контент */
+.admin-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    animation: adminFadeIn var(--transition-medium) ease-out;
+}
+
+.admin-content__header {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    padding: var(--spacing-xl) 0;
+    position: relative;
+}
+
+.admin-content__title {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    display: inline-block;
+    padding-bottom: var(--spacing-lg);
+}
+
+.admin-content__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: var(--gradient-primary);
+    border-radius: var(--border-radius-pill);
+}
+
+.admin-content__subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Карточка профиля */
+.profile-card {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.9));
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        var(--shadow-xl),
+        0 0 50px rgba(229, 9, 20, 0.1),
+        0 0 100px rgba(0, 180, 216, 0.05);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+/* Анимация появления */
+@keyframes adminFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Анимация для содержимого */
+@keyframes contentSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.admin-content > *:not(:first-child) {
+    animation: contentSlideIn 0.4s ease-out;
+    animation-fill-mode: both;
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
-    
     .admin-content {
-        padding: 1.5rem;
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+    
+    .admin-content__header {
+        margin-bottom: var(--spacing-xl);
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .admin-content__title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .admin-content__subtitle {
+        font-size: var(--font-size-md);
     }
 }
 
 @media (max-width: 480px) {
-    
     .admin-content {
-        padding: 1rem;
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+    
+    .admin-content__title {
+        font-size: var(--font-size-lg);
+    }
+    
+    .profile-card {
+        border-radius: var(--border-radius-md);
     }
 }

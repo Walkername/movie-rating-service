@@ -1,0 +1,460 @@
+/* Блок формы добавления фильма */
+.add-movie-form-container {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+    animation: formAppear 0.4s ease-out;
+}
+
+@keyframes formAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Заголовок формы */
+.form-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-header h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    display: inline-block;
+}
+
+.form-header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--border-radius-pill);
+}
+
+.form-subtitle {
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Форма */
+.new-movie-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Группа полей */
+.form-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.form-field-group label {
+    color: var(--color-text-light);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-field-group label::before {
+    font-size: var(--font-size-sm);
+}
+
+.form-field-group label[for="title"]::before {
+    content: '🎬';
+}
+
+.form-field-group label[for="releaseYear"]::before {
+    content: '📅';
+}
+
+.form-field-group label[for="description"]::before {
+    content: '📝';
+}
+
+/* Поля ввода */
+.form-input,
+.form-textarea,
+.form-number {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-light);
+    font-size: var(--font-size-md);
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-number:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder,
+.form-number::placeholder {
+    color: var(--color-text-gray);
+    opacity: 0.7;
+}
+
+.form-input.error,
+.form-textarea.error,
+.form-number.error {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+}
+
+/* Текстовое поле */
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+}
+
+/* Числовое поле */
+.form-number::-webkit-inner-spin-button,
+.form-number::-webkit-outer-spin-button {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+/* Счетчик символов */
+.char-counter-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-xs);
+}
+
+.char-counter {
+    color: var(--color-text-gray);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+}
+
+.char-counter.warning {
+    color: #e74c3c;
+    font-weight: var(--font-weight-bold);
+}
+
+/* Сообщения об ошибках */
+.error-message {
+    color: #e74c3c;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-sm);
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    border-radius: var(--border-radius-sm);
+    animation: errorAppear 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.error-message::before {
+    content: '⚠';
+    font-size: var(--font-size-sm);
+}
+
+@keyframes errorAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Сообщение об успехе */
+.success-message {
+    color: #2ecc71;
+    font-size: var(--font-size-md);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    border-radius: var(--border-radius-md);
+    animation: successAppear 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-align: center;
+}
+
+.success-message::before {
+    content: '✅';
+    font-size: var(--font-size-lg);
+}
+
+@keyframes successAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Кнопка отправки */
+.form-submit {
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: var(--border-radius-md);
+    color: white;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    align-self: flex-start;
+    min-width: 150px;
+    margin-top: var(--spacing-lg);
+}
+
+.form-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3);
+}
+
+.form-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.form-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--color-text-gray);
+}
+
+/* Спиннер загрузки */
+.form-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Индикатор обязательных полей */
+.required-indicator {
+    color: var(--color-primary);
+    margin-left: var(--spacing-xs);
+}
+
+/* Дополнительные поля (опционально) */
+.additional-fields {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.additional-fields h3 {
+    color: var(--color-text-light);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.additional-fields h3::before {
+    content: '➕';
+    font-size: var(--font-size-md);
+}
+
+/* Группа жанров */
+.genres-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.genre-tag {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.05));
+    border: 1px solid rgba(229, 9, 20, 0.2);
+    border-radius: var(--border-radius-pill);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.genre-tag:hover {
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.1));
+    transform: translateY(-1px);
+}
+
+.genre-tag.selected {
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.3), rgba(229, 9, 20, 0.2));
+    border-color: var(--color-primary);
+    color: white;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .add-movie-form-container {
+        padding: var(--spacing-lg);
+    }
+    
+    .form-header {
+        margin-bottom: var(--spacing-xl);
+        padding-bottom: var(--spacing-lg);
+    }
+    
+    .form-header h2 {
+        font-size: var(--font-size-lg);
+    }
+    
+    .form-field-group label {
+        font-size: var(--font-size-sm);
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-number {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    
+    .form-submit {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-movie-form-container {
+        padding: var(--spacing-md);
+    }
+    
+    .form-header h2 {
+        font-size: var(--font-size-md);
+    }
+    
+    .form-subtitle {
+        font-size: var(--font-size-sm);
+    }
+    
+    .error-message,
+    .success-message {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Действия формы */
+.form-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Вторичная кнопка */
+.form-submit.secondary {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-light);
+}
+
+.form-submit.secondary:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Информация о выбранных жанрах */
+.selected-genres-info {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: #2ecc71;
+    font-size: var(--font-size-sm);
+}
+
+/* Обязательные поля указатель */
+.required-indicator {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+/* Подсказка для числового поля */
+.year-hint {
+    color: var(--color-text-gray);
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-xs);
+    font-style: italic;
+}
+
+/* Анимация для элементов формы */
+.form-field-group {
+    animation: fieldAppear 0.3s ease-out;
+    animation-fill-mode: both;
+}
+
+.form-field-group:nth-child(1) { animation-delay: 0.1s; }
+.form-field-group:nth-child(2) { animation-delay: 0.2s; }
+.form-field-group:nth-child(3) { animation-delay: 0.3s; }
+.form-field-group:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fieldAppear {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

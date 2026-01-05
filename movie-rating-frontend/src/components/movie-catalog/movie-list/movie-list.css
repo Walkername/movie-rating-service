@@ -1,3 +1,253 @@
-.movie-list-container {
-    width: 960px;
+/* Блок каталога фильмов */
+.movie-catalog {
+  position: relative;
+}
+
+/* Заголовок каталога */
+.movie-catalog__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movie-catalog__title {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-light);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+/* Контролы каталога (фильтры, сортировка, вид) */
+.movie-catalog__controls {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Фильтры */
+.movie-catalog__filters {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.movie-catalog__filter {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-pill);
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.movie-catalog__filter:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-primary);
+}
+
+.movie-catalog__filter--active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+/* Сортировка и лимит */
+.movie-catalog__sort-controls {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(4px);
+}
+
+.movie-catalog__select {
+    padding: var(--spacing-sm) var(--spacing-md);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--border-radius-sm);
+      color: var(--color-text-light);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+}
+
+.movie-catalog__select option {
+  background-color: #141414;
+  color: #f1f1f1;
+}
+
+.movie-catalog__select:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.05)
+    );
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.movie-catalog__select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 0 2px rgba(229, 9, 20, 0.25),
+    0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Контейнер для карточек */
+.movie-catalog__container {
+  margin-bottom: var(--spacing-xxl);
+  min-height: 400px;
+}
+
+/* Состояние загрузки */
+.movie-catalog__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--color-text-gray);
+  font-size: var(--font-size-lg);
+}
+
+.movie-catalog__spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Пагинация */
+.movie-catalog__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movie-catalog__page-button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 40px;
+  text-align: center;
+}
+
+.movie-catalog__page-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-primary);
+}
+
+.movie-catalog__page-button--active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.movie-catalog__page-button--disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.movie-catalog__page-info {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+  margin: 0 var(--spacing-md);
+}
+
+/* Статистика каталога */
+.movie-catalog__stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-gray);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .movie-catalog__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+  
+  .movie-catalog__controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .movie-catalog__sort-controls {
+    flex-wrap: wrap;
+  }
+  
+  .movie-catalog__pagination {
+    flex-wrap: wrap;
+  }
+}
+
+/* Добавьте эти стили в movie-list.css */
+
+/* Контейнер сетки */
+.movie-catalog__grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+/* Контейнер списка */
+.movie-catalog__list-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* Медиа-запросы для сетки */
+@media (max-width: 1200px) {
+    .movie-catalog__grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .movie-catalog__grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-catalog__grid-container {
+        grid-template-columns: 1fr;
+    }
 }

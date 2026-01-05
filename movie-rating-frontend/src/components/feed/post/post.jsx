@@ -7,7 +7,7 @@ import "./post.css";
 
 export default function Post({ post }) {
     const briefContent =
-        post.content.length <= 300 // if size > 300 then limit is 200 // if size <= 300 then limit i
+        post.content.length <= 300
             ? post.content
             : post.content.substring(0, 200) + "...";
     const [contentShown, setContentShown] = useState(briefContent);
@@ -32,7 +32,7 @@ export default function Post({ post }) {
     };
 
     return (
-        <div className="post-container">
+        <article className="post-container">
             <span className="post-date">{validateDate(post.publishedAt)}</span>
             <h2 className="post-title">{post.title}</h2>
             <div className="post-content">
@@ -53,12 +53,18 @@ export default function Post({ post }) {
                 <p
                     className="post-content-show-more"
                     onClick={toggleContentShown}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => e.key === 'Enter' && toggleContentShown()}
                 >
                     {showMoreText}
                 </p>
             )}
-            <PostFunctionPanel onClickComment={() => toggleCommentSection()} postId={post.id} />
+            <PostFunctionPanel 
+                onClickComment={() => toggleCommentSection()} 
+                postId={post.id} 
+            />
             {commentSection && <PostCommentSection postId={post.id} />}
-        </div>
+        </article>
     );
 }

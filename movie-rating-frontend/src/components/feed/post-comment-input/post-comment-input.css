@@ -1,0 +1,154 @@
+/* Блок ввода комментария */
+.post-comment-input {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(20, 20, 20, 0.95));
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Имя пользователя */
+.post-comment-input-username {
+  color: var(--color-primary);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.post-comment-input-username::before {
+  content: '👤';
+  font-size: var(--font-size-sm);
+}
+
+/* Обертка для поля ввода */
+.comment-input-wrapper {
+  position: relative;
+}
+
+/* Поле ввода */
+.post-comment-input-field {
+  width: 100%;
+  min-height: 100px;
+  padding: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-light);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  resize: vertical;
+  transition: all var(--transition-fast);
+  line-height: 1.5;
+}
+
+.post-comment-input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.post-comment-input-field::placeholder {
+  color: var(--color-text-gray);
+  opacity: 0.7;
+}
+
+.post-comment-input-field:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.post-comment-input-field.error {
+  border-color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.05);
+}
+
+/* Футер поля ввода */
+.comment-input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-md);
+}
+
+/* Счетчик символов */
+.char-counter {
+  color: var(--color-text-gray);
+  font-size: var(--font-size-sm);
+}
+
+.char-counter .warning {
+  color: #ff6b6b;
+  font-weight: var(--font-weight-bold);
+}
+
+/* Кнопка отправки */
+.send-button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: var(--border-radius-pill);
+  color: white;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.send-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.3);
+}
+
+.send-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-text-gray);
+}
+
+/* Сообщения об ошибках */
+.error-message {
+  color: #ff6b6b;
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.error-message::before {
+  content: '⚠';
+  font-size: var(--font-size-xs);
+}
+
+.error-message.api-error {
+  padding: var(--spacing-sm);
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: var(--border-radius-sm);
+  margin-top: var(--spacing-md);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .post-comment-input {
+    padding: var(--spacing-md);
+  }
+  
+  .comment-input-footer {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+  
+  .send-button {
+    width: 100%;
+  }
+}

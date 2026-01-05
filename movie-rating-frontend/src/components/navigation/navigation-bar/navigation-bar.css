@@ -1,71 +1,137 @@
-nav {
+/* Блок навигации */
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--color-dark);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: sticky;
-    display: flex;
-    z-index: 1000;
     top: 0;
-    min-height: 50px;
-    width: 100%;
-    align-items: center;
-    background-color: rgb(20, 20, 20);
+    z-index: var(--z-index-navigation);
 }
 
-.nav-element {
-    font-size: 22px;
-    padding-left: 50px;
-    padding-right: 50px;
-    align-content: center;
-    color: rgb(161, 161, 161);
-    font-family: 'PT Sans', sans-serif;
-    font-weight: bold;
+/* Элементы блока nav */
+.nav__left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+}
+
+.nav__right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.nav__auth-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-left: var(--spacing-md);
+}
+
+/* Элемент ссылки */
+.nav__link {
+    color: var(--color-text-light);
     text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+    transition: color var(--transition-fast);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
 }
 
-.nav-bar-right {
-    display: flex;
-    justify-content: left;
-    /* Center the elements inside this container */
-    align-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+.nav__link:hover {
+    color: var(--color-primary);
+    background-color: var(--color-dark-hover);
 }
 
-.nav-bar-left {
-    display: flex;
-    justify-content: right;
-    /* Center the elements inside this container */
-    align-content: center;
-    align-items: center;
-    width: 100%;
+/* Модификаторы для ссылок */
+.nav__link--brand {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    letter-spacing: -0.5px;
 }
 
-.auth-buttons {
-    min-height: 26px;
-    min-width: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin-left: auto;
+.nav__link--profile {
+    color: var(--color-secondary);
 }
 
-.auth-button {
-    height: 100%;
-    font-size: 15px;
+.nav__link--profile:hover {
+    color: var(--color-secondary-light);
+}
+
+/* Кнопки аутентификации */
+.nav__auth-button {
+    color: var(--color-text-light);
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
     border: 1px solid transparent;
+    background: none;
+    font-family: inherit;
+    font-size: var(--font-size-md);
+}
+
+.nav__auth-button:hover {
+    background-color: var(--color-dark-hover);
+    border-color: var(--color-primary);
+}
+
+/* Модификаторы для кнопок */
+.nav__auth-button--admin {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.nav__auth-button--logout {
+    color: var(--color-error);
+}
+
+.nav__auth-button--logout:hover {
+    border-color: var(--color-error);
+}
+
+/* Состояния */
+.nav__link.is-active {
+    background-color: var(--color-primary);
     color: white;
-    display: inline-block;
-    padding: 6px 10px;
-    transition: all 0.5s ease;
 }
 
-.auth-button:hover {
-    cursor: pointer;
-    border: 1px solid;
-    border-radius: 20px;
-    text-decoration: underline;
+/* Медиа-запросы для адаптива */
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+
+    .nav__left,
+    .nav__right {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav__auth-buttons {
+        margin-left: 0;
+        justify-content: center;
+    }
 }
 
-.nav-element:hover {
-    cursor: pointer;
-    color: rgb(255, 255, 255);
+/* В navigation-bar.css */
+.nav__search {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+    .nav__search {
+        order: 2;
+        margin: var(--spacing-md) 0;
+        max-width: 100%;
+    }
 }

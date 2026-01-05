@@ -6,60 +6,132 @@ import unknownMoviePoster from "../../../assets/images/unknown-movie-poster.png"
 
 function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
     const [posterPicUrl, setPosterPicUrl] = useState(null);
+    const [isPosterLoading, setIsPosterLoading] = useState(true);
 
     useEffect(() => {
-        if (!movie.posterPicId) return;
+        if (!movie.posterPicId) {
+            setIsPosterLoading(false);
+            return;
+        }
+        
+        setIsPosterLoading(true);
         downloadFile(movie.posterPicId)
             .then((data) => {
                 setPosterPicUrl(data);
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error("Error loading poster:", error);
+            })
+            .finally(() => {
+                setIsPosterLoading(false);
             });
-    }, [movie.posterPicUrl, movie.posterPicId]);
+    }, [movie.posterPicId]);
+
+    // Определяем цвет рейтинга
+    const getRatingColorClass = () => {
+        if (!movie.averageRating) return '';
+        if (movie.averageRating >= 8.0) return 'movie-details__rating--high';
+        if (movie.averageRating >= 5.0) return 'movie-details__rating--medium';
+        return 'movie-details__rating--low';
+    };
+
+    // Форматируем дату
+    const formattedDate = validateDate(movie.createdAt);
 
     return (
-        <div className="movie-info">
-            <img
-                className="poster-pic"
-                src={posterPicUrl || unknownMoviePoster}
-                alt="Poster"
-            />
-            <div className="movie-info-right-side">
-                <div className="movie-info-details">
-                    <h2>{movie.title} ({movie.releaseYear})</h2>
-                    <h3>Description</h3>
-                    <div className="movie-description">
+        <div className="movie-details">
+            <div className="movie-details__poster">
+                {isPosterLoading ? (
+                    <div className="movie-details__poster-loading">
+                        <div className="movie-details__poster-spinner"></div>
+                    </div>
+                ) : (
+                    <img
+                        className="movie-details__poster-img"
+                        src={posterPicUrl || unknownMoviePoster}
+                        alt={`${movie.title} poster`}
+                        onError={(e) => {
+                            e.target.src = unknownMoviePoster;
+                        }}
+                    />
+                )}
+                
+                {/* Бейдж для высокого рейтинга */}
+                {movie.averageRating >= 8.0 && (
+                    <div className="movie-details__poster-badge">
+                        Top Rated
+                    </div>
+                )}
+            </div>
+            
+            <div className="movie-details__content">
+                <div className="movie-details__header">
+                    <h1 className="movie-details__title">
+                        {movie.title}
+                        <span className="movie-details__year">({movie.releaseYear})</span>
+                    </h1>
+                    
+                    {movie.averageRating > 0 && (
+                        <div className={`movie-details__rating ${getRatingColorClass()}`}>
+                            {movie.averageRating.toFixed(1)}
+                        </div>
+                    )}
+                </div>
+                
+                <div className="movie-details__info">
+                    <div className="movie-details__description">
                         {movie.description}
                     </div>
-                    <div>
-                        <b>Release year:</b> {movie.releaseYear}
+                    
+                    <div className="movie-details__stats">
+                        <div className="movie-details__stat">
+                            <span className="movie-details__stat-value">
+                                {movie.averageRating > 0 ? movie.averageRating.toFixed(1) : '—'}
+                            </span>
+                            <span className="movie-details__stat-label">Rating</span>
+                        </div>
+                        
+                        <div className="movie-details__stat">
+                            <span className="movie-details__stat-value">
+                                {movie.scores || 0}
+                            </span>
+                            <span className="movie-details__stat-label">Votes</span>
+                        </div>
+                        
+                        <div className="movie-details__stat">
+                            <span className="movie-details__stat-value">
+                                {movie.releaseYear}
+                            </span>
+                            <span className="movie-details__stat-label">Year</span>
+                        </div>
                     </div>
-                    <div>
-                        <b>Average rating:</b> {
-                            movie.averageRating !== 0.0
-                                ? movie.averageRating
-                                : <span>no ratings</span>
-                        }
-                    </div>
-                    <div>
-                        <b>Scores:</b> {movie.scores}
-                    </div>
-                    <div style={{ fontSize: "12px", }}>
-                        Created at: {validateDate(movie.createdAt)}
+                    
+                    <div className="movie-details__meta">
+                        <div className="movie-details__meta-item">
+                            <strong>Release Year:</strong> {movie.releaseYear}
+                        </div>
+                        <div className="movie-details__meta-item">
+                            <strong>Scores:</strong> {movie.scores || 0}
+                        </div>
+                        <div className="movie-details__meta-item">
+                            <strong>Added:</strong> {formattedDate}
+                        </div>
                     </div>
                 </div>
-                {
-                    isAccessToEdit &&
-                    <div>
-                        <button className="edit-button" onClick={handleEdit}>
-                            Edit
+                
+                {isAccessToEdit && (
+                    <div className="movie-details__actions">
+                        <button 
+                            className="movie-details__edit-button"
+                            onClick={handleEdit}
+                        >
+                            Edit Movie Details
                         </button>
                     </div>
-                }
+                )}
             </div>
         </div>
-    )
+    );
 }
 
 export default MovieDetails;

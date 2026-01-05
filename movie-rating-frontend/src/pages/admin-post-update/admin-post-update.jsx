@@ -21,6 +21,7 @@ export default function AdminPostUpdate() {
     const [submitError, setSubmitError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [originalPost, setOriginalPost] = useState(null);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
     // Constants
     const TITLE_LIMIT = 50;
@@ -28,26 +29,25 @@ export default function AdminPostUpdate() {
 
     // Load post data on component mount
     useEffect(() => {
-        getPost(id)
-            .then((postData) => {
-                setIsLoading(true);
+        const loadPostData = async () => {
+            try {
+                const postData = await getPost(id);
                 setPost({
                     title: postData.title || "",
                     content: postData.content || "",
                     id: id,
                 });
                 setOriginalPost(postData);
-            })
-            .catch((error) => {
-                setIsLoading(true);
+            } catch (error) {
                 console.error("Failed to load post:", error);
                 setSubmitError("Failed to load post. Please try again.");
-                // Optionally navigate back after 2 seconds
-                setTimeout(() => navigate("/feed"), 2000);
-            })
-            .finally(() => {
+                setTimeout(() => navigate("/admin/posts-tool"), 2000);
+            } finally {
                 setIsLoading(false);
-            });
+            }
+        };
+
+        loadPostData();
     }, [id, navigate]);
 
     // Handle input changes
@@ -73,6 +73,7 @@ export default function AdminPostUpdate() {
 
         // Clear general submit error
         if (submitError) setSubmitError("");
+        if (submitSuccess) setSubmitSuccess(false);
     };
 
     // Validate form
@@ -97,7 +98,7 @@ export default function AdminPostUpdate() {
 
     // Check if form has changes
     const hasChanges = () => {
-        if (!originalPost) return true;
+        if (!originalPost) return false;
         return (
             post.title !== originalPost.title ||
             post.content !== originalPost.content
@@ -111,31 +112,42 @@ export default function AdminPostUpdate() {
         if (!validateForm()) return;
 
         if (!hasChanges()) {
-            setSubmitError(
-                "No changes detected. Please make some changes before updating.",
-            );
+            setSubmitError("No changes detected. Please make some changes before updating.");
             return;
         }
 
         setIsSubmitting(true);
         setSubmitError("");
+        setSubmitSuccess(false);
 
-        updatePost(id, {
-            title: post.title.trim(),
-            content: post.content.trim(),
-        })
-            .then(() => {
-                setTimeout(() => navigate("/feed"), 2000);
-            })
-            .catch((error) => {
-                console.error("Failed to update post:", error);
-                setSubmitError(
-                    error.message || "Failed to update post. Please try again.",
-                );
-            })
-            .finally(() => {
-                setIsSubmitting(false);
+        try {
+            await updatePost(id, {
+                title: post.title.trim(),
+                content: post.content.trim(),
             });
+            
+            setSubmitSuccess(true);
+            
+            // Update original post with new values
+            setOriginalPost({
+                ...originalPost,
+                title: post.title.trim(),
+                content: post.content.trim(),
+            });
+            
+            // Navigate back after delay
+            setTimeout(() => {
+                navigate("/admin/posts-tool");
+            }, 1500);
+            
+        } catch (error) {
+            console.error("Failed to update post:", error);
+            setSubmitError(
+                error.message || "Failed to update post. Please try again.",
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Reset form to original values
@@ -149,6 +161,7 @@ export default function AdminPostUpdate() {
         }
         setErrors({});
         setSubmitError("");
+        setSubmitSuccess(false);
     };
 
     // Cancel and go back
@@ -159,10 +172,26 @@ export default function AdminPostUpdate() {
                     "You have unsaved changes. Are you sure you want to leave?",
                 )
             ) {
-                navigate("/feed");
+                navigate("/admin/posts-tool");
             }
         } else {
-            navigate("/feed");
+            navigate("/admin/posts-tool");
+        }
+    };
+
+    // Handle key shortcuts
+    const handleKeyDown = (e) => {
+        // Save on Ctrl+S or Cmd+S
+        if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+            e.preventDefault();
+            if (hasChanges() && post.title.trim() && post.content.trim()) {
+                handleSubmit(e);
+            }
+        }
+        
+        // Cancel on Escape
+        if (e.key === "Escape") {
+            handleCancel();
         }
     };
 
@@ -170,26 +199,30 @@ export default function AdminPostUpdate() {
     const renderPreview = () => {
         if (!post.content)
             return (
-                <p className="preview-placeholder">
-                    Start typing to see preview...
-                </p>
+                <div className="preview-placeholder">
+                    <div className="placeholder-icon">👀</div>
+                    <p>Start typing to see preview...</p>
+                </div>
             );
 
         return (
             <div className="markdown-preview">
                 <h3>Preview:</h3>
-                <div
-                    dangerouslySetInnerHTML={{
-                        __html: post.content
-                            .replace(/\n/g, "<br>")
-                            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                            .replace(/\*(.*?)\*/g, "<em>$1</em>")
-                            .replace(/`(.*?)`/g, "<code>$1</code>")
-                            .replace(/^### (.*$)/gm, "<h3>$1</h3>")
-                            .replace(/^## (.*$)/gm, "<h2>$1</h2>")
-                            .replace(/^# (.*$)/gm, "<h1>$1</h1>"),
-                    }}
-                />
+                <div className="preview-content">
+                    <h4>{post.title || "Untitled Post"}</h4>
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: post.content
+                                .replace(/\n/g, "<br>")
+                                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                                .replace(/\*(.*?)\*/g, "<em>$1</em>")
+                                .replace(/`(.*?)`/g, "<code>$1</code>")
+                                .replace(/^### (.*$)/gm, "<h3>$1</h3>")
+                                .replace(/^## (.*$)/gm, "<h2>$1</h2>")
+                                .replace(/^# (.*$)/gm, "<h1>$1</h1>"),
+                        }}
+                    />
+                </div>
             </div>
         );
     };
@@ -205,13 +238,14 @@ export default function AdminPostUpdate() {
     }
 
     return (
-        <div className="update-post-container">
+        <div className="update-post-container" onKeyDown={handleKeyDown} tabIndex={0}>
             <div className="update-post-header">
                 <button
                     onClick={handleCancel}
                     className="post-update-back-button"
+                    type="button"
                 >
-                    ← Back
+                    ← Back to Posts
                 </button>
                 <h2>Update Post</h2>
                 <p className="subtitle">Edit your post content</p>
@@ -222,7 +256,7 @@ export default function AdminPostUpdate() {
                 <div className="form-group">
                     <label htmlFor="title">
                         Title *
-                        <span className="char-counter">
+                        <span className={`char-counter ${post.title.length > TITLE_LIMIT * 0.8 ? 'warning' : ''}`}>
                             {post.title.length}/{TITLE_LIMIT}
                         </span>
                     </label>
@@ -246,7 +280,7 @@ export default function AdminPostUpdate() {
                 <div className="form-group">
                     <label htmlFor="content">
                         Content (Markdown) *
-                        <span className="char-counter">
+                        <span className={`char-counter ${post.content.length > CONTENT_LIMIT * 0.8 ? 'warning' : ''}`}>
                             {post.content.length}/{CONTENT_LIMIT}
                         </span>
                     </label>
@@ -256,7 +290,9 @@ export default function AdminPostUpdate() {
                             name="content"
                             value={post.content}
                             onChange={handleChange}
-                            placeholder="Write your post content here... You can use markdown: **bold**, *italic*, `code`, # headers"
+                            placeholder="Write your post content here... You can use markdown: **bold**, *italic*, `code`, # headers
+                            
+Ctrl+S to save • Ctrl+Enter to update • Esc to cancel"
                             className={`markdown-editor ${errors.content ? "error" : ""}`}
                             maxLength={CONTENT_LIMIT}
                             rows={12}
@@ -273,6 +309,17 @@ export default function AdminPostUpdate() {
                     {errors.content && (
                         <div className="error-message">{errors.content}</div>
                     )}
+                    
+                    <div className="markdown-tips">
+                        <h4>Markdown Tips:</h4>
+                        <ul>
+                            <li><code>**bold**</code> → <strong>bold</strong></li>
+                            <li><code>*italic*</code> → <em>italic</em></li>
+                            <li><code>`code`</code> → <code>code</code></li>
+                            <li><code># Header 1</code> → Large header</li>
+                            <li><code>## Header 2</code> → Medium header</li>
+                        </ul>
+                    </div>
                 </div>
 
                 {/* Preview Section */}
@@ -288,6 +335,14 @@ export default function AdminPostUpdate() {
                     </div>
                 )}
 
+                {/* Success Message */}
+                {submitSuccess && (
+                    <div className="submit-success">
+                        <span className="success-icon">✅</span>
+                        Post updated successfully! Redirecting...
+                    </div>
+                )}
+
                 {/* Submit Error */}
                 {submitError && (
                     <div className="submit-error">
@@ -295,6 +350,13 @@ export default function AdminPostUpdate() {
                         {submitError}
                     </div>
                 )}
+
+                {/* Keyboard shortcuts hint */}
+                <div className="keyboard-shortcuts">
+                    <span className="shortcut">Ctrl+S</span> Save • 
+                    <span className="shortcut"> Ctrl+Enter</span> Update • 
+                    <span className="shortcut"> Esc</span> Cancel
+                </div>
 
                 {/* Action Buttons */}
                 <div className="form-actions">
