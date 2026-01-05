@@ -1,9 +1,67 @@
-/* Блок данных пользователя */
+/* Основной контейнер профиля */
 .user-profile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* Основная информация (аватар + контент) */
+.user-profile__main {
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: var(--spacing-xxl);
   align-items: start;
+}
+
+/* Контейнер для разделителя */
+.user-profile__divider-container {
+  width: 100%;
+  padding: var(--spacing-md) 0;
+}
+
+.user-profile__divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 180, 216, 0.3),
+    rgba(229, 9, 20, 0.3),
+    transparent
+  );
+  margin: 0;
+}
+
+/* Секция фотографий с ограничением */
+.user-profile__photos-section {
+  width: 100%;
+  overflow: hidden; /* Важно для предотвращения выхода за границы */
+}
+
+/* Если PhotoPreviewStrip не ограничивает ширину сам, добавьте: */
+.user-profile__photos-section :global(.photo-preview-strip) {
+  max-width: 100%;
+  overflow-x: auto; /* Добавляет скролл если фотографий слишком много */
+}
+
+/* Можно добавить кастомный скролл */
+.user-profile__photos-section :global(.photo-preview-strip)::-webkit-scrollbar {
+  height: 8px;
+}
+
+.user-profile__photos-section :global(.photo-preview-strip)::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.user-profile__photos-section :global(.photo-preview-strip)::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  border-radius: 4px;
+}
+
+/* Секция с оценёнными фильмами */
+.user-profile__rated-movies-section {
+  width: 100%;
 }
 
 /* Аватар пользователя */
@@ -15,6 +73,7 @@
   aspect-ratio: 1/1;
   background: linear-gradient(135deg, rgba(0, 180, 216, 0.3), rgba(229, 9, 20, 0.2));
   border: 3px solid var(--color-secondary);
+  max-width: 300px; /* Ограничение максимальной ширины */
 }
 
 .user-profile__avatar-img {
@@ -54,6 +113,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  min-width: 0; /* Важно для предотвращения переполнения */
 }
 
 /* Заголовок */
@@ -72,6 +132,7 @@
   margin: 0;
   line-height: 1.2;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  word-break: break-word; /* Перенос длинных имён */
 }
 
 .user-profile__user-id {
@@ -94,6 +155,7 @@
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-wrap: break-word; /* Перенос длинного текста */
 }
 
 .user-profile__section-title {
@@ -110,6 +172,7 @@
   font-size: var(--font-size-md);
   line-height: 1.7;
   margin: 0;
+  word-break: break-word; /* Перенос длинного текста */
 }
 
 .user-profile__section-text--empty {
@@ -134,6 +197,7 @@
   border-radius: var(--border-radius-md);
   min-width: 120px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0; /* Предотвращает сжатие */
 }
 
 .user-profile__stat-value {
@@ -167,12 +231,14 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+  flex-shrink: 0; /* Предотвращает сжатие */
 }
 
 .user-profile__meta-icon {
   width: 16px;
   height: 16px;
   opacity: 0.7;
+  flex-shrink: 0;
 }
 
 /* Кнопка редактирования */
@@ -180,6 +246,7 @@
   margin-top: var(--spacing-xl);
   display: flex;
   gap: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 .user-profile__edit-button {
@@ -197,6 +264,7 @@
   transition: all var(--transition-fast);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .user-profile__edit-button:hover {
@@ -224,6 +292,7 @@
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .user-profile__photos-link:hover {
@@ -235,11 +304,12 @@
 .user-profile__photos-icon {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .user-profile {
+  .user-profile__main {
     grid-template-columns: 1fr;
     gap: var(--spacing-xl);
   }
@@ -260,6 +330,10 @@
   .user-profile__stat {
     min-width: 100px;
     padding: var(--spacing-sm);
+  }
+  
+  .user-profile__photos-section {
+    overflow-x: auto;
   }
 }
 
@@ -282,5 +356,9 @@
   .user-profile__photos-link {
     width: 100%;
     justify-content: center;
+  }
+  
+  .user-profile__section {
+    padding: var(--spacing-md);
   }
 }
