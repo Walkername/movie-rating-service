@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { searchMovieByTitle } from "../../../api/movie-api"
+import { useEffect, useRef, useState } from "react";
+import { searchMovieByTitle } from "../../../api/movie-api";
 import { Link } from "react-router-dom";
 import "./search-field.css";
 
@@ -39,7 +39,7 @@ export default function SearchField() {
             setFoundMovies([]);
             return;
         }
-        
+
         setIsLoading(true);
         searchMovieByTitle(query)
             .then((data) => {
@@ -63,7 +63,7 @@ export default function SearchField() {
     const handleMovieSelect = () => {
         setIsPopupVisible(false);
         if (inputRef.current) {
-            inputRef.current.value = '';
+            inputRef.current.value = "";
             inputRef.current.blur();
         }
     };
@@ -80,10 +80,10 @@ export default function SearchField() {
                 placeholder="Search for movies..."
                 aria-label="Search movies"
             />
-            
+
             {isPopupRendered && (
                 <div
-                    className={`search__popup ${isPopupVisible ? 'search__popup--visible' : 'search__popup--hidden'}`}
+                    className={`search__popup ${isPopupVisible ? "search__popup--visible" : "search__popup--hidden"}`}
                     ref={popupRef}
                     onMouseDown={handlePopupMouseDown}
                     aria-live="polite"
@@ -95,9 +95,9 @@ export default function SearchField() {
                             </div>
                         ) : foundMovies.length > 0 ? (
                             foundMovies.map((movie) => (
-                                <Link 
-                                    className="search__movie-card" 
-                                    key={movie.id} 
+                                <Link
+                                    className="search__movie-card"
+                                    key={movie.id}
                                     to={`/movie/${movie.id}`}
                                     onClick={handleMovieSelect}
                                 >
@@ -118,8 +118,8 @@ export default function SearchField() {
                             ))
                         ) : (
                             <div className="search__no-results">
-                                {inputRef.current?.value.trim().length >= 2 
-                                    ? "No movies found with that title." 
+                                {inputRef.current?.value.trim().length >= 2
+                                    ? "No movies found with that title."
                                     : "Type at least 2 characters to search"}
                             </div>
                         )}
