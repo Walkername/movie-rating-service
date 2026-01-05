@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "user_profile")
 public class User {
@@ -39,11 +41,17 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
     public User() {
 
     }
 
-    public User(String username, String password, String description, Long profilePicId, double averageRating, int scores, String role) {
+    public User(String username, String password, String description, Long profilePicId, double averageRating, int scores, String role, Date createdAt, Date updatedAt) {
         this.username = username;
         this.password = password;
         this.description = description;
@@ -51,6 +59,8 @@ public class User {
         this.averageRating = averageRating;
         this.scores = scores;
         this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public double getAverageRating() {
@@ -115,5 +125,21 @@ public class User {
 
     public void setProfilePicId(Long profilePicId) {
         this.profilePicId = profilePicId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
