@@ -48,7 +48,7 @@ jobs:
   build-java:
     if: |
       (github.event_name == 'workflow_dispatch') || 
-      (needs.detect-changes.outputs.build-java == 'true')
+      (github.event_name != 'workflow_dispatch' && needs.detect-changes.outputs.build-java == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +89,7 @@ jobs:
   build-react:
     if: |
       (github.event_name == 'workflow_dispatch') || 
-      (needs.detect-changes.outputs.build-js == 'true')
+      (github.event_name != 'workflow_dispatch' && needs.detect-changes.outputs.build-js == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
