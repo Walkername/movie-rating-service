@@ -9,7 +9,7 @@ export default function PostCommentList({ postId, refreshTrigger }) {
         page: 0,
         limit: 0,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
 
     useEffect(() => {
@@ -23,16 +23,12 @@ export default function PostCommentList({ postId, refreshTrigger }) {
     }, [postId, refreshTrigger]);
 
     return (
-        <div className="post-comments">
-            {comments.length === 0 ? (
-                <div className="no-comments">
-                    No comments yet. Be the first to comment!
-                </div>
-            ) : (
-                comments.content.map((comment) => (
+        comments.content.length !== 0 && (
+            <div className="post-comments">
+                {comments.content.map((comment) => (
                     <PostComment key={comment.id} comment={comment} />
-                ))
-            )}
-        </div>
+                ))}
+            </div>
+        )
     );
 }

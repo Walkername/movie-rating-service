@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { publishComment } from "../../../api/post-comment-api";
+import getClaimFromToken from "../../../utils/token-validation/token-validation";
 
 export default function PostCommentInput({ postId, onCommentPublished }) {
+    const token = localStorage.getItem("accessToken");
+    const tokenUsername = token !== null ? getClaimFromToken(token, "username") : null;
+    const isAuth = tokenUsername ? true : false;
+    
     const [comment, setComment] = useState({
         content: "",
     });
@@ -96,10 +101,10 @@ export default function PostCommentInput({ postId, onCommentPublished }) {
         comment.content.length <= CONTENT_LIMIT &&
         comment.content.trim() !== "";
 
-    return (
+    return (isAuth &&
         <div className="post-comment-input">
             <div className="post-comment-input-username">
-                <b>walkername</b>
+                <b>{tokenUsername}</b>
             </div>
 
             <div className="comment-input-wrapper">

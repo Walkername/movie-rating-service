@@ -7,8 +7,8 @@ function NavigationBar() {
     const navigate = useNavigate();
     const token = localStorage.getItem("accessToken");
     // const exp = getClaimFromToken(token, "exp");
-    const id = getClaimFromToken(token, "id");
-    const role = getClaimFromToken(token, "role");
+    const id = token ? getClaimFromToken(token, "id") : null;
+    const role = token ? getClaimFromToken(token, "role") : null;
     // const authStatus = Date.now() / 1000 <= exp;
     const adminStatus = role === "ADMIN";
 

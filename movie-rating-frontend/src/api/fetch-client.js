@@ -7,7 +7,7 @@ export default async function customRequest(path, options = {}) {
 
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    const expRefreshToken = getClaimFromToken(refreshToken, "exp");
+    const expRefreshToken = refreshToken ? getClaimFromToken(refreshToken, "exp") : null;
     if (Date.now() / 1000 > expRefreshToken) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
