@@ -76,7 +76,7 @@
   border-radius: var(--border-radius-sm);
   transition: background-color var(--transition-fast);
   margin-bottom: var(--spacing-xs);
-  border-left: 3px solid transparent;
+  border-left: 3px solid var(--color-text-gray);
 }
 
 .search__movie-card:hover {
@@ -89,6 +89,13 @@
   font-weight: var(--font-weight-medium);
   margin-bottom: var(--spacing-xs);
   color: var(--color-text-light);
+}
+
+.search__movie-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md); /* Добавляем отступ между элементами */
 }
 
 .search__movie-year {
