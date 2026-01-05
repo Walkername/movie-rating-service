@@ -34,7 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/files/download/", "/files/download/signed-url",
-                                "/files/download-by-id/signed-url/{fileId}", "/files/download-all/signed-url"
+                                "/files/download-by-id/signed-url/{fileId}", "/files/download-all/signed-url",
+                                "/files/download-by-array/signed-url"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )

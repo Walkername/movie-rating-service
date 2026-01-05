@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
+import ru.walkername.file_service.dto.FileAttachmentResponse;
 import ru.walkername.file_service.dto.FileResponse;
 import ru.walkername.file_service.dto.PageResponse;
 import ru.walkername.file_service.events.FileUploaded;
@@ -112,6 +113,17 @@ public class FileService {
                 files.getTotalElements(),
                 files.getTotalPages()
         );
+    }
+
+    public List<FileAttachmentResponse> findAllByEntityTypeAndEntityIds(String entityType, List<Long> fileIds) {
+        List<FileAttachmentResponse> files = fileAttachmentService.findAllByEntityTypeAndEntityIds(entityType, fileIds);
+
+        for (FileAttachmentResponse file : files) {
+            file.setUrl(minioService.generatePreSignedUrl(file.getUrl(), 10));
+            file.setUploadedAt(file.getUploadedAt());
+        }
+
+        return files;
     }
 
     private List<Sort.Order> createOrders(String[] sort) {
