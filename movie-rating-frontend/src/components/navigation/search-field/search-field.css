@@ -69,7 +69,7 @@
 
 /* Карточка фильма в результатах */
 .search__movie-card {
-display: block;
+    display: block;
     padding: var(--spacing-md);
     color: var(--color-text-light);
     text-decoration: none;

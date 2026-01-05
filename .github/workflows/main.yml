@@ -10,7 +10,6 @@ on:
 jobs:
   # 1. Check changes
   detect-changes:
-    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       build-java: ${{ steps.check.outputs.build-java }}
@@ -46,10 +45,10 @@ jobs:
 
   # 2. Build and test Java projects
   build-java:
+    needs: detect-changes
     if: |
       (github.event_name == 'workflow_dispatch') || 
-      (github.event_name != 'workflow_dispatch' && needs.detect-changes.outputs.build-java == 'true')
-    needs: detect-changes
+      (needs.detect-changes.outputs.build-java == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -88,10 +87,10 @@ jobs:
 
   # 3. Build and test React project
   build-react:
+    needs: detect-changes
     if: |
       (github.event_name == 'workflow_dispatch') || 
-      (github.event_name != 'workflow_dispatch' && needs.detect-changes.outputs.build-js == 'true')
-    needs: detect-changes
+      (needs.detect-changes.outputs.build-js == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
