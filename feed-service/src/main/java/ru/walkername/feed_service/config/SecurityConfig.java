@@ -3,6 +3,7 @@ package ru.walkername.feed_service.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,9 +29,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/posts/").hasAuthority("ADMIN")
                         .requestMatchers(
-                                "/posts", "/posts/{id}",
-                                "/comments"
+                                "/posts", "/posts/{id}"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/{postId}/comments").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
