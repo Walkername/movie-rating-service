@@ -1,6 +1,7 @@
 name: MovieCluster CI/CD
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master, develop ]
   pull_request:
@@ -9,6 +10,7 @@ on:
 jobs:
   # 1. Check changes
   detect-changes:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
       build-java: ${{ steps.check.outputs.build-java }}
