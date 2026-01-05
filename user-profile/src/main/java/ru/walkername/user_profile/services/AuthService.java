@@ -10,6 +10,7 @@ import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.RefreshTokensRepository;
 import ru.walkername.user_profile.repositories.UsersRepository;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -38,6 +39,8 @@ public class AuthService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
+        user.setCreatedAt(new Date());
+        user.setUpdatedAt(new Date());
         usersRepository.save(user);
     }
 
