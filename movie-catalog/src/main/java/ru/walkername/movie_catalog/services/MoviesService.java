@@ -6,10 +6,16 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +31,8 @@ import ru.walkername.movie_catalog.repositories.MoviesRepository;
 import ru.walkername.movie_catalog.util.MovieModelMapper;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -196,12 +204,32 @@ public class MoviesService {
         Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
 
         Page<Movie> moviesPage = moviesRepository.findAll(pageable);
+
+        List<Long> movieIds = moviesPage.getContent().stream().map(Movie::getId).toList();
+
+        List<FileAttachmentResponse> files = getAllPosterUrls(movieIds);
+
         List<MovieResponse> movieResponses = new ArrayList<>();
 
         for (Movie movie : moviesPage.getContent()) {
             MovieResponse movieResponse = movieModelMapper.convertToMovieResponse(movie);
             movieResponses.add(movieResponse);
         }
+
+        Map<Long, String> posterUrlMap = files.stream()
+                .collect(Collectors.toMap(
+                        FileAttachmentResponse::getEntityId,
+                        FileAttachmentResponse::getUrl,
+                        (existing, replacement) -> existing)
+                );
+
+        movieResponses = movieResponses.stream()
+                .peek(movie -> {
+                    String posterUrl = posterUrlMap.get(movie.getId());
+                    if (posterUrl != null) {
+                        movie.setPosterPicUrl(posterUrl);
+                    }
+                }).toList();
 
         return new PageResponse<>(
                 movieResponses,
@@ -210,6 +238,28 @@ public class MoviesService {
                 moviesPage.getTotalElements(),
                 moviesPage.getTotalPages()
         );
+    }
+
+    private List<FileAttachmentResponse> getAllPosterUrls(List<Long> movieIds) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<List<Long>> entity = new HttpEntity<>(new ArrayList<>(movieIds), headers);
+
+        String url = "http://localhost:8083/files/download-by-array/signed-url?entityType=movie";
+
+        ResponseEntity<List<FileAttachmentResponse>> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<>() {}
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody();
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private List<Sort.Order> createOrders(String[] sort) {

@@ -18,6 +18,8 @@ public class MovieResponse {
 
     private Long posterPicId;
 
+    private String posterPicUrl;
+
     private Date createdAt;
 
     public MovieResponse() {
@@ -85,5 +87,13 @@ public class MovieResponse {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getPosterPicUrl() {
+        return posterPicUrl;
+    }
+
+    public void setPosterPicUrl(String posterPicUrl) {
+        this.posterPicUrl = posterPicUrl;
     }
 }
