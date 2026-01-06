@@ -29,7 +29,6 @@ function UserPage() {
     }
 
     const [user, setUser] = useState(null);
-    const [lastActive, setLastActive] = useState(null);
 
     useEffect(() => {
         setIsLoading(true);

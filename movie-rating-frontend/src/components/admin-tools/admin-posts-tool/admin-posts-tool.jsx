@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { createPost } from "../../../api/admin-feed-api";
 import "./admin-posts-tool.css";
 
 export default function AdminPostsTool() {
-    const navigate = useNavigate();
-    
     // Form state
     const [post, setPost] = useState({
         title: "",

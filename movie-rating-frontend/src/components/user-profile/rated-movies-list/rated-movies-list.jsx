@@ -35,7 +35,6 @@ function RatedMoviesList({ userId }) {
         totalPages: 0,
     });
 
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const handleSortButton = (columnName) => {
@@ -70,18 +69,17 @@ function RatedMoviesList({ userId }) {
     };
 
     useEffect(() => {
-        setIsLoading(true);
+        
         setError(null);
         
         getMoviesByUser(userId, page, limit, sort)
             .then((data) => {
                 setPageResponse(data);
-                setIsLoading(false);
+                
             })
             .catch((error) => {
                 console.error(error);
                 setError("Failed to load rated movies");
-                setIsLoading(false);
             });
     }, [userId, page, limit, sort]);
 

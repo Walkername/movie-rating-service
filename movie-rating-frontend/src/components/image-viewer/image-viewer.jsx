@@ -45,7 +45,7 @@ export default function ImageViewer({
     }, [setSelectedPhoto, setViewStatus, isClosing]);
 
     // Навигация
-    const goToPrevious = () => {
+    const goToPrevious = useCallback(() => {
         if (photos.length > 0) {
             const newIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
             setCurrentPhotoIndex(newIndex);
@@ -57,9 +57,9 @@ export default function ImageViewer({
                 onIndexChange(newIndex);
             }
         }
-    };
+    }, [currentPhotoIndex, onIndexChange, photos, setSelectedPhoto]);
 
-    const goToNext = () => {
+    const goToNext = useCallback(() => {
         if (photos.length > 0) {
             const newIndex = (currentPhotoIndex + 1) % photos.length;
             setCurrentPhotoIndex(newIndex);
@@ -71,7 +71,7 @@ export default function ImageViewer({
                 onIndexChange(newIndex);
             }
         }
-    };
+    }, [currentPhotoIndex, onIndexChange, photos, setSelectedPhoto]);
 
     useEffect(() => {
         const handleEsc = (event) => {
@@ -94,7 +94,7 @@ export default function ImageViewer({
         return () => {
             window.removeEventListener('keydown', handleEsc);
         };
-    }, [viewStatus, closeViewer, currentPhotoIndex, photos]);
+    }, [viewStatus, closeViewer, currentPhotoIndex, photos, goToNext, goToPrevious]);
 
     const handleImageLoad = () => {
         setImageLoading(false);

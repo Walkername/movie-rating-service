@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
-import { downloadFiles, uploadMyFile } from "../../api/file-api";
+import { downloadFile, downloadFiles, uploadMyFile } from "../../api/file-api";
 import { Link, useParams } from "react-router-dom";
 import "./user-photo-catalog.css";
 import ImageGallery from "../../components/image-gallery/image-gallery";
@@ -8,6 +8,7 @@ import ImageUploadForm from "../../components/image-upload-form/image-upload-for
 import ImageViewer from "../../components/image-viewer/image-viewer";
 import { updateMyProfilePictureId, getUser } from "../../api/user-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
+import { useCallback } from "react";
 
 export default function UserPhotoCatalog() {
     const { id } = useParams();
@@ -21,6 +22,7 @@ export default function UserPhotoCatalog() {
     const [isLoading, setIsLoading] = useState(true);
     const [totalPhotos, setTotalPhotos] = useState(0);
     const [userData, setUserData] = useState(null);
+    const [userProfilePic, setUserProfilePic] = useState(null);
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -41,23 +43,21 @@ export default function UserPhotoCatalog() {
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef(null);
 
-    // Загрузка данных пользователя и фотографий
-    useEffect(() => {
-        fetchUserData();
-        fetchPhotos();
-    }, [id, page, limit, sort]);
-
-    const fetchUserData = () => {
+    const fetchUserData = useCallback(() => {
         getUser(id)
             .then((data) => {
                 setUserData(data);
+                downloadFile(data.profilePicId)
+                    .then((url) => {
+                        setUserProfilePic(url);
+                    });
             })
             .catch((error) => {
                 console.error("Error loading user data:", error);
             });
-    };
+    }, [id]);
 
-    const fetchPhotos = () => {
+    const fetchPhotos = useCallback(() => {
         setIsLoading(true);
         downloadFiles("user", id, page, limit, sort)
             .then((data) => {
@@ -69,7 +69,13 @@ export default function UserPhotoCatalog() {
                 console.error("Error loading photos:", error);
                 setIsLoading(false);
             });
-    };
+    }, [id, limit, page, sort]);
+    
+    // Загрузка данных пользователя и фотографий
+    useEffect(() => {
+        fetchUserData();
+        fetchPhotos();
+    }, [fetchUserData, fetchPhotos]);
 
     const handlePhotoClick = (photo) => {
         setSelectedPhoto(photo);
@@ -153,14 +159,6 @@ export default function UserPhotoCatalog() {
         return userData.username || `User ${id}`;
     };
 
-    const getUserAvatar = () => {
-        if (userData && userData.profilePicUrl) {
-            return userData.profilePicUrl;
-        }
-        // Default avatar
-        return "https://via.placeholder.com/80/0088a3/ffffff?text=" + (userData?.username?.charAt(0) || "U");
-    };
-
     return (
         <div className="user-photos">
             <NavigationBar />
@@ -178,7 +176,7 @@ export default function UserPhotoCatalog() {
                     {userData && (
                         <div className="user-photos__user-info">
                             <img
-                                src={getUserAvatar()}
+                                src={userProfilePic}
                                 alt={getUserDisplayName()}
                                 className="user-photos__avatar"
                                 onError={(e) => {

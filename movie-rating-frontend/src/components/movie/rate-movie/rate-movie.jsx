@@ -113,7 +113,6 @@ function RateMovie({ movieId }) {
             <div className="rate-movie__stars">
                 {[...Array(10)].map((_, index) => {
                     const rateValue = index + 1;
-                    const isActive = currentDisplayRating && rateValue <= currentDisplayRating;
                     const isCurrent = rateValue === rating;
                     const colorClass = getStarColorClass(rateValue);
 

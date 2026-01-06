@@ -9,6 +9,7 @@ import ImageViewer from "../../components/image-viewer/image-viewer";
 import { uploadFile } from "../../api/admin-file-api";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import "./movie-photo-catalog.css";
+import { useCallback } from "react";
 
 export default function MoviePhotoCatalog() {
     const { id } = useParams();
@@ -21,7 +22,6 @@ export default function MoviePhotoCatalog() {
     const [sort, setSort] = useState("uploadedAt:desc");
     const [isLoading, setIsLoading] = useState(true);
     const [totalPhotos, setTotalPhotos] = useState(0);
-    const [movieTitle, setMovieTitle] = useState("Movie");
 
     const [pageResponse, setPageResponse] = useState({
         content: [],
@@ -42,14 +42,7 @@ export default function MoviePhotoCatalog() {
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        fetchPhotos();
-        
-        // Здесь можно добавить запрос за названием фильма, если нужно
-        // fetchMovieTitle(id).then(setMovieTitle);
-    }, [id, page, limit, sort]);
-
-    const fetchPhotos = () => {
+    const fetchPhotos = useCallback(() => {
         setIsLoading(true);
         downloadFiles("movie", id, page, limit, sort)
             .then((data) => {
@@ -61,7 +54,11 @@ export default function MoviePhotoCatalog() {
                 console.error("Error loading photos:", error);
                 setIsLoading(false);
             });
-    };
+    }, [id, limit, sort, page]);
+    
+    useEffect(() => {
+        fetchPhotos();
+    }, [fetchPhotos]);
 
     const handlePhotoClick = (photo) => {
         setSelectedPhoto(photo);

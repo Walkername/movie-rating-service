@@ -100,7 +100,7 @@
 
 /* Форма поиска */
 .search-form {
-    display: flex;
+    max-width: 35%;
     gap: var(--spacing-md);
     align-items: flex-end;
     flex-wrap: wrap;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import MovieCard from "../movie-card/movie-card";
 import MovieViewToggle from "../movie-list-view-toggle/movie-list-view-toggle";
 import MovieCardBar from "../movie-card-bar/movie-card-bar";
@@ -10,7 +10,6 @@ import "./movie-list.css";
 function MovieList() {
     const [loading, setLoading] = useState(true);
     const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
 
     // Параметры из URL
     const pagePar = searchParams.get("page") ? parseInt(searchParams.get("page")) : 0;
