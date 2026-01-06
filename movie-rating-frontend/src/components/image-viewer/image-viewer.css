@@ -1,508 +1,515 @@
 /* Вьювер изображений */
 .image-viewer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: var(--z-index-modal);
-  opacity: 0;
-  visibility: hidden;
-  transition: all var(--transition-medium);
-  backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-index-modal);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-medium);
+    backdrop-filter: blur(5px);
 }
 
 .image-viewer--active {
-  opacity: 1;
-  visibility: visible;
+    opacity: 1;
+    visibility: visible;
 }
 
 /* Контент вьювера */
 .image-viewer__content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(10, 10, 10, 0.95));
-  border-radius: var(--border-radius-lg);
-  overflow: hidden;
-  border: 1px solid rgba(229, 9, 20, 0.3);
-  box-shadow: 
-    var(--shadow-lg),
-    0 0 80px rgba(229, 9, 20, 0.2),
-    0 0 160px rgba(0, 180, 216, 0.1);
-  transform: scale(0.9);
-  transition: transform var(--transition-modal);
+    position: relative;
+    top: 10px;
+    max-width: 85vw;
+    max-height: 85vh;
+    background: linear-gradient(
+        135deg,
+        rgba(20, 20, 20, 0.95),
+        rgba(10, 10, 10, 0.95)
+    );
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    box-shadow:
+        var(--shadow-lg),
+        0 0 80px rgba(229, 9, 20, 0.2),
+        0 0 160px rgba(0, 180, 216, 0.1);
+    transition: transform var(--transition-modal);
 }
 
 .image-viewer--active .image-viewer__content {
-  transform: scale(1);
+    transform: scale(1);
 }
 
 /* Кнопка закрытия */
 .image-viewer__close {
-  position: absolute;
-  top: var(--spacing-lg);
-  right: var(--spacing-lg);
-  width: 44px;
-  height: 44px;
-  background-color: rgba(26, 26, 26, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  color: var(--color-text-light);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-  z-index: 20;
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 44px;
+    height: 44px;
+    background-color: rgba(26, 26, 26, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--color-text-light);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 20;
 }
 
 .image-viewer__close:hover {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  transform: rotate(90deg) scale(1.1);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: rotate(90deg) scale(1.1);
 }
 
 /* Контейнер изображения */
 .image-viewer__image-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl);
-  max-height: 70vh;
-  overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    min-height: 300px;
+    max-height: none;
+    overflow: visible;
+    flex: 1;
+    position: relative;
 }
 
 .image-viewer__image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: var(--border-radius-sm);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  transition: transform var(--transition-medium);
-}
-
-.image-viewer__image:hover {
-  transform: scale(1.01);
+    max-width: 100%;
+    max-height: calc(90vh - 200px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--border-radius-sm);
+    transition: transform var(--transition-medium);
 }
 
 /* Информация о изображении */
 .image-viewer__info {
-  padding: var(--spacing-lg);
-  background: linear-gradient(to top, rgba(10, 10, 10, 0.95), rgba(20, 20, 20, 0.95));
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 10;
+    padding: var(--spacing-mg);
+    background-color: rgba(30, 30, 30, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .image-viewer__title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-light);
-  margin-bottom: var(--spacing-sm);
-  text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
 }
 
 .image-viewer__meta {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-lg);
-  color: var(--color-text-gray);
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    color: var(--color-text-light);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
 }
 
 .image-viewer__meta-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
 }
 
 .image-viewer__meta-icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    fill: white;
 }
 
 /* Действия с изображением */
 .image-viewer__actions {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-  padding: var(--spacing-md);
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-md);
-  margin-top: var(--spacing-lg);
-  flex-wrap: wrap;
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    flex-wrap: wrap;
 }
 
 .image-viewer__action-button {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background: linear-gradient(135deg, rgba(0, 180, 216, 0.2), rgba(229, 9, 20, 0.2));
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--border-radius-md);
-  color: var(--color-text-light);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  min-width: 180px;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: #be0000;
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-light);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-width: 180px;
+    justify-content: center;
 }
 
 .image-viewer__action-button:hover {
-  background: linear-gradient(135deg, rgba(0, 180, 216, 0.3), rgba(229, 9, 20, 0.3));
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
 .image-viewer__action-button--primary {
-  background: var(--gradient-primary);
-  color: white;
-  border: none;
-  font-weight: var(--font-weight-bold);
+    color: white;
+    border: none;
+    font-weight: var(--font-weight-bold);
 }
 
 .image-viewer__action-button--primary:hover {
-  background: linear-gradient(135deg, #ff1a1a 0%, #cc0000 100%);
+    background: #dc0000;
 }
 
 .image-viewer__action-button--secondary {
-  background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .image-viewer__action-button--secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Иконки в кнопках */
 .image-viewer__action-icon {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 /* Навигация между изображениями */
 .image-viewer__navigation {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 60px;
-  height: 60px;
-  background-color: rgba(26, 26, 26, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  color: var(--color-text-light);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-  z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(26, 26, 26, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--color-text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 10;
 }
 
 .image-viewer__navigation:hover {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  transform: translateY(-50%) scale(1.1);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: translateY(-50%) scale(1.1);
 }
 
 .image-viewer__navigation--prev {
-  left: var(--spacing-xl);
+    left: var(--spacing-xl);
 }
 
 .image-viewer__navigation--next {
-  right: var(--spacing-xl);
+    right: var(--spacing-xl);
 }
 
 .image-viewer__navigation:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  transform: translateY(-50%);
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: translateY(-50%);
 }
 
 .image-viewer__navigation:disabled:hover {
-  background-color: rgba(26, 26, 26, 0.8);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-50%);
+    background-color: rgba(26, 26, 26, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%);
 }
 
 .image-viewer__nav-icon {
-  width: 24px;
-  height: 24px;
+    width: 24px;
+    height: 24px;
 }
 
 /* Индикатор прогресса */
 .image-viewer__progress {
-  position: absolute;
-  bottom: var(--spacing-lg);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: var(--spacing-xs);
-  z-index: 10;
+    justify-content: center;
+    bottom: var(--spacing-lg);
+    display: flex;
+    padding: var(--spacing-md);
+    gap: var(--spacing-xs);
+    z-index: 10;
 }
 
 .image-viewer__progress-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3);
-  transition: all var(--transition-fast);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: all var(--transition-fast);
 }
 
 .image-viewer__progress-dot--active {
-  background-color: var(--color-primary);
-  transform: scale(1.3);
+    background-color: rgba(255, 0, 0, 1);
+    transform: scale(1.3);
 }
 
 /* Загрузка изображения */
 .image-viewer__loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl);
-  gap: var(--spacing-lg);
-  min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xxl);
+    gap: var(--spacing-lg);
+    min-height: 400px;
 }
 
 .image-viewer__spinner {
-  width: 60px;
-  height: 60px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 .image-viewer__loading-text {
-  color: var(--color-text-light);
-  font-size: var(--font-size-lg);
+    color: var(--color-text-light);
+    font-size: var(--font-size-lg);
 }
 
 /* Состояние ошибки */
 .image-viewer__error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl);
-  gap: var(--spacing-lg);
-  text-align: center;
-  color: var(--color-error);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xxl);
+    gap: var(--spacing-lg);
+    text-align: center;
+    color: var(--color-error);
 }
 
 .image-viewer__error-icon {
-  width: 64px;
-  height: 64px;
-  opacity: 0.7;
+    width: 64px;
+    height: 64px;
+    opacity: 0.7;
 }
 
 .image-viewer__error-message {
-  font-size: var(--font-size-md);
-  max-width: 400px;
+    font-size: var(--font-size-md);
+    max-width: 400px;
 }
 
 /* Анимации */
 @keyframes imageFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .image-viewer__image {
-  animation: imageFadeIn var(--transition-medium) ease-out;
+    animation: imageFadeIn var(--transition-medium) ease-out;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .image-viewer__content {
-    max-width: 95vw;
-    max-height: 95vh;
-  }
-  
-  .image-viewer__image-container {
-    padding: var(--spacing-lg);
-    max-height: 60vh;
-  }
-  
-  .image-viewer__navigation {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .image-viewer__navigation--prev {
-    left: var(--spacing-md);
-  }
-  
-  .image-viewer__navigation--next {
-    right: var(--spacing-md);
-  }
-  
-  .image-viewer__actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .image-viewer__action-button {
-    width: 100%;
-    min-width: auto;
-  }
-  
-  .image-viewer__meta {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
+    .image-viewer__content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+
+    .image-viewer__image-container {
+        padding: var(--spacing-lg);
+        max-height: 60vh;
+    }
+
+    .image-viewer__navigation {
+        width: 50px;
+        height: 50px;
+    }
+
+    .image-viewer__navigation--prev {
+        left: var(--spacing-md);
+    }
+
+    .image-viewer__navigation--next {
+        right: var(--spacing-md);
+    }
+
+    .image-viewer__actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-viewer__action-button {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .image-viewer__meta {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
 }
 
 @media (max-width: 480px) {
-  .image-viewer__content {
-    border-radius: var(--border-radius-md);
-  }
-  
-  .image-viewer__image-container {
-    padding: var(--spacing-md);
-  }
-  
-  .image-viewer__close {
-    top: var(--spacing-sm);
-    right: var(--spacing-sm);
-    width: 36px;
-    height: 36px;
-  }
-  
-  .image-viewer__info {
-    padding: var(--spacing-md);
-  }
-  
-  .image-viewer__actions {
-    padding: var(--spacing-sm);
-  }
+    .image-viewer__content {
+        border-radius: var(--border-radius-md);
+    }
+
+    .image-viewer__image-container {
+        padding: var(--spacing-md);
+    }
+
+    .image-viewer__close {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        width: 36px;
+        height: 36px;
+    }
+
+    .image-viewer__info {
+        padding: var(--spacing-md);
+    }
+
+    .image-viewer__actions {
+        padding: var(--spacing-sm);
+    }
 }
 
 /* Эффект затемнения краев */
 .image-viewer__content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 30%,
-    rgba(0, 0, 0, 0.5) 70%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-  border-radius: var(--border-radius-lg);
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 30%,
+        rgba(0, 0, 0, 0.5) 70%,
+        rgba(0, 0, 0, 0.8) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+    border-radius: var(--border-radius-lg);
 }
 
 /* Добавьте в конец image-viewer.css */
 
 /* Плавное появление/исчезновение */
 .image-viewer--closing {
-  opacity: 0;
+    opacity: 0;
 }
 
 .image-viewer--closing .image-viewer__content {
-  transform: scale(0.9);
+    transform: scale(0.9);
 }
 
 /* Эффект параллакса для фона */
 .image-viewer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    transparent 0%,
-    rgba(0, 0, 0, 0.98) 100%
-  );
-  pointer-events: none;
-  z-index: -1;
-  transition: background 0.3s ease;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        transparent 0%,
+        rgba(0, 0, 0, 0.98) 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+    transition: background 0.3s ease;
 }
 
 /* Индикатор текущего изображения */
 .image-viewer__counter {
-  position: absolute;
-  top: var(--spacing-lg);
-  left: var(--spacing-lg);
-  background-color: rgba(26, 26, 26, 0.8);
-  color: var(--color-text-light);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  z-index: 10;
+    position: absolute;
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+    background-color: rgba(26, 26, 26, 0.8);
+    color: var(--color-text-light);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    z-index: 10;
 }
 
 /* Загрузка скелетона */
 .image-viewer__skeleton {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.05) 25%, 
-    rgba(255, 255, 255, 0.1) 50%, 
-    rgba(255, 255, 255, 0.05) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-  border-radius: var(--border-radius-sm);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: var(--border-radius-sm);
 }
 
 @keyframes loading {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 /* Зум изображения при двойном клике */
 .image-viewer__image--zoomed {
-  transform: scale(1.5);
-  cursor: zoom-out;
+    transform: scale(1.5);
+    cursor: zoom-out;
 }
 
 .image-viewer__image-container--zoomed {
-  overflow: auto;
-  cursor: zoom-out;
+    overflow: auto;
+    cursor: zoom-out;
 }
 
 /* Адаптивность для очень маленьких экранов */
 @media (max-height: 600px) {
-  .image-viewer__image-container {
-    max-height: 50vh;
-    padding: var(--spacing-md);
-  }
-  
-  .image-viewer__info {
-    padding: var(--spacing-sm);
-  }
-  
-  .image-viewer__actions {
-    padding: var(--spacing-xs);
-    margin-top: var(--spacing-sm);
-  }
-  
-  .image-viewer__action-button {
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: var(--font-size-sm);
-  }
+    .image-viewer__image-container {
+        max-height: 50vh;
+        padding: var(--spacing-md);
+    }
+
+    .image-viewer__info {
+        padding: var(--spacing-sm);
+    }
+
+    .image-viewer__actions {
+        padding: var(--spacing-xs);
+        margin-top: var(--spacing-sm);
+    }
+
+    .image-viewer__action-button {
+        padding: var(--spacing-xs) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
 }

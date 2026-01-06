@@ -256,6 +256,20 @@ export default function ImageViewer({
                             </div>
                         </>
                     )}
+                    
+                    {hasNavigation && (
+                        <div className="image-viewer__progress">
+                            {photos.map((_, index) => (
+                                <div
+                                    key={index}
+                                    className={`image-viewer__progress-dot ${
+                                        index === currentPhotoIndex ? 'image-viewer__progress-dot--active' : ''
+                                    }`}
+                                    aria-label={`Image ${index + 1} of ${photos.length}`}
+                                />
+                            ))}
+                        </div>
+                    )}
 
                     {isAccessToEdit && additionalActions.length > 0 && (
                         <div className="image-viewer__actions">
@@ -289,20 +303,6 @@ export default function ImageViewer({
                         </div>
                     )}
                 </div>
-
-                {hasNavigation && (
-                    <div className="image-viewer__progress">
-                        {photos.map((_, index) => (
-                            <div
-                                key={index}
-                                className={`image-viewer__progress-dot ${
-                                    index === currentPhotoIndex ? 'image-viewer__progress-dot--active' : ''
-                                }`}
-                                aria-label={`Image ${index + 1} of ${photos.length}`}
-                            />
-                        ))}
-                    </div>
-                )}
             </div>
         </div>
     );
