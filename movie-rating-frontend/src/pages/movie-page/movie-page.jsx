@@ -73,7 +73,6 @@ function MoviePage() {
             <NavigationBar />
 
             <div className="movie-page__content">
-                <div className="movie-page__film-strip"></div>
 
                 <div className="movie-page__card">
                     {isLoading ? (
@@ -128,7 +127,6 @@ function MoviePage() {
                     ) : null}
                 </div>
 
-                <div className="movie-page__film-strip movie-page__film-strip--bottom"></div>
             </div>
         </div>
     );

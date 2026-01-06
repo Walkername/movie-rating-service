@@ -116,25 +116,3 @@
     padding: var(--spacing-lg) var(--spacing-md);
   }
 }
-
-/* Дополнительные элементы оформления */
-.movie-page__film-strip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 10px,
-    rgba(229, 9, 20, 0.3) 10px,
-    rgba(229, 9, 20, 0.3) 20px
-  );
-  z-index: 2;
-}
-
-.movie-page__film-strip--bottom {
-  top: auto;
-  bottom: 0;
-}

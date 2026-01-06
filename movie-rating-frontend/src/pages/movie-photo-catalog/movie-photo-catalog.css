@@ -22,12 +22,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
-    repeating-linear-gradient(90deg, 
-      transparent, 
-      transparent 20px, 
-      rgba(229, 9, 20, 0.05) 20px, 
-      rgba(229, 9, 20, 0.05) 40px),
+  background-image:
     radial-gradient(circle at 10% 20%, rgba(255, 214, 10, 0.1) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(0, 180, 216, 0.1) 0%, transparent 40%);
   z-index: 0;
@@ -44,8 +39,8 @@
   padding: var(--spacing-xxl);
   box-shadow: 
     var(--shadow-lg),
-    0 0 80px rgba(229, 9, 20, 0.2),
-    inset 0 0 40px rgba(0, 0, 0, 0.5);
+    0 0 120px rgba(229, 9, 20, 0.15),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
