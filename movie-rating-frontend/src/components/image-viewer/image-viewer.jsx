@@ -15,6 +15,8 @@ export default function ImageViewer({
     const [imageLoading, setImageLoading] = useState(true);
     const [imageError, setImageError] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    
+    console.log(currentIndex);
 
     // Вычисляем текущий индекс, если передан массив фотографий
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(currentIndex);
@@ -23,7 +25,7 @@ export default function ImageViewer({
     useEffect(() => {
         if (selectedPhoto && photos.length > 0) {
             const index = photos.findIndex(photo => 
-                photo.id === selectedPhoto.id || photo.url === selectedPhoto.url
+                photo.fileId === selectedPhoto.fileId
             );
             if (index !== -1) {
                 setCurrentPhotoIndex(index);

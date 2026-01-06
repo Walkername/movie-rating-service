@@ -27,6 +27,10 @@ export default function PhotoPreviewStrip({
 
     const handlePhotoClick = (photo) => {
         setSelectedPhoto(photo);
+        // console.log(photo);
+        // console.log(pageResponse.content.findIndex(phot1o =>
+        //     photo && (phot1o.fileId === photo.fileId)
+        // ));
         setViewStatus(true);
     };
 
@@ -244,10 +248,11 @@ export default function PhotoPreviewStrip({
                     additionalActions={additionalActions}
                     photos={pageResponse.content} // Передаем все фотографии для навигации
                     currentIndex={pageResponse.content.findIndex(photo => 
-                        selectedPhoto && (photo.id === selectedPhoto.id || photo.url === selectedPhoto.url)
+                        selectedPhoto && (photo.fileId === selectedPhoto.fileId)
                     )}
                     onIndexChange={(newIndex) => {
                         // Можно обновить состояние, если нужно
+                        // setSelectedPhoto()
                     }}
                 />
             )}
