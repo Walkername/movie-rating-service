@@ -31,7 +31,6 @@ import ru.walkername.movie_catalog.repositories.MoviesRepository;
 import ru.walkername.movie_catalog.util.MovieModelMapper;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -179,15 +178,6 @@ public class MoviesService {
     }
 
     /**
-     * Method to get all movies from DB
-     *
-     * @return list of movies
-     */
-    public List<Movie> getAllMovies() {
-        return moviesRepository.findAll();
-    }
-
-    /**
      * Method to get all movies from DB with pagination
      * Method is need to do lists of movies on the site
      *
@@ -220,7 +210,7 @@ public class MoviesService {
                 .collect(Collectors.toMap(
                         FileAttachmentResponse::getEntityId,
                         FileAttachmentResponse::getUrl,
-                        (existing, replacement) -> existing)
+                        (existing, _) -> existing)
                 );
 
         movieResponses = movieResponses.stream()
@@ -282,7 +272,7 @@ public class MoviesService {
     @Cacheable(cacheNames = "movies-by-user", key = "#id + '-' + #page + '-' + #moviesPerPage + '-' " +
             "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
     public PageResponse<MovieByUserResponse> getMoviesByUser(Long id, int page, int moviesPerPage, String[] sort) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(RATING_SERVICE_API + "/ratings/user/" + id)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(RATING_SERVICE_API + "/ratings/user/" + id)
                 .queryParam("page", page)
                 .queryParam("limit", moviesPerPage);
 
@@ -341,7 +331,7 @@ public class MoviesService {
         if (title.isEmpty()) {
             return Collections.emptyList();
         }
-        return moviesRepository.findByTitleStartingWith(title);
+        return moviesRepository.findByTitleStartingWithIgnoreCase(title);
     }
 
     @CacheEvict(cacheNames = "movie", key = "#fileUploaded.getContextId()",

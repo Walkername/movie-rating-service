@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface MoviesRepository extends JpaRepository<Movie, Long> {
 
-    List<Movie> findByTitleStartingWith(String title);
+    List<Movie> findByTitleStartingWithIgnoreCase(String title);
 }
