@@ -12,19 +12,25 @@ function RatedMoviesList({ userId }) {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    const pagePar = searchParams.get("page") ? parseInt(searchParams.get("page")) : 0;
-    const limitPar = searchParams.get("limit") ? parseInt(searchParams.get("limit")) : 10;
-    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "ratedAt";
+    const pagePar = searchParams.get("page")
+        ? parseInt(searchParams.get("page"))
+        : 0;
+    const limitPar = searchParams.get("limit")
+        ? parseInt(searchParams.get("limit"))
+        : 10;
+    const sortPar = searchParams.get("sort")
+        ? searchParams.get("sort")
+        : "ratedAt";
 
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(`${sortPar}:desc`);
     const sortParams = sortPar.split(":");
     const [sortField, setSortField] = useState(
-        sortParams[0] ? sortParams[0] : "ratedAt"
+        sortParams[0] ? sortParams[0] : "ratedAt",
     );
     const [sortOrder, setSortOrder] = useState(
-        sortParams[1] ? sortParams[1] : "desc"
+        sortParams[1] ? sortParams[1] : "desc",
     );
 
     const [pageResponse, setPageResponse] = useState({
@@ -69,13 +75,11 @@ function RatedMoviesList({ userId }) {
     };
 
     useEffect(() => {
-        
         setError(null);
-        
+
         getMoviesByUser(userId, page, limit, sort)
             .then((data) => {
                 setPageResponse(data);
-                
             })
             .catch((error) => {
                 console.error(error);
@@ -143,7 +147,15 @@ function RatedMoviesList({ userId }) {
     }, 500);
 
     const handleMovieSelect = (movieId) => {
-        navigate(`/movie/${movieId}`);
+        // Открываем в новой вкладке
+        const newWindow = window.open(`/movie/${movieId}`, "_blank");
+
+        // Фокус на новое окно (если это разрешено браузером)
+        if (newWindow) {
+            newWindow.focus();
+        }
+
+        // Закрываем дропдаун поиска
         setShowDropdown(false);
         setSearchQuery("");
         if (inputRef.current) {
@@ -174,13 +186,15 @@ function RatedMoviesList({ userId }) {
 
     const renderSortIndicator = (field) => {
         if (sortField !== field) return null;
-        
+
         return (
             <span className="rated-movies__sort-indicator">
-                        <span className={`rated-movies__sort-arrow ${sortOrder === 'asc' ? 'rated-movies__sort-arrow--asc' : 'rated-movies__sort-arrow--desc'}`}>
-                            ▲
-                        </span>
-                    </span>
+                <span
+                    className={`rated-movies__sort-arrow ${sortOrder === "asc" ? "rated-movies__sort-arrow--asc" : "rated-movies__sort-arrow--desc"}`}
+                >
+                    ▲
+                </span>
+            </span>
         );
     };
 
@@ -205,10 +219,14 @@ function RatedMoviesList({ userId }) {
                     onClick={() => handlePageButton(0)}
                 >
                     1
-                </button>
+                </button>,
             );
             if (start > 1) {
-                pages.push(<span key="dots1" className="rated-movies__page-dots">...</span>);
+                pages.push(
+                    <span key="dots1" className="rated-movies__page-dots">
+                        ...
+                    </span>,
+                );
             }
         }
 
@@ -216,17 +234,21 @@ function RatedMoviesList({ userId }) {
             pages.push(
                 <button
                     key={i}
-                    className={`rated-movies__page-button ${page === i ? 'rated-movies__page-button--active' : ''}`}
+                    className={`rated-movies__page-button ${page === i ? "rated-movies__page-button--active" : ""}`}
                     onClick={() => handlePageButton(i)}
                 >
                     {i + 1}
-                </button>
+                </button>,
             );
         }
 
         if (end < totalPages) {
             if (end < totalPages - 1) {
-                pages.push(<span key="dots2" className="rated-movies__page-dots">...</span>);
+                pages.push(
+                    <span key="dots2" className="rated-movies__page-dots">
+                        ...
+                    </span>,
+                );
             }
             pages.push(
                 <button
@@ -235,7 +257,7 @@ function RatedMoviesList({ userId }) {
                     onClick={() => handlePageButton(totalPages - 1)}
                 >
                     {totalPages}
-                </button>
+                </button>,
             );
         }
 
@@ -245,7 +267,7 @@ function RatedMoviesList({ userId }) {
     return (
         <div className="rated-movies">
             <h2 className="rated-movies__title">🎬 Rated Movies</h2>
-            
+
             <div className="rated-movies__controls">
                 <div className="rated-movies__search">
                     <input
@@ -258,22 +280,53 @@ function RatedMoviesList({ userId }) {
                         onBlur={handleBlur}
                     />
                     {showDropdown && (
-                        <div className={`rated-movies__search-results ${isFadingOut ? 'fade-out' : 'fade-in'}`}>
+                        <div
+                            className={`rated-movies__search-results ${isFadingOut ? "fade-out" : "fade-in"}`}
+                        >
                             {foundMovies.content.length > 0 ? (
-                                foundMovies.content.slice(0, 5).map((movie, index) => (
-                                    <button
-                                        key={index}
-                                        className="rated-movies__search-result"
-                                        onClick={() => handleMovieSelect(movie.movieId)}
-                                    >
-                                        <span className="rated-movies__search-result-title">
-                                            {movie.movieTitle}
-                                        </span>
-                                        <span className="rated-movies__search-result-year">
-                                            ({movie.movieReleaseYear})
-                                        </span>
-                                    </button>
-                                ))
+                                foundMovies.content
+                                    .slice(0, 5)
+                                    .map((movie, index) => (
+                                        <button
+                                            key={index}
+                                            className="rated-movies__search-result"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                handleMovieSelect(
+                                                    movie.movieId,
+                                                );
+                                            }}
+                                            onMouseDown={(e) => {
+                                                if (e.button === 1) {
+                                                    e.preventDefault();
+                                                    handleMovieSelect(
+                                                        movie.movieId,
+                                                    );
+                                                }
+                                            }}
+                                            onAuxClick={(e) => {
+                                                if (
+                                                    e.button === 1 ||
+                                                    e.ctrlKey ||
+                                                    e.shiftKey ||
+                                                    e.metaKey
+                                                ) {
+                                                    e.preventDefault();
+                                                    handleMovieSelect(
+                                                        movie.movieId,
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <span className="rated-movies__search-result-title">
+                                                {movie.movieTitle}
+                                            </span>
+                                            <span className="rated-movies__search-result-year">
+                                                ({movie.movieReleaseYear})
+                                            </span>
+                                        </button>
+                                    ))
                             ) : (
                                 <div className="rated-movies__search-result rated-movies__search-result--empty">
                                     No movies found
@@ -282,9 +335,12 @@ function RatedMoviesList({ userId }) {
                         </div>
                     )}
                 </div>
-                
+
                 <div className="rated-movies__limit">
-                    <label htmlFor="limit-select" className="rated-movies__limit-label">
+                    <label
+                        htmlFor="limit-select"
+                        className="rated-movies__limit-label"
+                    >
                         Show:
                     </label>
                     <select
@@ -321,30 +377,44 @@ function RatedMoviesList({ userId }) {
                                 <tr>
                                     <th>№</th>
                                     <th>Title</th>
-                                    <th 
+                                    <th
                                         className="rated-movies__sortable-header"
-                                        onClick={() => handleSortButton("movieReleaseYear")}
+                                        onClick={() =>
+                                            handleSortButton("movieReleaseYear")
+                                        }
                                     >
                                         Release Year
-                                        {renderSortIndicator("movieReleaseYear")}
+                                        {renderSortIndicator(
+                                            "movieReleaseYear",
+                                        )}
                                     </th>
-                                    <th 
+                                    <th
                                         className="rated-movies__sortable-header"
-                                        onClick={() => handleSortButton("movieAverageRating")}
+                                        onClick={() =>
+                                            handleSortButton(
+                                                "movieAverageRating",
+                                            )
+                                        }
                                     >
                                         Avg Rating
-                                        {renderSortIndicator("movieAverageRating")}
+                                        {renderSortIndicator(
+                                            "movieAverageRating",
+                                        )}
                                     </th>
-                                    <th 
+                                    <th
                                         className="rated-movies__sortable-header"
-                                        onClick={() => handleSortButton("rating")}
+                                        onClick={() =>
+                                            handleSortButton("rating")
+                                        }
                                     >
                                         Your Rating
                                         {renderSortIndicator("rating")}
                                     </th>
-                                    <th 
+                                    <th
                                         className="rated-movies__sortable-header"
-                                        onClick={() => handleSortButton("ratedAt")}
+                                        onClick={() =>
+                                            handleSortButton("ratedAt")
+                                        }
                                     >
                                         Rated On
                                         {renderSortIndicator("ratedAt")}
@@ -356,7 +426,11 @@ function RatedMoviesList({ userId }) {
                                     <tr
                                         key={index}
                                         className="rated-movies__table-row"
-                                        onClick={() => navigate(`/movie/${element.movieId}`)}
+                                        onClick={() =>
+                                            navigate(
+                                                `/movie/${element.movieId}`,
+                                            )
+                                        }
                                     >
                                         <td className="rated-movies__table-cell rated-movies__table-cell--number">
                                             {index + 1 + limit * page}
@@ -368,9 +442,15 @@ function RatedMoviesList({ userId }) {
                                             {element.movieReleaseYear}
                                         </td>
                                         <td className="rated-movies__table-cell">
-                                            {element.movieAverageRating ? element.movieAverageRating.toFixed(1) : "—"}
+                                            {element.movieAverageRating
+                                                ? element.movieAverageRating.toFixed(
+                                                      1,
+                                                  )
+                                                : "—"}
                                         </td>
-                                        <td className={`rated-movies__table-cell ${getRatingClass(element.rating)}`}>
+                                        <td
+                                            className={`rated-movies__table-cell ${getRatingClass(element.rating)}`}
+                                        >
                                             {element.rating}/10
                                         </td>
                                         <td className="rated-movies__table-cell">
@@ -386,19 +466,28 @@ function RatedMoviesList({ userId }) {
                         <div className="rated-movies__pagination">
                             <button
                                 className="rated-movies__page-button rated-movies__page-button--prev"
-                                onClick={() => handlePageButton(Math.max(0, page - 1))}
+                                onClick={() =>
+                                    handlePageButton(Math.max(0, page - 1))
+                                }
                                 disabled={page === 0}
                             >
                                 ← Previous
                             </button>
-                            
+
                             <div className="rated-movies__page-numbers">
                                 {renderPagination()}
                             </div>
-                            
+
                             <button
                                 className="rated-movies__page-button rated-movies__page-button--next"
-                                onClick={() => handlePageButton(Math.min(pageResponse.totalPages - 1, page + 1))}
+                                onClick={() =>
+                                    handlePageButton(
+                                        Math.min(
+                                            pageResponse.totalPages - 1,
+                                            page + 1,
+                                        ),
+                                    )
+                                }
                                 disabled={page >= pageResponse.totalPages - 1}
                             >
                                 Next →
@@ -410,7 +499,8 @@ function RatedMoviesList({ userId }) {
 
             <div className="rated-movies__summary">
                 <span className="rated-movies__summary-text">
-                    Showing {pageResponse.content.length} of {pageResponse.totalElements} rated movies
+                    Showing {pageResponse.content.length} of{" "}
+                    {pageResponse.totalElements} rated movies
                 </span>
                 <span className="rated-movies__summary-page">
                     Page {page + 1} of {pageResponse.totalPages || 1}
