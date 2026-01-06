@@ -180,11 +180,6 @@ export default function PhotoPreviewStrip({
                                 onClick={() => handlePhotoClick(photo)}
                                 role="button"
                                 tabIndex={0}
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        handlePhotoClick(photo);
-                                    }
-                                }}
                             >
                                 <img
                                     src={photo.url}
@@ -195,11 +190,9 @@ export default function PhotoPreviewStrip({
                                         e.target.src = 'https://via.placeholder.com/200x150/333/666?text=Photo+Error';
                                     }}
                                 />
-                                {index === 0 && (
                                     <span className="photo-strip__count">
-                                        {index + 1}/{pageResponse.content.length}
+                                        {index + 1}/{pageResponse.totalElements}
                                     </span>
-                                )}
                             </div>
                         ))}
                         
