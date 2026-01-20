@@ -1,0 +1,8 @@
+- [ ] Security config
+- [ ] Token service
+- [ ] DTOs
+- [ ] Kafka config
+- [ ] Firebase config
+- [ ] FirebaseMessaging save token to DB
+- [ ] FirebaseMessaging send notification to user to frontend
+- [ ] Event on PostCreated from Kafka &rarr; Firebase notification
