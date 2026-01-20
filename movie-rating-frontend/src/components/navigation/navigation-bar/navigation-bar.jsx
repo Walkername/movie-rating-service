@@ -32,6 +32,12 @@ function NavigationBar() {
             </div>
             
             <div className="nav__right">
+                <Link 
+                    className="nav__link "
+                    to="/feed"
+                >
+                    News Feed
+                </Link>
                 {token && (
                     <Link
                         className="nav__link nav__link--profile"

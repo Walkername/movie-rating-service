@@ -1,8 +1,6 @@
 /* Блок страницы ленты */
 .feed-page {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   background: var(--gradient-cinematic);
   position: relative;
   overflow: hidden;
@@ -27,7 +25,7 @@
 .feed-container {
   position: relative;
   z-index: 1;
-  max-width: 900px;
+  max-width: 600px;
   margin: 0 auto;
   padding: var(--spacing-xl) var(--spacing-lg);
   animation: feedFadeIn var(--transition-medium) ease-out;
