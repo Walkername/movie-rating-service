@@ -2,8 +2,8 @@ package ru.walkername.notification_service.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.walkername.notification_service.models.FirebaseToken;
+import ru.walkername.notification_service.models.Notification;
 
 @Repository
-public interface FirebaseTokenRepository extends JpaRepository<FirebaseToken, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 }
