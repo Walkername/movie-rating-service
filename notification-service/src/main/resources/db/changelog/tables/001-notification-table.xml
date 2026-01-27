@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-notification-table" author="walkername">
+
+        <createTable tableName="notification">
+            <column name="id" type="BIGINT" autoIncrement="true" generationType="BY DEFAULT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="target_type" type="VARCHAR(20)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="target_id" type="BIGINT" >
+                <constraints nullable="true" />
+            </column>
+            <column name="title" type="VARCHAR(50)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="message" type="VARCHAR(200)" >
+                <constraints nullable="true" />
+            </column>
+            <column name="entity_type" type="VARCHAR(50)" >
+                <constraints nullable="true" />
+            </column>
+            <column name="delivered_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP" >
+                <constraints nullable="false" />
+            </column>
+            <column name="is_read" type="BOOLEAN" defaultValue="false" >
+                <constraints nullable="false" />
+            </column>
+            <column name="read_at" type="TIMESTAMPTZ" >
+                <constraints nullable="true" />
+            </column>
+            <column name="metadata" type="JSONB" >
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="002-create-notification-indexes" author="walkername">
+        <createIndex tableName="notification" indexName="idx_notification_target_user">
+            <column name="target_type" />
+            <column name="target_id"/>
+        </createIndex>
+
+        <createIndex tableName="notification" indexName="idx_notification_is_read">
+            <column name="is_read"/>
+        </createIndex>
+
+        <createIndex tableName="notification" indexName="idx_notification_entity_type">
+            <column name="entity_type"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="003-add-notification-constraints" author="walkername">
+        <sql dbms="postgresql">
+            ALTER TABLE notification
+                ADD CONSTRAINT chk_notification_target
+                    CHECK (
+                        (target_type = 'ALL' AND target_id IS NULL) OR
+                        (target_type = 'USER' AND target_id IS NOT NULL)
+                        );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
