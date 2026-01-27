@@ -1,7 +1,7 @@
 import NavigationBar from "../../components/navigation/navigation-bar/navigation-bar";
 import UserDataEdit from "../../components/user-profile/user-data-edit/user-data-edit";
 import UserData from "../../components/user-profile/user-data/user-data";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import getClaimFromToken from "../../utils/token-validation/token-validation";
 import { getUser } from "../../api/user-api";
 import { useParams } from "react-router-dom";
@@ -16,13 +16,14 @@ function UserPage() {
     const token = localStorage.getItem("accessToken");
     let isAccessToEdit = false;
     let currentUserId = null;
-    
+
     if (token != null) {
         try {
             const tokenId = getClaimFromToken(token, "id");
             const tokenRole = getClaimFromToken(token, "role");
             currentUserId = parseInt(tokenId);
-            isAccessToEdit = parseInt(id) === currentUserId || tokenRole === "ADMIN";
+            isAccessToEdit =
+                parseInt(id) === currentUserId || tokenRole === "ADMIN";
         } catch (error) {
             console.error("Token parsing error:", error);
         }
@@ -33,7 +34,7 @@ function UserPage() {
     useEffect(() => {
         setIsLoading(true);
         setError(null);
-        
+
         getUser(id)
             .then((data) => {
                 setUser(data);
@@ -62,7 +63,7 @@ function UserPage() {
     return (
         <div className="user-page">
             <NavigationBar />
-            
+
             <div className="user-page__content">
                 <div className="user-page__card">
                     {isLoading ? (
@@ -73,24 +74,30 @@ function UserPage() {
                     ) : error ? (
                         <div className="user-page__error">
                             <h2>Error: User was not found</h2>
-                            <p>The user profile you're looking for doesn't exist or cannot be loaded.</p>
+                            <p>
+                                The user profile you're looking for doesn't
+                                exist or cannot be loaded.
+                            </p>
                         </div>
                     ) : user ? (
                         <>
                             <div className="user-page__header">
-                                <h1 className="user-page__title">User Profile</h1>
+                                <h1 className="user-page__title">
+                                    User Profile
+                                </h1>
                                 <p className="user-page__subtitle">
-                                    Member since {new Date(user.createdAt).getFullYear()}
+                                    Member since{" "}
+                                    {new Date(user.createdAt).getFullYear()}
                                 </p>
                             </div>
-                            
+
                             {isUserOnline && (
                                 <div className="user-page__status">
                                     <div className="user-page__status-dot"></div>
                                     <span>Online</span>
                                 </div>
                             )}
-                            
+
                             {isEditing ? (
                                 isAccessToEdit && (
                                     <UserDataEdit

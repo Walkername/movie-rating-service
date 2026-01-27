@@ -1,6 +1,10 @@
 /* Блок панели инструментов админа */
 .admin-toolbar {
-    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(10, 10, 10, 0.98));
+    background: linear-gradient(
+        135deg,
+        rgba(20, 20, 20, 0.95),
+        rgba(10, 10, 10, 0.98)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
@@ -11,13 +15,18 @@
 }
 
 .admin-toolbar::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-primary),
+        transparent
+    );
 }
 
 .admin-toolbar__container {
@@ -31,7 +40,11 @@
 .admin-toolbar__button {
     position: relative;
     padding: var(--spacing-md) var(--spacing-xl);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-gray);
@@ -46,13 +59,18 @@
 }
 
 .admin-toolbar__button::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
     transition: left var(--transition-slow);
 }
 
@@ -95,7 +113,8 @@
 }
 
 @keyframes indicatorPulse {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 0.7;
     }
     50% {
@@ -115,17 +134,17 @@
 
 /* Иконки для кнопок (опционально) */
 .admin-toolbar__button--users .admin-toolbar__button-text::before {
-    content: '👥';
+    content: "👥";
     font-size: var(--font-size-sm);
 }
 
 .admin-toolbar__button--movies .admin-toolbar__button-text::before {
-    content: '🎬';
+    content: "🎬";
     font-size: var(--font-size-sm);
 }
 
 .admin-toolbar__button--posts .admin-toolbar__button-text::before {
-    content: '📝';
+    content: "📝";
     font-size: var(--font-size-sm);
 }
 
@@ -134,12 +153,12 @@
     .admin-toolbar__container {
         flex-direction: column;
     }
-    
+
     .admin-toolbar__button {
         width: 100%;
         min-width: auto;
     }
-    
+
     .admin-toolbar__button-indicator {
         width: 100%;
         left: 0;
@@ -152,7 +171,7 @@
     .admin-toolbar {
         padding: var(--spacing-sm);
     }
-    
+
     .admin-toolbar__button {
         padding: var(--spacing-sm) var(--spacing-md);
         font-size: var(--font-size-sm);

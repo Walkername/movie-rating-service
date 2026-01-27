@@ -40,7 +40,7 @@
 
 .create-post-header h2::after,
 .update-post-header h2::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -65,7 +65,11 @@
     top: 0;
     left: 0;
     padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-gray);
@@ -82,13 +86,21 @@
 .post-update-back-button:hover {
     color: var(--color-text-light);
     border-color: var(--color-primary);
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.1),
+        rgba(229, 9, 20, 0.05)
+    );
 }
 
 /* Форма */
 .create-post-form,
 .update-post-form {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(15, 15, 15, 0.95)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -121,7 +133,11 @@
 .form-input {
     width: 100%;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-light);
@@ -133,7 +149,11 @@
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.07),
+        rgba(255, 255, 255, 0.03)
+    );
 }
 
 .form-input::placeholder {
@@ -143,7 +163,11 @@
 
 .form-input.error {
     border-color: #e74c3c;
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
 }
 
 /* Контейнер редактора контента */
@@ -155,12 +179,16 @@
 .markdown-editor {
     width: 100%;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-light);
     font-size: var(--font-size-md);
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
     transition: all var(--transition-fast);
     resize: vertical;
     line-height: 1.5;
@@ -170,7 +198,11 @@
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.07),
+        rgba(255, 255, 255, 0.03)
+    );
 }
 
 .markdown-editor::placeholder {
@@ -182,7 +214,11 @@
 
 .markdown-editor.error {
     border-color: #e74c3c;
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
 }
 
 /* Предупреждение о лимите */
@@ -191,7 +227,11 @@
     bottom: var(--spacing-sm);
     right: var(--spacing-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.2),
+        rgba(231, 76, 60, 0.1)
+    );
     border: 1px solid rgba(231, 76, 60, 0.3);
     border-radius: var(--border-radius-sm);
     color: #e74c3c;
@@ -201,7 +241,8 @@
 }
 
 @keyframes warningPulse {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 0.8;
     }
     50% {
@@ -211,7 +252,11 @@
 
 /* Контейнер предпросмотра */
 .preview-container {
-    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(5, 5, 5, 0.98));
+    background: linear-gradient(
+        135deg,
+        rgba(10, 10, 10, 0.95),
+        rgba(5, 5, 5, 0.98)
+    );
     border-radius: var(--border-radius-md);
     padding: var(--spacing-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -261,16 +306,24 @@
 }
 
 .markdown-preview code {
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.1),
+        rgba(229, 9, 20, 0.05)
+    );
     color: var(--color-primary);
     padding: 2px 6px;
     border-radius: var(--border-radius-sm);
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
     font-size: 0.9em;
 }
 
 .markdown-preview pre {
-    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(5, 5, 5, 0.98));
+    background: linear-gradient(
+        135deg,
+        rgba(10, 10, 10, 0.95),
+        rgba(5, 5, 5, 0.98)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     padding: var(--spacing-md);
@@ -298,7 +351,11 @@
     font-size: var(--font-size-sm);
     margin-top: var(--spacing-xs);
     padding: var(--spacing-sm);
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
     border: 1px solid rgba(231, 76, 60, 0.2);
     border-radius: var(--border-radius-sm);
     animation: errorAppear 0.3s ease-out;
@@ -320,7 +377,11 @@
     font-size: var(--font-size-md);
     margin: var(--spacing-lg) 0;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
     border: 1px solid rgba(231, 76, 60, 0.2);
     border-radius: var(--border-radius-md);
     display: flex;
@@ -380,13 +441,21 @@
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-text-light);
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.04)
+    );
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
@@ -436,17 +505,17 @@
     .update-post-form {
         padding: var(--spacing-lg);
     }
-    
+
     .form-actions {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .btn {
         width: 100%;
         text-align: center;
     }
-    
+
     .post-update-back-button {
         position: relative;
         margin-bottom: var(--spacing-lg);
@@ -460,21 +529,21 @@
     .update-post-form {
         padding: var(--spacing-md);
     }
-    
+
     .form-group label {
         font-size: var(--font-size-sm);
     }
-    
+
     .char-counter {
         font-size: var(--font-size-xs);
     }
-    
+
     .form-input,
     .markdown-editor {
         padding: var(--spacing-sm);
         font-size: var(--font-size-sm);
     }
-    
+
     .markdown-preview {
         font-size: var(--font-size-sm);
     }

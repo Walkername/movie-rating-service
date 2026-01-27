@@ -5,9 +5,10 @@ import "./post-comment-input.css";
 
 export default function PostCommentInput({ postId, onCommentPublished }) {
     const token = localStorage.getItem("accessToken");
-    const tokenUsername = token !== null ? getClaimFromToken(token, "username") : null;
+    const tokenUsername =
+        token !== null ? getClaimFromToken(token, "username") : null;
     const isAuth = tokenUsername ? true : false;
-    
+
     const [comment, setComment] = useState({
         content: "",
     });
@@ -116,10 +117,7 @@ export default function PostCommentInput({ postId, onCommentPublished }) {
                         <div className="char-counter">
                             <span>0/{CONTENT_LIMIT}</span>
                         </div>
-                        <button
-                            className="send-button"
-                            disabled
-                        >
+                        <button className="send-button" disabled>
                             Login to Comment
                         </button>
                     </div>

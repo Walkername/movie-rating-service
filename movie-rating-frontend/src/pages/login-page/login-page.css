@@ -1,180 +1,192 @@
 /* Блок страницы входа (наследует от register-page) */
 .login-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Контейнер контента */
 .login-page__content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl) var(--spacing-lg);
-  background: var(--gradient-cinematic);
-  position: relative;
-  overflow: hidden;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xxl) var(--spacing-lg);
+    background: var(--gradient-cinematic);
+    position: relative;
+    overflow: hidden;
 }
 
 /* Специальный фон для логина */
 .login-page__content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 80% 50%, rgba(0, 180, 216, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 20% 20%, rgba(255, 214, 10, 0.1) 0%, transparent 50%),
-    linear-gradient(45deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
-  z-index: 0;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(
+            circle at 80% 50%,
+            rgba(0, 180, 216, 0.15) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255, 214, 10, 0.1) 0%,
+            transparent 50%
+        ),
+        linear-gradient(45deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
+    z-index: 0;
 }
 
 /* Контейнер формы */
 .login-page__form-container {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 450px;
-  background-color: rgba(10, 10, 10, 0.95);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xxl);
-  box-shadow: 
-    var(--shadow-lg),
-    0 0 40px rgba(0, 180, 216, 0.2),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
+    background-color: rgba(10, 10, 10, 0.95);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xxl);
+    box-shadow:
+        var(--shadow-lg),
+        0 0 40px rgba(0, 180, 216, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Заголовок страницы */
 .login-page__title {
-  text-align: center;
-  margin-bottom: var(--spacing-xxl);
-  color: var(--color-text-light);
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-black);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  position: relative;
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    color: var(--color-text-light);
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .login-page__title::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
-  margin: var(--spacing-md) auto 0;
-  border-radius: 2px;
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--color-secondary),
+        var(--color-primary)
+    );
+    margin: var(--spacing-md) auto 0;
+    border-radius: 2px;
 }
 
 /* Ссылка на регистрацию */
 .login-page__register-link {
-  text-align: center;
-  margin-top: var(--spacing-xl);
-  color: var(--color-text-gray);
-  font-size: var(--font-size-md);
+    text-align: center;
+    margin-top: var(--spacing-xl);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
 }
 
 .login-page__register-link a {
-  color: var(--color-secondary);
-  text-decoration: none;
-  font-weight: var(--font-weight-medium);
-  transition: color var(--transition-fast);
+    color: var(--color-secondary);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: color var(--transition-fast);
 }
 
 .login-page__register-link a:hover {
-  color: var(--color-secondary-light);
-  text-decoration: underline;
+    color: var(--color-secondary-light);
+    text-decoration: underline;
 }
 
 /* Дополнительные ссылки (Forgot password) */
 .login-page__extra-links {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .login-page__forgot-password {
-  color: var(--color-text-gray);
-  font-size: var(--font-size-sm);
-  text-decoration: none;
-  transition: color var(--transition-fast);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    transition: color var(--transition-fast);
 }
 
 .login-page__forgot-password:hover {
-  color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .login-page__content {
-    padding: var(--spacing-xl) var(--spacing-md);
-  }
-  
-  .login-page__form-container {
-    padding: var(--spacing-xl) var(--spacing-lg);
-  }
-  
-  .login-page__title {
-    font-size: var(--font-size-xl);
-  }
-  
-  .login-page__extra-links {
-    flex-direction: column;
-    gap: var(--spacing-md);
-    text-align: center;
-  }
+    .login-page__content {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .login-page__form-container {
+        padding: var(--spacing-xl) var(--spacing-lg);
+    }
+
+    .login-page__title {
+        font-size: var(--font-size-xl);
+    }
+
+    .login-page__extra-links {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
 }
 
 /* Анимация входа */
 @keyframes loginSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .login-page__form-container {
-  animation: loginSlideIn var(--transition-slow) ease-out;
+    animation: loginSlideIn var(--transition-slow) ease-out;
 }
 
 /* Социальный вход (опционально) */
 .login-page__social {
-  margin-top: var(--spacing-xl);
-  text-align: center;
+    margin-top: var(--spacing-xl);
+    text-align: center;
 }
 
 .login-page__social-title {
-  color: var(--color-text-gray);
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-md);
-  position: relative;
+    color: var(--color-text-gray);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+    position: relative;
 }
 
 .login-page__social-title::before,
 .login-page__social-title::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 30%;
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .login-page__social-title::before {
-  left: 0;
+    left: 0;
 }
 
 .login-page__social-title::after {
-  right: 0;
+    right: 0;
 }

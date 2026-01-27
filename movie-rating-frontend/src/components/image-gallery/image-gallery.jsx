@@ -7,17 +7,18 @@ export default function ImageGallery({
         totalPages: 0,
         page: 0,
         totalElements: 0,
-        limit: 0
+        limit: 0,
     },
     limit,
     setLimit,
     onPhotoClick,
-    onLoadMore
+    onLoadMore,
 }) {
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const morePhotos = 24;
     const hasNextPage = pageResponse.page < pageResponse.totalPages - 1;
-    const remainingPhotos = pageResponse.totalElements - pageResponse.content.length;
+    const remainingPhotos =
+        pageResponse.totalElements - pageResponse.content.length;
 
     const loadMorePhotos = () => {
         if (hasNextPage && onLoadMore) {
@@ -31,16 +32,16 @@ export default function ImageGallery({
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return '';
+        if (!dateString) return "";
         try {
             const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
             });
         } catch {
-            return '';
+            return "";
         }
     };
 
@@ -69,7 +70,7 @@ export default function ImageGallery({
                         role="button"
                         tabIndex={0}
                         onKeyPress={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (e.key === "Enter" || e.key === " ") {
                                 onPhotoClick(photo);
                             }
                         }}
@@ -81,11 +82,12 @@ export default function ImageGallery({
                             alt={formatTitle(photo.title, index)}
                             loading="lazy"
                             onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/400x300/333/666?text=Photo+Error';
+                                e.target.src =
+                                    "https://via.placeholder.com/400x300/333/666?text=Photo+Error";
                             }}
                         />
-                        
-                        <button 
+
+                        <button
                             className="image-gallery__fullscreen"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -93,14 +95,14 @@ export default function ImageGallery({
                             }}
                             aria-label="View in fullscreen"
                         >
-                            <svg 
-                                className="image-gallery__fullscreen-icon" 
+                            <svg
+                                className="image-gallery__fullscreen-icon"
                                 viewBox="0 0 24 24"
                             >
                                 <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                             </svg>
                         </button>
-                        
+
                         <div className="image-gallery__overlay">
                             <div className="image-gallery__info">
                                 <div className="image-gallery__title">
@@ -120,23 +122,23 @@ export default function ImageGallery({
                         </div>
                     </div>
                 ))}
-                
+
                 {hasNextPage && !isLoadingMore && (
-                    <div 
+                    <div
                         className="image-gallery__card image-gallery__load-more"
                         onClick={loadMorePhotos}
                         role="button"
                         tabIndex={0}
                         onKeyPress={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (e.key === "Enter" || e.key === " ") {
                                 loadMorePhotos();
                             }
                         }}
                         aria-label="Load more photos"
                     >
                         <div className="image-gallery__load-more-content">
-                            <svg 
-                                className="image-gallery__load-more-icon" 
+                            <svg
+                                className="image-gallery__load-more-icon"
                                 viewBox="0 0 24 24"
                             >
                                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -152,7 +154,7 @@ export default function ImageGallery({
                         </div>
                     </div>
                 )}
-                
+
                 {isLoadingMore && (
                     <div className="image-gallery__card image-gallery__loading">
                         <div className="image-gallery__loading-spinner"></div>
@@ -160,26 +162,33 @@ export default function ImageGallery({
                     </div>
                 )}
             </div>
-            
+
             {/* Пагинация (альтернатива Load More) */}
             {pageResponse.totalPages > 1 && (
                 <div className="image-gallery__pagination">
                     <button
                         className="image-gallery__page-button"
-                        onClick={() => {/* Обработчик предыдущей страницы */}}
+                        onClick={() => {
+                            /* Обработчик предыдущей страницы */
+                        }}
                         disabled={pageResponse.page === 0}
                     >
                         Previous
                     </button>
-                    
+
                     <span className="image-gallery__page-info">
-                        Page {pageResponse.page + 1} of {pageResponse.totalPages}
+                        Page {pageResponse.page + 1} of{" "}
+                        {pageResponse.totalPages}
                     </span>
-                    
+
                     <button
                         className="image-gallery__page-button"
-                        onClick={() => {/* Обработчик следующей страницы */}}
-                        disabled={pageResponse.page === pageResponse.totalPages - 1}
+                        onClick={() => {
+                            /* Обработчик следующей страницы */
+                        }}
+                        disabled={
+                            pageResponse.page === pageResponse.totalPages - 1
+                        }
                     >
                         Next
                     </button>

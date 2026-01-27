@@ -112,7 +112,9 @@ export default function AdminPostUpdate() {
         if (!validateForm()) return;
 
         if (!hasChanges()) {
-            setSubmitError("No changes detected. Please make some changes before updating.");
+            setSubmitError(
+                "No changes detected. Please make some changes before updating.",
+            );
             return;
         }
 
@@ -125,21 +127,20 @@ export default function AdminPostUpdate() {
                 title: post.title.trim(),
                 content: post.content.trim(),
             });
-            
+
             setSubmitSuccess(true);
-            
+
             // Update original post with new values
             setOriginalPost({
                 ...originalPost,
                 title: post.title.trim(),
                 content: post.content.trim(),
             });
-            
+
             // Navigate back after delay
             setTimeout(() => {
                 navigate("/admin/posts-tool");
             }, 1500);
-            
         } catch (error) {
             console.error("Failed to update post:", error);
             setSubmitError(
@@ -188,7 +189,7 @@ export default function AdminPostUpdate() {
                 handleSubmit(e);
             }
         }
-        
+
         // Cancel on Escape
         if (e.key === "Escape") {
             handleCancel();
@@ -214,7 +215,10 @@ export default function AdminPostUpdate() {
                         dangerouslySetInnerHTML={{
                             __html: post.content
                                 .replace(/\n/g, "<br>")
-                                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                                .replace(
+                                    /\*\*(.*?)\*\*/g,
+                                    "<strong>$1</strong>",
+                                )
                                 .replace(/\*(.*?)\*/g, "<em>$1</em>")
                                 .replace(/`(.*?)`/g, "<code>$1</code>")
                                 .replace(/^### (.*$)/gm, "<h3>$1</h3>")
@@ -238,7 +242,11 @@ export default function AdminPostUpdate() {
     }
 
     return (
-        <div className="update-post-container" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div
+            className="update-post-container"
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+        >
             <div className="update-post-header">
                 <button
                     onClick={handleCancel}
@@ -256,7 +264,9 @@ export default function AdminPostUpdate() {
                 <div className="form-group">
                     <label htmlFor="title">
                         Title *
-                        <span className={`char-counter ${post.title.length > TITLE_LIMIT * 0.8 ? 'warning' : ''}`}>
+                        <span
+                            className={`char-counter ${post.title.length > TITLE_LIMIT * 0.8 ? "warning" : ""}`}
+                        >
                             {post.title.length}/{TITLE_LIMIT}
                         </span>
                     </label>
@@ -280,7 +290,9 @@ export default function AdminPostUpdate() {
                 <div className="form-group">
                     <label htmlFor="content">
                         Content (Markdown) *
-                        <span className={`char-counter ${post.content.length > CONTENT_LIMIT * 0.8 ? 'warning' : ''}`}>
+                        <span
+                            className={`char-counter ${post.content.length > CONTENT_LIMIT * 0.8 ? "warning" : ""}`}
+                        >
                             {post.content.length}/{CONTENT_LIMIT}
                         </span>
                     </label>
@@ -291,7 +303,7 @@ export default function AdminPostUpdate() {
                             value={post.content}
                             onChange={handleChange}
                             placeholder="Write your post content here... You can use markdown: **bold**, *italic*, `code`, # headers
-                            
+
 Ctrl+S to save • Ctrl+Enter to update • Esc to cancel"
                             className={`markdown-editor ${errors.content ? "error" : ""}`}
                             maxLength={CONTENT_LIMIT}
@@ -309,15 +321,25 @@ Ctrl+S to save • Ctrl+Enter to update • Esc to cancel"
                     {errors.content && (
                         <div className="error-message">{errors.content}</div>
                     )}
-                    
+
                     <div className="markdown-tips">
                         <h4>Markdown Tips:</h4>
                         <ul>
-                            <li><code>**bold**</code> → <strong>bold</strong></li>
-                            <li><code>*italic*</code> → <em>italic</em></li>
-                            <li><code>`code`</code> → <code>code</code></li>
-                            <li><code># Header 1</code> → Large header</li>
-                            <li><code>## Header 2</code> → Medium header</li>
+                            <li>
+                                <code>**bold**</code> → <strong>bold</strong>
+                            </li>
+                            <li>
+                                <code>*italic*</code> → <em>italic</em>
+                            </li>
+                            <li>
+                                <code>`code`</code> → <code>code</code>
+                            </li>
+                            <li>
+                                <code># Header 1</code> → Large header
+                            </li>
+                            <li>
+                                <code>## Header 2</code> → Medium header
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -353,8 +375,8 @@ Ctrl+S to save • Ctrl+Enter to update • Esc to cancel"
 
                 {/* Keyboard shortcuts hint */}
                 <div className="keyboard-shortcuts">
-                    <span className="shortcut">Ctrl+S</span> Save • 
-                    <span className="shortcut"> Ctrl+Enter</span> Update • 
+                    <span className="shortcut">Ctrl+S</span> Save •
+                    <span className="shortcut"> Ctrl+Enter</span> Update •
                     <span className="shortcut"> Esc</span> Cancel
                 </div>
 

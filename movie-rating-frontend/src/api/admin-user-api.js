@@ -2,14 +2,15 @@ import customRequest from "./fetch-client";
 
 export const updateUserData = async (userId, formData) => {
     try {
-        const response = await customRequest(`${process.env.REACT_APP_USER_SERVICE_URL}/admin/users/${userId}`,
+        const response = await customRequest(
+            `${process.env.REACT_APP_USER_SERVICE_URL}/admin/users/${userId}`,
             {
                 method: "PATCH",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData)
-            }
+                body: JSON.stringify(formData),
+            },
         );
         return response;
     } catch (error) {
@@ -24,10 +25,10 @@ export const updateUsername = async (userId, formData) => {
             {
                 method: "PATCH",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData)
-            }
+                body: JSON.stringify(formData),
+            },
         );
         return response;
     } catch (error) {
@@ -40,8 +41,8 @@ export const updateProfilePictureId = async (userId, fileId) => {
         const response = await customRequest(
             `${process.env.REACT_APP_USER_SERVICE_URL}/admin/users/${userId}/profile-pic?fileId=${fileId}`,
             {
-                method: "PATCH"
-            }
+                method: "PATCH",
+            },
         );
         return response;
     } catch (error) {

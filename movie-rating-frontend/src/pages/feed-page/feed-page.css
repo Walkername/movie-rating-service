@@ -1,91 +1,103 @@
 /* Блок страницы ленты */
 .feed-page {
-  min-height: 100vh;
-  background: var(--gradient-cinematic);
-  position: relative;
-  overflow: hidden;
+    min-height: 100vh;
+    background: var(--gradient-cinematic);
+    position: relative;
+    overflow: hidden;
 }
 
 /* Фоновый слой с кинематографичными элементами */
 .feed-page::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 80% 20%, rgba(229, 9, 20, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 20% 80%, rgba(0, 180, 216, 0.08) 0%, transparent 40%),
-    linear-gradient(45deg, rgba(0, 0, 0, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
-  z-index: 0;
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(229, 9, 20, 0.08) 0%,
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(0, 180, 216, 0.08) 0%,
+            transparent 40%
+        ),
+        linear-gradient(
+            45deg,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(10, 10, 10, 0.95) 100%
+        );
+    z-index: 0;
 }
 
 /* Контейнер ленты */
 .feed-container {
-  position: relative;
-  z-index: 1;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-lg);
-  animation: feedFadeIn var(--transition-medium) ease-out;
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    animation: feedFadeIn var(--transition-medium) ease-out;
 }
 
 /* Заголовок ленты */
 .post-list-container-title {
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-black);
-  color: var(--color-text-light);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: var(--spacing-xxl);
-  text-align: center;
-  position: relative;
-  padding-bottom: var(--spacing-lg);
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: var(--spacing-xxl);
+    text-align: center;
+    position: relative;
+    padding-bottom: var(--spacing-lg);
 }
 
 .post-list-container-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: var(--gradient-primary);
-  border-radius: var(--border-radius-pill);
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--border-radius-pill);
 }
 
 /* Анимация появления */
 @keyframes feedFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .feed-container {
-    padding: var(--spacing-lg) var(--spacing-md);
-  }
-  
-  .post-list-container-title {
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-xl);
-  }
+    .feed-container {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .post-list-container-title {
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-xl);
+    }
 }
 
 @media (max-width: 480px) {
-  .feed-container {
-    padding: var(--spacing-md) var(--spacing-sm);
-  }
-  
-  .post-list-container-title {
-    font-size: var(--font-size-lg);
-  }
+    .feed-container {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .post-list-container-title {
+        font-size: var(--font-size-lg);
+    }
 }

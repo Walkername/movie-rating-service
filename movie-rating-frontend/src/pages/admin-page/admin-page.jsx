@@ -11,7 +11,8 @@ export default function AdminPage() {
                 <div className="admin-content__header">
                     <h1 className="admin-content__title">Admin Tools</h1>
                     <p className="admin-content__subtitle">
-                        Manage users, movies, and posts with administrative privileges
+                        Manage users, movies, and posts with administrative
+                        privileges
                     </p>
                 </div>
                 <div className="profile-card">

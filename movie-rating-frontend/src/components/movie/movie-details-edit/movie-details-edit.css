@@ -1,304 +1,308 @@
 /* Блок редактирования фильма */
 .movie-edit {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
 }
 
 /* Верхняя панель с кнопками */
 .movie-edit__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--spacing-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .movie-edit__actions {
-  display: flex;
-  gap: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-md);
 }
 
 /* Кнопки действий */
 .movie-edit__button {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .movie-edit__button--back {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-light);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .movie-edit__button--back:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: var(--color-secondary);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-secondary);
 }
 
 .movie-edit__button--update {
-  background: var(--gradient-primary);
-  color: white;
-  font-weight: var(--font-weight-bold);
+    background: var(--gradient-primary);
+    color: white;
+    font-weight: var(--font-weight-bold);
 }
 
 .movie-edit__button--update:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 .movie-edit__button--update:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Карточки редактирования */
 .movie-edit__card {
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.9));
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(
+        135deg,
+        rgba(20, 20, 20, 0.9),
+        rgba(10, 10, 10, 0.9)
+    );
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .movie-edit__card-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-light);
-  margin-bottom: var(--spacing-lg);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 2px solid var(--color-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-primary);
 }
 
 /* Поля формы */
 .movie-edit__field {
-  margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
 }
 
 .movie-edit__label {
-  display: block;
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-light);
-  margin-bottom: var(--spacing-sm);
+    display: block;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-sm);
 }
 
 .movie-edit__input,
 .movie-edit__textarea {
-  width: 100%;
-  padding: var(--spacing-md) var(--spacing-lg);
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-md);
-  color: var(--color-text-light);
-  font-size: var(--font-size-md);
-  font-family: inherit;
-  transition: all var(--transition-fast);
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-light);
+    font-size: var(--font-size-md);
+    font-family: inherit;
+    transition: all var(--transition-fast);
 }
 
 .movie-edit__input:focus,
 .movie-edit__textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  background-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+    outline: none;
+    border-color: var(--color-primary);
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
 }
 
 .movie-edit__textarea {
-  min-height: 120px;
-  resize: vertical;
+    min-height: 120px;
+    resize: vertical;
 }
 
 /* Сообщения об ошибках */
 .movie-edit__error {
-  color: var(--color-error);
-  font-size: var(--font-size-sm);
-  margin-top: var(--spacing-xs);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+    color: var(--color-error);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
 }
 
 .movie-edit__error::before {
-  content: '⚠';
-  font-size: var(--font-size-sm);
+    content: "⚠";
+    font-size: var(--font-size-sm);
 }
 
 /* Загрузка постера */
 .movie-edit__poster-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
 }
 
 .movie-edit__poster-preview {
-  max-width: 300px;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
+    max-width: 300px;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
 }
 
 .movie-edit__poster-preview img {
-  width: 100%;
-  height: auto;
-  display: block;
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Загрузка файла */
 .movie-edit__file-upload {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
 }
 
 .movie-edit__file-input {
-  display: none;
+    display: none;
 }
 
 .movie-edit__file-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-xl);
-  background-color: rgba(0, 180, 216, 0.2);
-  border: 2px dashed var(--color-secondary);
-  border-radius: var(--border-radius-md);
-  color: var(--color-text-light);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: rgba(0, 180, 216, 0.2);
+    border: 2px dashed var(--color-secondary);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-light);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
 }
 
 .movie-edit__file-label:hover {
-  background-color: rgba(0, 180, 216, 0.3);
-  border-color: var(--color-secondary-light);
+    background-color: rgba(0, 180, 216, 0.3);
+    border-color: var(--color-secondary-light);
 }
 
 .movie-edit__file-label::before {
-  content: '📁';
-  font-size: var(--font-size-lg);
+    content: "📁";
+    font-size: var(--font-size-lg);
 }
 
 /* Кнопка загрузки */
 .movie-edit__upload-button {
-  padding: var(--spacing-sm) var(--spacing-xl);
-  background-color: var(--color-secondary);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+    padding: var(--spacing-sm) var(--spacing-xl);
+    background-color: var(--color-secondary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
 }
 
 .movie-edit__upload-button:hover:not(:disabled) {
-  background-color: var(--color-secondary-light);
-  transform: translateY(-2px);
+    background-color: var(--color-secondary-light);
+    transform: translateY(-2px);
 }
 
 .movie-edit__upload-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Информация о файле */
 .movie-edit__file-info {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-gray);
-  text-align: center;
-  margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-gray);
+    text-align: center;
+    margin-top: var(--spacing-sm);
 }
 
 /* Кнопка удаления */
 .movie-edit__delete-section {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: var(--spacing-xl);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .movie-edit__delete-button {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-xl);
-  background-color: rgba(230, 57, 70, 0.2);
-  border: 1px solid var(--color-error);
-  border-radius: var(--border-radius-md);
-  color: var(--color-error);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: rgba(230, 57, 70, 0.2);
+    border: 1px solid var(--color-error);
+    border-radius: var(--border-radius-md);
+    color: var(--color-error);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
 }
 
 .movie-edit__delete-button:hover {
-  background-color: rgba(230, 57, 70, 0.4);
+    background-color: rgba(230, 57, 70, 0.4);
 }
 
 .movie-edit__delete-button::before {
-  content: '🗑️';
+    content: "🗑️";
 }
 
 /* Анимация перехода */
 @keyframes editSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .movie-edit {
-  animation: editSlideIn var(--transition-medium) ease-out;
+    animation: editSlideIn var(--transition-medium) ease-out;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .movie-edit__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
-  
-  .movie-edit__actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .movie-edit__card {
-    padding: var(--spacing-lg);
-  }
-  
-  .movie-edit__poster-preview {
-    max-width: 250px;
-  }
+    .movie-edit__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .movie-edit__actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .movie-edit__card {
+        padding: var(--spacing-lg);
+    }
+
+    .movie-edit__poster-preview {
+        max-width: 250px;
+    }
 }
 
 @media (max-width: 480px) {
-  .movie-edit__actions {
-    flex-direction: column;
-  }
-  
-  .movie-edit__button {
-    width: 100%;
-    justify-content: center;
-  }
+    .movie-edit__actions {
+        flex-direction: column;
+    }
+
+    .movie-edit__button {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Добавьте в movie-details-edit.css или в новый файл */

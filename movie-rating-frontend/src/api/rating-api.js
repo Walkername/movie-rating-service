@@ -7,10 +7,10 @@ export const rateMovie = async (formData) => {
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData)
-            }
+                body: JSON.stringify(formData),
+            },
         );
         return response;
     } catch (error) {
@@ -23,8 +23,8 @@ export const deleteRating = async (movieId) => {
         const response = await customRequest(
             `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/${movieId}`,
             {
-                method: "DELETE"
-            }
+                method: "DELETE",
+            },
         );
         return response;
     } catch (error) {
@@ -38,9 +38,9 @@ export const getRating = async (userId, movieId) => {
             `${process.env.REACT_APP_RATING_SERVICE_URL}/ratings/${userId}/${movieId}`,
             {
                 headers: {
-                    "Content-Type": "application/json"
-                }
-            }
+                    "Content-Type": "application/json",
+                },
+            },
         );
         return await response.json();
     } catch (error) {

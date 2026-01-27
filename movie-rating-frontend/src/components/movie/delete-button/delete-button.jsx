@@ -17,17 +17,20 @@ function DeleteButton({ id, movieTitle = "this movie" }) {
             .then(() => {
                 // Показываем сообщение об успехе на короткое время
                 setTimeout(() => {
-                    navigate("/", { 
-                        state: { 
+                    navigate("/", {
+                        state: {
                             message: `"${movieTitle}" was successfully deleted`,
-                            messageType: "success"
-                        }
+                            messageType: "success",
+                        },
                     });
                 }, 500);
             })
             .catch((error) => {
                 console.error("Delete error:", error);
-                setError(error.message || "Failed to delete movie. Please try again.");
+                setError(
+                    error.message ||
+                        "Failed to delete movie. Please try again.",
+                );
                 setIsDeleting(false);
                 setShowConfirm(false);
             });
@@ -49,15 +52,15 @@ function DeleteButton({ id, movieTitle = "this movie" }) {
     return (
         <>
             <button
-                className={`delete-button ${isDeleting ? 'delete-button--loading' : ''}`}
+                className={`delete-button ${isDeleting ? "delete-button--loading" : ""}`}
                 onClick={handleButtonClick}
                 disabled={isDeleting}
                 aria-label={`Delete ${movieTitle}`}
             >
                 {!isDeleting && (
                     <>
-                        <svg 
-                            className="delete-button__icon" 
+                        <svg
+                            className="delete-button__icon"
                             viewBox="0 0 24 24"
                         >
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
@@ -68,20 +71,20 @@ function DeleteButton({ id, movieTitle = "this movie" }) {
             </button>
 
             {showConfirm && (
-                <div 
-                    className={`delete-confirm-modal ${showConfirm ? 'delete-confirm-modal--active' : ''}`}
+                <div
+                    className={`delete-confirm-modal ${showConfirm ? "delete-confirm-modal--active" : ""}`}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="delete-confirm-title"
                 >
-                    <div 
+                    <div
                         className="delete-confirm-modal__content"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="delete-confirm-modal__icon">
-                            <svg 
-                                width="32" 
-                                height="32" 
+                            <svg
+                                width="32"
+                                height="32"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
                             >
@@ -89,20 +92,22 @@ function DeleteButton({ id, movieTitle = "this movie" }) {
                             </svg>
                         </div>
 
-                        <h3 
+                        <h3
                             className="delete-confirm-modal__title"
                             id="delete-confirm-title"
                         >
                             Delete Movie
                         </h3>
-                        
+
                         <div className="delete-confirm-modal__warning">
                             ⚠ This action cannot be undone
                         </div>
 
                         <p className="delete-confirm-modal__message">
-                            Are you sure you want to delete <strong>"{movieTitle}"</strong>? 
-                            All ratings, photos, and related data will be permanently removed.
+                            Are you sure you want to delete{" "}
+                            <strong>"{movieTitle}"</strong>? All ratings,
+                            photos, and related data will be permanently
+                            removed.
                         </p>
 
                         {error && (
@@ -134,7 +139,7 @@ function DeleteButton({ id, movieTitle = "this movie" }) {
                                         Deleting...
                                     </>
                                 ) : (
-                                    'Yes, Delete'
+                                    "Yes, Delete"
                                 )}
                             </button>
                         </div>

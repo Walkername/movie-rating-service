@@ -1,22 +1,38 @@
 /* Блок страницы админа */
 .admin-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, rgba(10, 10, 10, 0.98), rgba(5, 5, 5, 0.98));
+    background: linear-gradient(
+        135deg,
+        rgba(10, 10, 10, 0.98),
+        rgba(5, 5, 5, 0.98)
+    );
     position: relative;
     overflow-x: hidden;
 }
 
 .admin-page::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(229, 9, 20, 0.05) 0%, transparent 25%),
-        radial-gradient(circle at 90% 80%, rgba(0, 180, 216, 0.05) 0%, transparent 25%),
-        linear-gradient(45deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%);
+    background-image:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(229, 9, 20, 0.05) 0%,
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(0, 180, 216, 0.05) 0%,
+            transparent 25%
+        ),
+        linear-gradient(
+            45deg,
+            rgba(0, 0, 0, 0.95) 0%,
+            rgba(15, 15, 15, 0.98) 100%
+        );
     z-index: 0;
 }
 
@@ -50,7 +66,7 @@
 }
 
 .admin-content__title::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -71,10 +87,14 @@
 
 /* Карточка профиля */
 .profile-card {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.9));
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.8),
+        rgba(15, 15, 15, 0.9)
+    );
     border-radius: var(--border-radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
+    box-shadow:
         var(--shadow-xl),
         0 0 50px rgba(229, 9, 20, 0.1),
         0 0 100px rgba(0, 180, 216, 0.05);
@@ -84,7 +104,7 @@
 }
 
 .profile-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -127,16 +147,16 @@
     .admin-content {
         padding: var(--spacing-lg) var(--spacing-md);
     }
-    
+
     .admin-content__header {
         margin-bottom: var(--spacing-xl);
         padding: var(--spacing-lg) 0;
     }
-    
+
     .admin-content__title {
         font-size: var(--font-size-xl);
     }
-    
+
     .admin-content__subtitle {
         font-size: var(--font-size-md);
     }
@@ -146,11 +166,11 @@
     .admin-content {
         padding: var(--spacing-md) var(--spacing-sm);
     }
-    
+
     .admin-content__title {
         font-size: var(--font-size-lg);
     }
-    
+
     .profile-card {
         border-radius: var(--border-radius-md);
     }

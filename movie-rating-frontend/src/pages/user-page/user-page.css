@@ -1,189 +1,204 @@
 /* Страница пользователя */
 .user-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Контейнер контента */
 .user-page__content {
-  flex: 1;
-  background: var(--gradient-cinematic);
-  padding: var(--spacing-xl) 0;
-  position: relative;
-  overflow: hidden;
+    flex: 1;
+    background: var(--gradient-cinematic);
+    padding: var(--spacing-xl) 0;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Фоновый эффект с акцентом на пользователя */
 .user-page__content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 30%, rgba(0, 180, 216, 0.2) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255, 214, 10, 0.1) 0%, transparent 40%),
-    linear-gradient(45deg, rgba(10, 10, 10, 0.8) 0%, transparent 100%);
-  z-index: 0;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(0, 180, 216, 0.2) 0%,
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(255, 214, 10, 0.1) 0%,
+            transparent 40%
+        ),
+        linear-gradient(45deg, rgba(10, 10, 10, 0.8) 0%, transparent 100%);
+    z-index: 0;
 }
 
 /* Основная карточка профиля */
 .user-page__card {
-  position: relative;
-  z-index: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: rgba(10, 10, 10, 0.95);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xxl);
-  box-shadow: 
-    var(--shadow-lg),
-    0 0 60px rgba(0, 180, 216, 0.3),
-    0 0 120px rgba(229, 9, 20, 0.2),
-    inset 0 0 40px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: rgba(10, 10, 10, 0.95);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xxl);
+    box-shadow:
+        var(--shadow-lg),
+        0 0 60px rgba(0, 180, 216, 0.3),
+        0 0 120px rgba(229, 9, 20, 0.2),
+        inset 0 0 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Заголовок страницы */
 .user-page__header {
-  text-align: center;
-  margin-bottom: var(--spacing-xxl);
-  padding-bottom: var(--spacing-xl);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .user-page__title {
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-black);
-  color: var(--color-text-light);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: var(--spacing-md);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-md);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .user-page__subtitle {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-gray);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
 /* Состояние ошибки */
 .user-page__error {
-  text-align: center;
-  padding: var(--spacing-xxl);
-  color: var(--color-error);
-  font-size: var(--font-size-xl);
-  background-color: rgba(230, 57, 70, 0.1);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-error);
+    text-align: center;
+    padding: var(--spacing-xxl);
+    color: var(--color-error);
+    font-size: var(--font-size-xl);
+    background-color: rgba(230, 57, 70, 0.1);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-error);
 }
 
 /* Состояние загрузки */
 .user-page__loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl);
-  color: var(--color-text-gray);
-  font-size: var(--font-size-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xxl);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-lg);
 }
 
 .user-page__spinner {
-  width: 60px;
-  height: 60px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: var(--color-secondary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: var(--spacing-lg);
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-secondary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-lg);
 }
 
 /* Разделитель между секциями */
 .user-page__divider {
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(0, 180, 216, 0.5), 
-    rgba(229, 9, 20, 0.5), 
-    transparent);
-  margin: var(--spacing-xxl) 0;
-  border: none;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 180, 216, 0.5),
+        rgba(229, 9, 20, 0.5),
+        transparent
+    );
+    margin: var(--spacing-xxl) 0;
+    border: none;
 }
 
 /* Анимация появления */
 @keyframes userPageFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .user-page__card {
-  animation: userPageFadeIn var(--transition-slow) ease-out;
+    animation: userPageFadeIn var(--transition-slow) ease-out;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .user-page__content {
-    padding: var(--spacing-md) 0;
-  }
-  
-  .user-page__card {
-    padding: var(--spacing-xl) var(--spacing-lg);
-    margin: 0 var(--spacing-md);
-  }
-  
-  .user-page__title {
-    font-size: var(--font-size-xl);
-  }
-  
-  .user-page__subtitle {
-    font-size: var(--font-size-md);
-  }
+    .user-page__content {
+        padding: var(--spacing-md) 0;
+    }
+
+    .user-page__card {
+        padding: var(--spacing-xl) var(--spacing-lg);
+        margin: 0 var(--spacing-md);
+    }
+
+    .user-page__title {
+        font-size: var(--font-size-xl);
+    }
+
+    .user-page__subtitle {
+        font-size: var(--font-size-md);
+    }
 }
 
 @media (max-width: 480px) {
-  .user-page__card {
-    padding: var(--spacing-lg) var(--spacing-md);
-  }
+    .user-page__card {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
 }
 
 /* Статус пользователя (онлайн/офлайн) */
 .user-page__status {
-  position: absolute;
-  top: var(--spacing-xl);
-  right: var(--spacing-xl);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: rgba(42, 157, 143, 0.2);
-  border: 1px solid var(--color-success);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-success);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+    position: absolute;
+    top: var(--spacing-xl);
+    right: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: rgba(42, 157, 143, 0.2);
+    border: 1px solid var(--color-success);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-success);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
 }
 
 .user-page__status-dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-success);
-  border-radius: 50%;
-  animation: pulse 2s infinite;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-success);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }

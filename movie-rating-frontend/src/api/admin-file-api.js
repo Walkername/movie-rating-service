@@ -6,8 +6,8 @@ export const uploadFile = async (formData, context, entityId) => {
             `${process.env.REACT_APP_FILE_SERVICE_URL}/admin/files/upload?context=${context}&id=${entityId}`,
             {
                 method: "POST",
-                body: formData
-            }
+                body: formData,
+            },
         );
         return await response.text();
     } catch (error) {

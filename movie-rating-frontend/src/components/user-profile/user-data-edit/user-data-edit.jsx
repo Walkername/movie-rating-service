@@ -10,11 +10,11 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formUsername, setFormUsername] = useState({
-        username: user.username
+        username: user.username,
     });
 
     const [formUserData, setFormUserData] = useState({
-        description: user.description || ""
+        description: user.description || "",
     });
 
     // PROFILE PICTURE
@@ -78,7 +78,7 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     const handleUpdateUsername = async (evt) => {
         evt.preventDefault();
         if (!validateUsername()) return;
-        
+
         setIsSubmitting(true);
         try {
             await updateMyUsername(formUsername);
@@ -94,7 +94,7 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     const handleUpdateUserData = async (evt) => {
         evt.preventDefault();
         if (!validateDescription()) return;
-        
+
         setIsSubmitting(true);
         try {
             await updateMyUserData(formUserData);
@@ -111,9 +111,9 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            
+
             // Валидация
-            if (!file.type.startsWith('image/')) {
+            if (!file.type.startsWith("image/")) {
                 alert("Please select an image file");
                 return;
             }
@@ -121,7 +121,7 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                 alert("File size must be less than 5MB");
                 return;
             }
-            
+
             setSelectedFile(file);
             const fileUrl = URL.createObjectURL(file);
             setPreviewUrl(fileUrl);
@@ -156,7 +156,7 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
         setSelectedFile(null);
         setPreviewUrl(null);
         if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            fileInputRef.current.value = "";
         }
     };
 
@@ -169,7 +169,7 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
             <div className="user-edit__header">
                 <h2 className="user-edit__title">Edit Profile</h2>
                 <div className="user-edit__actions">
-                    <button 
+                    <button
                         className="user-edit__button user-edit__button--back"
                         onClick={handleEdit}
                         type="button"
@@ -192,7 +192,7 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                             Current profile picture is displayed on your profile
                         </p>
                     )}
-                    
+
                     <div className="user-edit__file-upload">
                         <input
                             ref={fileInputRef}
@@ -202,13 +202,13 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                             className="user-edit__file-input"
                             accept="image/*"
                         />
-                        <label 
-                            htmlFor="profile-pic" 
+                        <label
+                            htmlFor="profile-pic"
                             className="user-edit__file-label"
                         >
                             Choose New Avatar
                         </label>
-                        
+
                         {selectedFile && (
                             <>
                                 <button
@@ -217,7 +217,9 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                                     onClick={handleUploadProfilePicture}
                                     disabled={isUploading}
                                 >
-                                    {isUploading ? "Uploading..." : "Upload Avatar"}
+                                    {isUploading
+                                        ? "Uploading..."
+                                        : "Upload Avatar"}
                                 </button>
                                 <button
                                     type="button"
@@ -227,7 +229,8 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                                     Cancel
                                 </button>
                                 <p className="user-edit__file-info">
-                                    Selected: {selectedFile.name} ({Math.round(selectedFile.size / 1024)} KB)
+                                    Selected: {selectedFile.name} (
+                                    {Math.round(selectedFile.size / 1024)} KB)
                                 </p>
                             </>
                         )}
@@ -238,7 +241,10 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
             {/* Имя пользователя */}
             <div className="user-edit__card">
                 <h3 className="user-edit__card-title">Username</h3>
-                <form className="user-edit__form" onSubmit={handleUpdateUsername}>
+                <form
+                    className="user-edit__form"
+                    onSubmit={handleUpdateUsername}
+                >
                     <div className="user-edit__field">
                         <label className="user-edit__label" htmlFor="username">
                             Username *
@@ -254,10 +260,16 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                             required
                             maxLength={20}
                         />
-                        <div className={`user-edit__char-count ${usernameCharsLeft < 10 ? 'user-edit__char-count--warning' : ''}`}>
+                        <div
+                            className={`user-edit__char-count ${usernameCharsLeft < 10 ? "user-edit__char-count--warning" : ""}`}
+                        >
                             {usernameCharsLeft} characters left
                         </div>
-                        {errorUsername && <div className="user-edit__error">{errorUsername}</div>}
+                        {errorUsername && (
+                            <div className="user-edit__error">
+                                {errorUsername}
+                            </div>
+                        )}
                     </div>
                     <button
                         type="submit"
@@ -272,9 +284,15 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
             {/* Описание */}
             <div className="user-edit__card">
                 <h3 className="user-edit__card-title">About Me</h3>
-                <form className="user-edit__form" onSubmit={handleUpdateUserData}>
+                <form
+                    className="user-edit__form"
+                    onSubmit={handleUpdateUserData}
+                >
                     <div className="user-edit__field">
-                        <label className="user-edit__label" htmlFor="description">
+                        <label
+                            className="user-edit__label"
+                            htmlFor="description"
+                        >
                             Description
                         </label>
                         <textarea
@@ -287,10 +305,16 @@ function UserDataEdit({ isAccessToEdit, user, setUser, handleEdit }) {
                             maxLength={500}
                             rows={5}
                         />
-                        <div className={`user-edit__char-count ${descriptionCharsLeft < 50 ? 'user-edit__char-count--warning' : ''}`}>
+                        <div
+                            className={`user-edit__char-count ${descriptionCharsLeft < 50 ? "user-edit__char-count--warning" : ""}`}
+                        >
                             {descriptionCharsLeft} characters left
                         </div>
-                        {errorDescription && <div className="user-edit__error">{errorDescription}</div>}
+                        {errorDescription && (
+                            <div className="user-edit__error">
+                                {errorDescription}
+                            </div>
+                        )}
                     </div>
                     <button
                         type="submit"

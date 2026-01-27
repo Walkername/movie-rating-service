@@ -1,188 +1,192 @@
 /* Блок поста */
 .post-container {
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(10, 10, 10, 0.95));
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-lg);
-  transition: all var(--transition-medium);
-  position: relative;
-  overflow: visible;
-  z-index: 1;
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(10, 10, 10, 0.95)
+    );
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-medium);
+    position: relative;
+    overflow: visible;
+    z-index: 1;
 }
 
 .post-container + .post-container {
-  position: relative;
-  z-index: 0;
+    position: relative;
+    z-index: 0;
 }
 
 .post-container:hover {
-  transform: translateY(-4px);
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(229, 9, 20, 0.1);
-  border-color: rgba(229, 9, 20, 0.2);
+    transform: translateY(-4px);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(229, 9, 20, 0.1);
+    border-color: rgba(229, 9, 20, 0.2);
 }
 
 .post-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
 }
 
 .post-container:hover::before {
-  opacity: 1;
+    opacity: 1;
 }
 
 /* Дата поста */
 .post-date {
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background-color: rgba(229, 9, 20, 0.15);
-  border: 1px solid rgba(229, 9, 20, 0.3);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-primary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: var(--spacing-lg);
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: rgba(229, 9, 20, 0.15);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-lg);
 }
 
 /* Заголовок поста */
 .post-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-light);
-  margin: 0 0 var(--spacing-lg) 0;
-  line-height: 1.3;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-light);
+    margin: 0 0 var(--spacing-lg) 0;
+    line-height: 1.3;
 }
 
 /* Контент поста */
 .post-content {
-  color: var(--color-text-gray);
-  font-size: var(--font-size-md);
-  line-height: 1.7;
-  margin-bottom: var(--spacing-lg);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-lg);
 }
 
 .post-content h3,
 .post-content h4,
 .post-content h5 {
-  color: var(--color-text-light);
-  margin: var(--spacing-md) 0 var(--spacing-sm) 0;
-  font-weight: var(--font-weight-bold);
+    color: var(--color-text-light);
+    margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+    font-weight: var(--font-weight-bold);
 }
 
 .post-content h3 {
-  font-size: var(--font-size-lg);
+    font-size: var(--font-size-lg);
 }
 
 .post-content h4 {
-  font-size: var(--font-size-md);
+    font-size: var(--font-size-md);
 }
 
 .post-content h5 {
-  font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm);
 }
 
 .post-content p {
-  margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
 }
 
 .post-content a {
-  color: var(--color-primary);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(229, 9, 20, 0.3);
-  transition: all var(--transition-fast);
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(229, 9, 20, 0.3);
+    transition: all var(--transition-fast);
 }
 
 .post-content a:hover {
-  color: var(--color-text-light);
-  border-bottom-color: var(--color-primary);
+    color: var(--color-text-light);
+    border-bottom-color: var(--color-primary);
 }
 
 .post-content ul,
 .post-content ol {
-  padding-left: var(--spacing-lg);
-  margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 .post-content li {
-  margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
 }
 
 .post-content code {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 2px 6px;
-  border-radius: var(--border-radius-sm);
-  font-family: 'Courier New', monospace;
-  font-size: 0.9em;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    font-family: "Courier New", monospace;
+    font-size: 0.9em;
 }
 
 .post-content pre {
-  background-color: rgba(10, 10, 10, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-md);
-  overflow-x: auto;
-  margin: var(--spacing-md) 0;
+    background-color: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    overflow-x: auto;
+    margin: var(--spacing-md) 0;
 }
 
 .post-content blockquote {
-  border-left: 4px solid var(--color-primary);
-  padding-left: var(--spacing-md);
-  margin: var(--spacing-md) 0;
-  color: var(--color-text-gray);
-  font-style: italic;
+    border-left: 4px solid var(--color-primary);
+    padding-left: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+    color: var(--color-text-gray);
+    font-style: italic;
 }
 
 /* Кнопка "Показать больше/скрыть" */
 .post-content-show-more {
-  color: var(--color-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
-  transition: all var(--transition-fast);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .post-content-show-more:hover {
-  background-color: rgba(229, 9, 20, 0.1);
-  padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: rgba(229, 9, 20, 0.1);
+    padding: var(--spacing-xs) var(--spacing-sm);
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .post-container {
-    padding: var(--spacing-lg);
-  }
-  
-  .post-title {
-    font-size: var(--font-size-lg);
-  }
-  
-  .post-content {
-    font-size: var(--font-size-sm);
-  }
+    .post-container {
+        padding: var(--spacing-lg);
+    }
+
+    .post-title {
+        font-size: var(--font-size-lg);
+    }
+
+    .post-content {
+        font-size: var(--font-size-sm);
+    }
 }
 
 @media (max-width: 480px) {
-  .post-container {
-    padding: var(--spacing-md);
-  }
-  
-  .post-title {
-    font-size: var(--font-size-md);
-  }
+    .post-container {
+        padding: var(--spacing-md);
+    }
+
+    .post-title {
+        font-size: var(--font-size-md);
+    }
 }

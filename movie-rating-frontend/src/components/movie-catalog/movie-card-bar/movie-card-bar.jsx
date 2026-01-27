@@ -1,32 +1,28 @@
 import { Link } from "react-router-dom";
-import './movie-card-bar.css';
+import "./movie-card-bar.css";
 
 function MovieCardBar({ movie, index }) {
     // Форматируем жанры
     const genres = movie.genres || ["Drama", "Action"]; // Заглушка
-    
+
     return (
         <Link className="movie-card-bar" to={`/movie/${movie.id}`}>
-            <span className="movie-card-bar__index">
-                {index + 1}
-            </span>
-            
+            <span className="movie-card-bar__index">{index + 1}</span>
+
             <div className="movie-card-bar__content">
                 <div className="movie-card-bar__header">
-                    <span className="movie-card-bar__title">
-                        {movie.title}
-                    </span>
+                    <span className="movie-card-bar__title">{movie.title}</span>
                     <span className="movie-card-bar__year">
                         ({movie.releaseYear})
                     </span>
                 </div>
-                
+
                 {movie.description && (
                     <div className="movie-card-bar__description">
                         {movie.description}
                     </div>
                 )}
-                
+
                 {genres.length > 0 && (
                     <div className="movie-card-bar__meta">
                         {genres.slice(0, 2).map((genre, idx) => (
@@ -42,14 +38,14 @@ function MovieCardBar({ movie, index }) {
                     </div>
                 )}
             </div>
-            
+
             <div className="movie-card-bar__stats">
                 {movie.averageRating && (
                     <div className="movie-card-bar__rating">
                         {movie.averageRating.toFixed(1)}
                     </div>
                 )}
-                
+
                 {movie.scores !== undefined && (
                     <div className="movie-card-bar__scores">
                         {movie.scores} votes

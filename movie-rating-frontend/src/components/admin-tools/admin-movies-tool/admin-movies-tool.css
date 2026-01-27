@@ -34,7 +34,7 @@
 }
 
 .movies-tool-header h2::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -8px;
     left: 50%;
@@ -54,7 +54,11 @@
 
 /* Выбор инструмента */
 .movies-tool-selector {
-    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    background: linear-gradient(
+        135deg,
+        rgba(30, 30, 30, 0.8),
+        rgba(20, 20, 20, 0.9)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
@@ -76,14 +80,18 @@
 }
 
 .selector-label::before {
-    content: '🎬';
+    content: "🎬";
     font-size: var(--font-size-lg);
 }
 
 .movie-tool-select {
     width: 100%;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-light);
@@ -132,7 +140,11 @@
 
 /* Блок поиска фильмов */
 .movie-search-container {
-    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    background: linear-gradient(
+        135deg,
+        rgba(30, 30, 30, 0.8),
+        rgba(20, 20, 20, 0.9)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
@@ -151,7 +163,11 @@
 .search-tab {
     flex: 1;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.01)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-gray);
@@ -165,13 +181,21 @@
 }
 
 .search-tab:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     color: var(--color-text-light);
     border-color: rgba(229, 9, 20, 0.3);
 }
 
 .search-tab.active {
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.2),
+        rgba(229, 9, 20, 0.1)
+    );
     color: var(--color-primary);
     border-color: var(--color-primary);
     box-shadow: 0 0 20px rgba(229, 9, 20, 0.1);
@@ -201,17 +225,21 @@
 }
 
 .search-form-group label[for="movie-id"]::before {
-    content: '🔍';
+    content: "🔍";
 }
 
 .search-form-group label[for="movie-title"]::before {
-    content: '📝';
+    content: "📝";
 }
 
 .search-input {
     width: 100%;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-light);
@@ -223,7 +251,11 @@
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.07),
+        rgba(255, 255, 255, 0.03)
+    );
 }
 
 .search-input::placeholder {
@@ -289,7 +321,11 @@
 .results-count {
     color: var(--color-text-gray);
     font-size: var(--font-size-sm);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius-pill);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -300,7 +336,11 @@
     padding: var(--spacing-xxl);
     color: var(--color-text-gray);
     font-size: var(--font-size-lg);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.01)
+    );
     border-radius: var(--border-radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -320,7 +360,11 @@
 }
 
 .movie-result-card {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(15, 15, 15, 0.95)
+    );
     border-radius: var(--border-radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden;
@@ -335,11 +379,21 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.movie-result-card:nth-child(1) { animation-delay: 0.1s; }
-.movie-result-card:nth-child(2) { animation-delay: 0.2s; }
-.movie-result-card:nth-child(3) { animation-delay: 0.3s; }
-.movie-result-card:nth-child(4) { animation-delay: 0.4s; }
-.movie-result-card:nth-child(5) { animation-delay: 0.5s; }
+.movie-result-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.movie-result-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.movie-result-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.movie-result-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+.movie-result-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
 
 @keyframes cardAppear {
     from {
@@ -354,7 +408,11 @@
 
 /* Детали фильма (единичный результат) */
 .movie-details-container {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(15, 15, 15, 0.95)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -406,15 +464,15 @@
     .movie-search-container {
         padding: var(--spacing-lg);
     }
-    
+
     .search-tabs {
         flex-direction: column;
     }
-    
+
     .movie-results-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .movie-details-container {
         padding: var(--spacing-lg);
     }
@@ -425,15 +483,15 @@
     .movie-search-container {
         padding: var(--spacing-md);
     }
-    
+
     .movies-tool-header h2 {
         font-size: var(--font-size-lg);
     }
-    
+
     .search-form-group label {
         font-size: var(--font-size-xs);
     }
-    
+
     .search-input,
     .search-submit {
         padding: var(--spacing-sm);
@@ -447,37 +505,57 @@
     font-size: var(--font-size-sm);
     margin-top: var(--spacing-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.01)
+    );
     border-radius: var(--border-radius-sm);
     border: 1px solid rgba(255, 255, 255, 0.05);
     display: inline-block;
 }
 
 .keyboard-hint kbd {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.04)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-sm);
     padding: 2px 6px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
     font-size: 0.9em;
     margin: 0 2px;
 }
 
 /* Вторичная кнопка поиска */
 .search-submit.secondary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-text-light);
 }
 
 .search-submit.secondary:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.04)
+    );
     border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Информационное сообщение об ошибке */
 .error-message.info {
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(52, 152, 219, 0.1),
+        rgba(52, 152, 219, 0.05)
+    );
     border: 1px solid rgba(52, 152, 219, 0.2);
     color: #3498db;
 }

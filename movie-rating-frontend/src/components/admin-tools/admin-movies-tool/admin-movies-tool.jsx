@@ -37,7 +37,7 @@ function AdminMoviesTool() {
 
         setLoading(true);
         setSearchError("");
-        
+
         try {
             const data = await getMovie(idToSend);
             setMovies([data]);
@@ -45,7 +45,9 @@ function AdminMoviesTool() {
         } catch (error) {
             console.error("Error fetching movie by ID:", error);
             setMovies([]);
-            setSearchError("Movie not found. Please check the ID and try again.");
+            setSearchError(
+                "Movie not found. Please check the ID and try again.",
+            );
         } finally {
             setLoading(false);
         }
@@ -60,7 +62,7 @@ function AdminMoviesTool() {
 
         setLoading(true);
         setSearchError("");
-        
+
         try {
             const data = await searchMovieByTitle(titleToSend);
             setMovies(data);
@@ -98,15 +100,15 @@ function AdminMoviesTool() {
     // Обработка клавиатурных сокращений
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            if ((e.ctrlKey || e.metaKey) && e.key === "k") {
                 e.preventDefault();
                 setMovieTool("search-movie");
                 document.getElementById("movie-search-input")?.focus();
             }
         };
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
 
     const renderMovieTool = () => {
@@ -118,15 +120,15 @@ function AdminMoviesTool() {
                     <div className="movie-search-container">
                         <div className="search-tabs">
                             <button
-                                className={`search-tab ${activeSearchTab === 'id' ? 'active' : ''}`}
-                                onClick={() => setActiveSearchTab('id')}
+                                className={`search-tab ${activeSearchTab === "id" ? "active" : ""}`}
+                                onClick={() => setActiveSearchTab("id")}
                                 type="button"
                             >
                                 Search by ID
                             </button>
                             <button
-                                className={`search-tab ${activeSearchTab === 'title' ? 'active' : ''}`}
-                                onClick={() => setActiveSearchTab('title')}
+                                className={`search-tab ${activeSearchTab === "title" ? "active" : ""}`}
+                                onClick={() => setActiveSearchTab("title")}
                                 type="button"
                             >
                                 Search by Title
@@ -134,10 +136,12 @@ function AdminMoviesTool() {
                         </div>
 
                         <div className="search-form">
-                            {activeSearchTab === 'id' ? (
+                            {activeSearchTab === "id" ? (
                                 <form onSubmit={handleGetMovieById}>
                                     <div className="search-form-group">
-                                        <label htmlFor="movie-id">Movie ID</label>
+                                        <label htmlFor="movie-id">
+                                            Movie ID
+                                        </label>
                                         <input
                                             id="movie-id"
                                             type="text"
@@ -148,8 +152,8 @@ function AdminMoviesTool() {
                                             disabled={loading}
                                         />
                                     </div>
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         className="search-submit"
                                         disabled={!idToSend.trim() || loading}
                                     >
@@ -158,13 +162,17 @@ function AdminMoviesTool() {
                                                 <span className="search-spinner"></span>
                                                 Searching...
                                             </>
-                                        ) : 'Search by ID'}
+                                        ) : (
+                                            "Search by ID"
+                                        )}
                                     </button>
                                 </form>
                             ) : (
                                 <form onSubmit={handleGetMovieByTitle}>
                                     <div className="search-form-group">
-                                        <label htmlFor="movie-title">Movie Title</label>
+                                        <label htmlFor="movie-title">
+                                            Movie Title
+                                        </label>
                                         <input
                                             id="movie-title"
                                             type="text"
@@ -175,33 +183,39 @@ function AdminMoviesTool() {
                                             disabled={loading}
                                         />
                                     </div>
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         className="search-submit"
-                                        disabled={!titleToSend.trim() || loading}
+                                        disabled={
+                                            !titleToSend.trim() || loading
+                                        }
                                     >
                                         {loading ? (
                                             <>
                                                 <span className="search-spinner"></span>
                                                 Searching...
                                             </>
-                                        ) : 'Search by Title'}
+                                        ) : (
+                                            "Search by Title"
+                                        )}
                                     </button>
                                 </form>
                             )}
-                            
+
                             {searchError && (
-                                <div className={`error-message ${movies.length > 0 ? 'info' : 'error'}`}>
+                                <div
+                                    className={`error-message ${movies.length > 0 ? "info" : "error"}`}
+                                >
                                     {searchError}
                                 </div>
                             )}
-                            
+
                             {movies.length > 0 && (
                                 <button
                                     type="button"
                                     onClick={clearResults}
                                     className="search-submit secondary"
-                                    style={{ marginTop: 'var(--spacing-md)' }}
+                                    style={{ marginTop: "var(--spacing-md)" }}
                                 >
                                     Clear Results
                                 </button>
@@ -218,8 +232,12 @@ function AdminMoviesTool() {
         <div className="admin-movies-tool">
             <div className="movies-tool-header">
                 <h2>Movie Management</h2>
-                <p className="subtitle">Add new movies or search existing ones</p>
-                <p className="keyboard-hint">Press <kbd>Ctrl+K</kbd> to quickly switch to search</p>
+                <p className="subtitle">
+                    Add new movies or search existing ones
+                </p>
+                <p className="keyboard-hint">
+                    Press <kbd>Ctrl+K</kbd> to quickly switch to search
+                </p>
             </div>
 
             <div className="movies-tool-selector">
@@ -237,19 +255,20 @@ function AdminMoviesTool() {
                 </select>
             </div>
 
-            <div className="movie-tool-container">
-                {renderMovieTool()}
-            </div>
+            <div className="movie-tool-container">{renderMovieTool()}</div>
 
             {/* Результаты поиска */}
             {movies.length > 0 && (
                 <div className="movie-search-results">
                     <div className="results-header">
                         <h3 className="results-title">
-                            {movies.length === 1 ? 'Movie Found' : 'Movies Found'}
+                            {movies.length === 1
+                                ? "Movie Found"
+                                : "Movies Found"}
                         </h3>
                         <span className="results-count">
-                            {movies.length} {movies.length === 1 ? 'result' : 'results'}
+                            {movies.length}{" "}
+                            {movies.length === 1 ? "result" : "results"}
                         </span>
                     </div>
 
@@ -265,7 +284,10 @@ function AdminMoviesTool() {
                     ) : (
                         <div className="movie-results-grid">
                             {movies.map((movie, index) => (
-                                <div key={movie.id || index} className="movie-result-card">
+                                <div
+                                    key={movie.id || index}
+                                    className="movie-result-card"
+                                >
                                     <MovieCardBar
                                         movie={movie}
                                         index={index}
@@ -278,12 +300,18 @@ function AdminMoviesTool() {
                 </div>
             )}
 
-            {movies.length === 0 && !loading && movieTool === "search-movie" && !searchError && (
-                <div className="no-results">
-                    <div className="no-results-icon">🎬</div>
-                    <p>No movies to display. Use the search form above to find movies.</p>
-                </div>
-            )}
+            {movies.length === 0 &&
+                !loading &&
+                movieTool === "search-movie" &&
+                !searchError && (
+                    <div className="no-results">
+                        <div className="no-results-icon">🎬</div>
+                        <p>
+                            No movies to display. Use the search form above to
+                            find movies.
+                        </p>
+                    </div>
+                )}
         </div>
     );
 }

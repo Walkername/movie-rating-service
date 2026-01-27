@@ -8,15 +8,16 @@ function AdminUserDataEdit({ user, setUser }) {
     const [errorDescription, setErrorDescription] = useState("");
     const [errorProfilePic, setErrorProfilePic] = useState("");
     const [isSubmittingUsername, setIsSubmittingUsername] = useState(false);
-    const [isSubmittingDescription, setIsSubmittingDescription] = useState(false);
+    const [isSubmittingDescription, setIsSubmittingDescription] =
+        useState(false);
     const [isSubmittingProfilePic, setIsSubmittingProfilePic] = useState(false);
 
     const [formUsername, setFormUsername] = useState({
-        username: user.username
+        username: user.username,
     });
 
     const [formUserData, setFormUserData] = useState({
-        description: user.description || ""
+        description: user.description || "",
     });
 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -44,9 +45,13 @@ function AdminUserDataEdit({ user, setUser }) {
 
     const validateUsername = () => {
         let errors = "";
-        if (formUsername.username.length === 0) errors += "Username should not be empty; ";
-        if (formUsername.username.length < 5) errors += "Username should be greater than 4 characters; ";
-        if (formUsername.username.length > 20) errors += "Username should be less than or equal to 20 characters; ";
+        if (formUsername.username.length === 0)
+            errors += "Username should not be empty; ";
+        if (formUsername.username.length < 5)
+            errors += "Username should be greater than 4 characters; ";
+        if (formUsername.username.length > 20)
+            errors +=
+                "Username should be less than or equal to 20 characters; ";
 
         if (errors !== "") {
             setErrorUsername(errors);
@@ -58,7 +63,9 @@ function AdminUserDataEdit({ user, setUser }) {
 
     const validateDescription = () => {
         if (formUserData.description.length > 500) {
-            setErrorDescription("Description should be less than or equal to 500 characters");
+            setErrorDescription(
+                "Description should be less than or equal to 500 characters",
+            );
             return false;
         }
         setErrorDescription("");
@@ -66,11 +73,18 @@ function AdminUserDataEdit({ user, setUser }) {
     };
 
     const validateFile = (file) => {
-        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        const validTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+        ];
         const maxSize = 5 * 1024 * 1024; // 5MB
 
         if (!validTypes.includes(file.type)) {
-            setErrorProfilePic("Invalid file type. Please upload JPEG, PNG, GIF, or WebP.");
+            setErrorProfilePic(
+                "Invalid file type. Please upload JPEG, PNG, GIF, or WebP.",
+            );
             return false;
         }
 
@@ -95,7 +109,9 @@ function AdminUserDataEdit({ user, setUser }) {
             setUser({ ...user, username: formUsername.username });
         } catch (error) {
             console.error("Error updating username:", error);
-            setErrorUsername(error.message || "Failed to update username. Please try again.");
+            setErrorUsername(
+                error.message || "Failed to update username. Please try again.",
+            );
         } finally {
             setIsSubmittingUsername(false);
         }
@@ -113,7 +129,9 @@ function AdminUserDataEdit({ user, setUser }) {
             setUser({ ...user, description: formUserData.description });
         } catch (error) {
             console.error("Error updating description:", error);
-            setErrorDescription("Failed to update description. Please try again.");
+            setErrorDescription(
+                "Failed to update description. Please try again.",
+            );
         } finally {
             setIsSubmittingDescription(false);
         }
@@ -149,22 +167,24 @@ function AdminUserDataEdit({ user, setUser }) {
             formData.append("file", selectedFile);
 
             await uploadFile(formData, "user-avatar", user.id);
-            
+
             // Обновляем превью
             if (previewUrl) {
                 URL.revokeObjectURL(previewUrl);
             }
-            
+
             setSelectedFile(null);
             setPreviewUrl(null);
-            
+
             // Показываем сообщение об успехе
             setErrorProfilePic("Profile picture uploaded successfully!");
             setTimeout(() => setErrorProfilePic(""), 3000);
-            
         } catch (error) {
             console.error("Error uploading profile picture:", error);
-            setErrorProfilePic(error.message || "Failed to upload profile picture. Please try again.");
+            setErrorProfilePic(
+                error.message ||
+                    "Failed to upload profile picture. Please try again.",
+            );
         } finally {
             setIsSubmittingProfilePic(false);
         }
@@ -172,16 +192,16 @@ function AdminUserDataEdit({ user, setUser }) {
 
     const handleResetForm = (formType) => {
         switch (formType) {
-            case 'username':
+            case "username":
                 setFormUsername({ username: user.username });
                 setErrorUsername("");
                 break;
-            case 'description':
+            case "description":
                 setFormUserData({ description: user.description || "" });
                 setCharacterCount((user.description || "").length);
                 setErrorDescription("");
                 break;
-            case 'profile':
+            case "profile":
                 if (previewUrl) {
                     URL.revokeObjectURL(previewUrl);
                 }
@@ -189,7 +209,8 @@ function AdminUserDataEdit({ user, setUser }) {
                 setPreviewUrl(null);
                 setErrorProfilePic("");
                 break;
-        default: return;
+            default:
+                return;
         }
     };
 
@@ -208,29 +229,36 @@ function AdminUserDataEdit({ user, setUser }) {
                     ) : (
                         <div className="edit-avatar-placeholder">
                             <span className="placeholder-icon">🖼️</span>
-                            <span className="placeholder-text">Select an image</span>
+                            <span className="placeholder-text">
+                                Select an image
+                            </span>
                         </div>
                     )}
                 </div>
                 <form onSubmit={handleUploadProfilePicture}>
                     <div className="file-input-wrapper">
-                        <input 
-                            id="profile-pic" 
-                            type="file" 
+                        <input
+                            id="profile-pic"
+                            type="file"
                             onChange={handleFileChange}
                             accept="image/*"
                             className="file-input"
                         />
-                        <label htmlFor="profile-pic" className="file-input-label">
+                        <label
+                            htmlFor="profile-pic"
+                            className="file-input-label"
+                        >
                             Choose File
                         </label>
                         {selectedFile && (
-                            <span className="file-name">{selectedFile.name}</span>
+                            <span className="file-name">
+                                {selectedFile.name}
+                            </span>
                         )}
                     </div>
                     <div className="form-actions">
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="edit-btn"
                             disabled={!selectedFile || isSubmittingProfilePic}
                         >
@@ -239,19 +267,23 @@ function AdminUserDataEdit({ user, setUser }) {
                                     <span className="loading-spinner-small"></span>
                                     Uploading...
                                 </>
-                            ) : 'Upload'}
+                            ) : (
+                                "Upload"
+                            )}
                         </button>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             className="edit-btn secondary"
-                            onClick={() => handleResetForm('profile')}
+                            onClick={() => handleResetForm("profile")}
                             disabled={!selectedFile}
                         >
                             Clear
                         </button>
                     </div>
                     {errorProfilePic && (
-                        <div className={`status-message ${errorProfilePic.includes('successfully') ? 'success' : 'error'}`}>
+                        <div
+                            className={`status-message ${errorProfilePic.includes("successfully") ? "success" : "error"}`}
+                        >
                             {errorProfilePic}
                         </div>
                     )}
@@ -271,7 +303,7 @@ function AdminUserDataEdit({ user, setUser }) {
                             onChange={handleChangeUsername}
                             required
                             maxLength={20}
-                            className={errorUsername ? 'error' : ''}
+                            className={errorUsername ? "error" : ""}
                             disabled={isSubmittingUsername}
                         />
                         <div className="char-counter">
@@ -279,23 +311,31 @@ function AdminUserDataEdit({ user, setUser }) {
                         </div>
                     </div>
                     <div className="form-actions">
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="edit-btn"
-                            disabled={isSubmittingUsername || formUsername.username === user.username}
+                            disabled={
+                                isSubmittingUsername ||
+                                formUsername.username === user.username
+                            }
                         >
                             {isSubmittingUsername ? (
                                 <>
                                     <span className="loading-spinner-small"></span>
                                     Updating...
                                 </>
-                            ) : 'Update'}
+                            ) : (
+                                "Update"
+                            )}
                         </button>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             className="edit-btn secondary"
-                            onClick={() => handleResetForm('username')}
-                            disabled={formUsername.username === user.username || isSubmittingUsername}
+                            onClick={() => handleResetForm("username")}
+                            disabled={
+                                formUsername.username === user.username ||
+                                isSubmittingUsername
+                            }
                         >
                             Reset
                         </button>
@@ -323,31 +363,43 @@ function AdminUserDataEdit({ user, setUser }) {
                             value={formUserData.description}
                             onChange={handleChangeUserData}
                             maxLength={500}
-                            className={errorDescription ? 'error' : ''}
+                            className={errorDescription ? "error" : ""}
                             disabled={isSubmittingDescription}
                         />
-                        <div className={`char-counter ${characterCount > 450 ? 'warning' : ''}`}>
+                        <div
+                            className={`char-counter ${characterCount > 450 ? "warning" : ""}`}
+                        >
                             {characterCount}/500
                         </div>
                     </div>
                     <div className="form-actions">
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="edit-btn"
-                            disabled={isSubmittingDescription || formUserData.description === (user.description || "")}
+                            disabled={
+                                isSubmittingDescription ||
+                                formUserData.description ===
+                                    (user.description || "")
+                            }
                         >
                             {isSubmittingDescription ? (
                                 <>
                                     <span className="loading-spinner-small"></span>
                                     Updating...
                                 </>
-                            ) : 'Update'}
+                            ) : (
+                                "Update"
+                            )}
                         </button>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             className="edit-btn secondary"
-                            onClick={() => handleResetForm('description')}
-                            disabled={formUserData.description === (user.description || "") || isSubmittingDescription}
+                            onClick={() => handleResetForm("description")}
+                            disabled={
+                                formUserData.description ===
+                                    (user.description || "") ||
+                                isSubmittingDescription
+                            }
                         >
                             Reset
                         </button>

@@ -9,10 +9,10 @@ export default function PostList() {
         limit: 10,
         page: 0,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
     const [loading, setLoading] = useState(true);
-    
+
     useEffect(() => {
         setLoading(true);
         getPosts(0, 10)
@@ -25,7 +25,7 @@ export default function PostList() {
                 setLoading(false);
             });
     }, []);
-    
+
     if (loading) {
         return (
             <div className="post-list-container">
@@ -36,7 +36,7 @@ export default function PostList() {
             </div>
         );
     }
-    
+
     if (posts.content.length === 0) {
         return (
             <div className="post-list-container">
@@ -46,7 +46,7 @@ export default function PostList() {
             </div>
         );
     }
-    
+
     return (
         <div className="post-list-container">
             {posts.content.map((post, index) => (

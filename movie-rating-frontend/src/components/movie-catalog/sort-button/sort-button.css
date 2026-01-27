@@ -1,57 +1,57 @@
 /* Кнопка сортировки */
 .sort-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  color: var(--color-text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-text-light);
 }
 
 .sort-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: var(--color-primary);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-primary);
 }
 
 /* Иконка сортировки */
 .sort-button__icon {
-  width: 16px;
-  height: 16px;
-  position: relative;
-  transition: transform var(--transition-fast);
+    width: 16px;
+    height: 16px;
+    position: relative;
+    transition: transform var(--transition-fast);
 }
 
 .sort-button__icon::before,
 .sort-button__icon::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
 }
 
 .sort-button__icon::before {
-  top: 0;
-  border-bottom: 6px solid currentColor;
-  opacity: 0.5;
+    top: 0;
+    border-bottom: 6px solid currentColor;
+    opacity: 0.5;
 }
 
 .sort-button__icon::after {
-  bottom: 0;
-  border-top: 6px solid currentColor;
+    bottom: 0;
+    border-top: 6px solid currentColor;
 }
 
 /* Состояния сортировки */
 .sort-button--asc .sort-button__icon {
-  transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 /*.sort-button--asc .sort-button__icon::before {
@@ -72,11 +72,11 @@
 
 /* Активное состояние */
 .sort-button--active {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
 }
 
 .sort-button--active:hover {
-  background-color: var(--color-primary-dark);
+    background-color: var(--color-primary-dark);
 }

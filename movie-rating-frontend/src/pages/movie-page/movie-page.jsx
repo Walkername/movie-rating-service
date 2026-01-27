@@ -65,7 +65,7 @@ function MoviePage() {
         {
             label: "Set as Movie Poster",
             handler: setMoviePoster,
-        }
+        },
     ];
 
     return (
@@ -73,7 +73,6 @@ function MoviePage() {
             <NavigationBar />
 
             <div className="movie-page__content">
-
                 <div className="movie-page__card">
                     {isLoading ? (
                         <div className="movie-page__loading">
@@ -126,7 +125,6 @@ function MoviePage() {
                         </>
                     ) : null}
                 </div>
-
             </div>
         </div>
     );

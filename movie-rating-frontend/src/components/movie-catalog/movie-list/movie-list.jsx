@@ -12,17 +12,27 @@ function MovieList() {
     const [searchParams] = useSearchParams();
 
     // Параметры из URL
-    const pagePar = searchParams.get("page") ? parseInt(searchParams.get("page")) : 0;
-    const limitPar = searchParams.get("limit") ? parseInt(searchParams.get("limit")) : 12;
-    const sortPar = searchParams.get("sort") ? searchParams.get("sort") : "averageRating:desc";
-    const viewmodePar = searchParams.get("viewmode") ? searchParams.get("viewmode") === "true" : false;
+    const pagePar = searchParams.get("page")
+        ? parseInt(searchParams.get("page"))
+        : 0;
+    const limitPar = searchParams.get("limit")
+        ? parseInt(searchParams.get("limit"))
+        : 12;
+    const sortPar = searchParams.get("sort")
+        ? searchParams.get("sort")
+        : "averageRating:desc";
+    const viewmodePar = searchParams.get("viewmode")
+        ? searchParams.get("viewmode") === "true"
+        : false;
     const genrePar = searchParams.get("genre") || "all";
 
     const [page, setPage] = useState(pagePar);
     const [limit, setLimit] = useState(limitPar);
     const [sort, setSort] = useState(sortPar);
     const sortParams = sortPar.split(":");
-    const [sortField, setSortField] = useState(sortParams[0] || "averageRating");
+    const [sortField, setSortField] = useState(
+        sortParams[0] || "averageRating",
+    );
     const [sortOrder, setSortOrder] = useState(sortParams[1] || "desc");
     const [selectedGenre, setSelectedGenre] = useState(genrePar);
 
@@ -31,13 +41,22 @@ function MovieList() {
         limit: limit,
         page: page,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
 
     const [viewMode, setViewMode] = useState(viewmodePar);
 
     // Жанры для фильтрации (можно получать с API)
-    const genres = ["all", "action", "drama", "comedy", "horror", "sci-fi", "romance", "thriller"];
+    const genres = [
+        "all",
+        "action",
+        "drama",
+        "comedy",
+        "horror",
+        "sci-fi",
+        "romance",
+        "thriller",
+    ];
 
     const updateURL = (params) => {
         const searchParams = new URLSearchParams(window.location.search);
@@ -45,7 +64,7 @@ function MovieList() {
             searchParams.set(key, value);
         });
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.pushState({}, '', newUrl);
+        window.history.pushState({}, "", newUrl);
     };
 
     const handlePageButton = (value) => {
@@ -107,39 +126,42 @@ function MovieList() {
                 <h2 className="movie-catalog__title">Movie Catalog</h2>
                 <div className="movie-catalog__controls">
                     <div className="movie-catalog__filters">
-                        {genres.map(genre => (
+                        {genres.map((genre) => (
                             <button
                                 key={genre}
-                                className={`movie-catalog__filter ${selectedGenre === genre ? 'movie-catalog__filter--active' : ''}`}
+                                className={`movie-catalog__filter ${selectedGenre === genre ? "movie-catalog__filter--active" : ""}`}
                                 onClick={() => handleGenreFilter(genre)}
                             >
                                 {genre.charAt(0).toUpperCase() + genre.slice(1)}
                             </button>
                         ))}
                     </div>
-                    <MovieViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+                    <MovieViewToggle
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                    />
                 </div>
             </div>
 
             <div className="movie-catalog__sort-controls">
-                <select 
-                    className="movie-catalog__select" 
-                    onChange={handleSortButton} 
+                <select
+                    className="movie-catalog__select"
+                    onChange={handleSortButton}
                     value={sortField}
                 >
                     <option value="averageRating">Rating</option>
                     <option value="releaseYear">Release Year</option>
                     <option value="createdAt">Date Added</option>
                 </select>
-                
-                <SortButton 
-                    sortOrder={sortOrder} 
-                    handleSortOrderButton={handleSortOrderButton} 
+
+                <SortButton
+                    sortOrder={sortOrder}
+                    handleSortOrderButton={handleSortOrderButton}
                 />
-                
-                <select 
-                    className="movie-catalog__select" 
-                    onChange={handleLimitButton} 
+
+                <select
+                    className="movie-catalog__select"
+                    onChange={handleLimitButton}
                     value={limit}
                 >
                     <option value={12}>12 per page</option>
@@ -155,7 +177,13 @@ function MovieList() {
                         <div>Loading movies...</div>
                     </div>
                 ) : (
-                    <div className={viewMode ? 'movie-catalog__list' : 'movie-catalog__grid'}>
+                    <div
+                        className={
+                            viewMode
+                                ? "movie-catalog__list"
+                                : "movie-catalog__grid"
+                        }
+                    >
                         {viewMode ? (
                             // Список
                             pageResponse.content.map((movie, index) => (
@@ -185,7 +213,8 @@ function MovieList() {
                 <>
                     <div className="movie-catalog__stats">
                         <div>
-                            Showing {startItem} - {endItem} of {pageResponse.totalElements} movies
+                            Showing {startItem} - {endItem} of{" "}
+                            {pageResponse.totalElements} movies
                         </div>
                         <div>
                             Page {page + 1} of {totalPages}
@@ -195,39 +224,50 @@ function MovieList() {
                     {totalPages > 1 && (
                         <div className="movie-catalog__pagination">
                             <button
-                                className={`movie-catalog__page-button ${page === 0 ? 'movie-catalog__page-button--disabled' : ''}`}
-                                onClick={() => handlePageButton(Math.max(0, page - 1))}
+                                className={`movie-catalog__page-button ${page === 0 ? "movie-catalog__page-button--disabled" : ""}`}
+                                onClick={() =>
+                                    handlePageButton(Math.max(0, page - 1))
+                                }
                                 disabled={page === 0}
                             >
                                 Previous
                             </button>
-                            
-                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                let pageNum;
-                                if (totalPages <= 5) {
-                                    pageNum = i;
-                                } else if (page < 3) {
-                                    pageNum = i;
-                                } else if (page > totalPages - 4) {
-                                    pageNum = totalPages - 5 + i;
-                                } else {
-                                    pageNum = page - 2 + i;
-                                }
-                                
-                                return (
-                                    <button
-                                        key={pageNum}
-                                        className={`movie-catalog__page-button ${page === pageNum ? 'movie-catalog__page-button--active' : ''}`}
-                                        onClick={() => handlePageButton(pageNum)}
-                                    >
-                                        {pageNum + 1}
-                                    </button>
-                                );
-                            })}
-                            
+
+                            {Array.from(
+                                { length: Math.min(5, totalPages) },
+                                (_, i) => {
+                                    let pageNum;
+                                    if (totalPages <= 5) {
+                                        pageNum = i;
+                                    } else if (page < 3) {
+                                        pageNum = i;
+                                    } else if (page > totalPages - 4) {
+                                        pageNum = totalPages - 5 + i;
+                                    } else {
+                                        pageNum = page - 2 + i;
+                                    }
+
+                                    return (
+                                        <button
+                                            key={pageNum}
+                                            className={`movie-catalog__page-button ${page === pageNum ? "movie-catalog__page-button--active" : ""}`}
+                                            onClick={() =>
+                                                handlePageButton(pageNum)
+                                            }
+                                        >
+                                            {pageNum + 1}
+                                        </button>
+                                    );
+                                },
+                            )}
+
                             <button
-                                className={`movie-catalog__page-button ${page === totalPages - 1 ? 'movie-catalog__page-button--disabled' : ''}`}
-                                onClick={() => handlePageButton(Math.min(totalPages - 1, page + 1))}
+                                className={`movie-catalog__page-button ${page === totalPages - 1 ? "movie-catalog__page-button--disabled" : ""}`}
+                                onClick={() =>
+                                    handlePageButton(
+                                        Math.min(totalPages - 1, page + 1),
+                                    )
+                                }
                                 disabled={page === totalPages - 1}
                             >
                                 Next

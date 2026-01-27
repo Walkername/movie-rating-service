@@ -38,11 +38,11 @@ export default function Post({ post }) {
             <div className="post-content">
                 <ReactMarkdown
                     components={{
-                        h1: ({ node, children, ...props }) => 
+                        h1: ({ node, children, ...props }) =>
                             children ? <h3 {...props}>{children}</h3> : null,
-                        h2: ({ node, children, ...props }) => 
+                        h2: ({ node, children, ...props }) =>
                             children ? <h4 {...props}>{children}</h4> : null,
-                        h3: ({ node, children, ...props }) => 
+                        h3: ({ node, children, ...props }) =>
                             children ? <h5 {...props}>{children}</h5> : null,
                     }}
                 >
@@ -55,14 +55,16 @@ export default function Post({ post }) {
                     onClick={toggleContentShown}
                     role="button"
                     tabIndex={0}
-                    onKeyPress={(e) => e.key === 'Enter' && toggleContentShown()}
+                    onKeyPress={(e) =>
+                        e.key === "Enter" && toggleContentShown()
+                    }
                 >
                     {showMoreText}
                 </p>
             )}
-            <PostFunctionPanel 
-                onClickComment={() => toggleCommentSection()} 
-                postId={post.id} 
+            <PostFunctionPanel
+                onClickComment={() => toggleCommentSection()}
+                postId={post.id}
             />
             {commentSection && <PostCommentSection postId={post.id} />}
         </article>

@@ -1,6 +1,10 @@
 /* Блок формы добавления фильма */
 .add-movie-form-container {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(15, 15, 15, 0.95)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -37,7 +41,7 @@
 }
 
 .form-header h2::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -8px;
     left: 50%;
@@ -85,15 +89,15 @@
 }
 
 .form-field-group label[for="title"]::before {
-    content: '🎬';
+    content: "🎬";
 }
 
 .form-field-group label[for="releaseYear"]::before {
-    content: '📅';
+    content: "📅";
 }
 
 .form-field-group label[for="description"]::before {
-    content: '📝';
+    content: "📝";
 }
 
 /* Поля ввода */
@@ -102,7 +106,11 @@
 .form-number {
     width: 100%;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-light);
@@ -117,7 +125,11 @@
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.07),
+        rgba(255, 255, 255, 0.03)
+    );
 }
 
 .form-input::placeholder,
@@ -131,7 +143,11 @@
 .form-textarea.error,
 .form-number.error {
     border-color: #e74c3c;
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
 }
 
 /* Текстовое поле */
@@ -172,7 +188,11 @@
     color: #e74c3c;
     font-size: var(--font-size-sm);
     padding: var(--spacing-sm);
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
     border: 1px solid rgba(231, 76, 60, 0.2);
     border-radius: var(--border-radius-sm);
     animation: errorAppear 0.3s ease-out;
@@ -182,7 +202,7 @@
 }
 
 .error-message::before {
-    content: '⚠';
+    content: "⚠";
     font-size: var(--font-size-sm);
 }
 
@@ -202,7 +222,11 @@
     color: #2ecc71;
     font-size: var(--font-size-md);
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 204, 113, 0.1),
+        rgba(46, 204, 113, 0.05)
+    );
     border: 1px solid rgba(46, 204, 113, 0.2);
     border-radius: var(--border-radius-md);
     animation: successAppear 0.3s ease-out;
@@ -213,7 +237,7 @@
 }
 
 .success-message::before {
-    content: '✅';
+    content: "✅";
     font-size: var(--font-size-lg);
 }
 
@@ -304,7 +328,7 @@
 }
 
 .additional-fields h3::before {
-    content: '➕';
+    content: "➕";
     font-size: var(--font-size-md);
 }
 
@@ -318,7 +342,11 @@
 
 .genre-tag {
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.1),
+        rgba(229, 9, 20, 0.05)
+    );
     border: 1px solid rgba(229, 9, 20, 0.2);
     border-radius: var(--border-radius-pill);
     color: var(--color-primary);
@@ -329,12 +357,20 @@
 }
 
 .genre-tag:hover {
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.2),
+        rgba(229, 9, 20, 0.1)
+    );
     transform: translateY(-1px);
 }
 
 .genre-tag.selected {
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.3), rgba(229, 9, 20, 0.2));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.3),
+        rgba(229, 9, 20, 0.2)
+    );
     border-color: var(--color-primary);
     color: white;
 }
@@ -344,27 +380,27 @@
     .add-movie-form-container {
         padding: var(--spacing-lg);
     }
-    
+
     .form-header {
         margin-bottom: var(--spacing-xl);
         padding-bottom: var(--spacing-lg);
     }
-    
+
     .form-header h2 {
         font-size: var(--font-size-lg);
     }
-    
+
     .form-field-group label {
         font-size: var(--font-size-sm);
     }
-    
+
     .form-input,
     .form-textarea,
     .form-number {
         padding: var(--spacing-sm);
         font-size: var(--font-size-sm);
     }
-    
+
     .form-submit {
         width: 100%;
         text-align: center;
@@ -375,15 +411,15 @@
     .add-movie-form-container {
         padding: var(--spacing-md);
     }
-    
+
     .form-header h2 {
         font-size: var(--font-size-md);
     }
-    
+
     .form-subtitle {
         font-size: var(--font-size-sm);
     }
-    
+
     .error-message,
     .success-message {
         font-size: var(--font-size-xs);
@@ -402,13 +438,21 @@
 
 /* Вторичная кнопка */
 .form-submit.secondary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-text-light);
 }
 
 .form-submit.secondary:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.04)
+    );
     border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -416,7 +460,11 @@
 .selected-genres-info {
     margin-top: var(--spacing-sm);
     padding: var(--spacing-sm);
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 204, 113, 0.1),
+        rgba(46, 204, 113, 0.05)
+    );
     border: 1px solid rgba(46, 204, 113, 0.2);
     border-radius: var(--border-radius-sm);
     color: #2ecc71;
@@ -443,10 +491,18 @@
     animation-fill-mode: both;
 }
 
-.form-field-group:nth-child(1) { animation-delay: 0.1s; }
-.form-field-group:nth-child(2) { animation-delay: 0.2s; }
-.form-field-group:nth-child(3) { animation-delay: 0.3s; }
-.form-field-group:nth-child(4) { animation-delay: 0.4s; }
+.form-field-group:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.form-field-group:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.form-field-group:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.form-field-group:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 @keyframes fieldAppear {
     from {

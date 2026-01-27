@@ -7,7 +7,9 @@ export default async function customRequest(path, options = {}) {
 
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    const expRefreshToken = refreshToken ? getClaimFromToken(refreshToken, "exp") : null;
+    const expRefreshToken = refreshToken
+        ? getClaimFromToken(refreshToken, "exp")
+        : null;
     if (Date.now() / 1000 > expRefreshToken) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -18,7 +20,7 @@ export default async function customRequest(path, options = {}) {
     }
 
     let response = await fetch(path, requestOptions);
-    
+
     // If 401 status code, then use refresh and the same rawBody
     if (response.status === 401) {
         const refreshRes = await fetch(
@@ -26,8 +28,10 @@ export default async function customRequest(path, options = {}) {
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ refreshToken: localStorage.getItem("refreshToken") })
-            }
+                body: JSON.stringify({
+                    refreshToken: localStorage.getItem("refreshToken"),
+                }),
+            },
         );
         if (!refreshRes.ok) throw new Error("Session expired");
 
@@ -40,8 +44,8 @@ export default async function customRequest(path, options = {}) {
             ...requestOptions,
             headers: {
                 ...requestOptions.headers,
-                Authorization: `Bearer ${accessToken}`
-            }
+                Authorization: `Bearer ${accessToken}`,
+            },
         };
 
         // Repeating initial request
@@ -54,4 +58,4 @@ export default async function customRequest(path, options = {}) {
     }
 
     return response;
-};
+}

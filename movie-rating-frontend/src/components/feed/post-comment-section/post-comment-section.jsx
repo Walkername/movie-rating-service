@@ -14,9 +14,9 @@ export default function PostCommentSection({ postId }) {
         <div className="post-comment-section">
             <PostCommentList postId={postId} refreshTrigger={refreshTrigger} />
             <hr></hr>
-            <PostCommentInput 
-                postId={postId} 
-                onCommentPublished={handleCommentPublished} 
+            <PostCommentInput
+                postId={postId}
+                onCommentPublished={handleCommentPublished}
             />
         </div>
     );

@@ -28,7 +28,7 @@ export default function MoviePhotoCatalog() {
         limit: 0,
         page: 0,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
 
     // ImageViewer states
@@ -55,7 +55,7 @@ export default function MoviePhotoCatalog() {
                 setIsLoading(false);
             });
     }, [id, limit, sort, page]);
-    
+
     useEffect(() => {
         fetchPhotos();
     }, [fetchPhotos]);
@@ -83,8 +83,10 @@ export default function MoviePhotoCatalog() {
             label: "Set as Movie Poster",
             handler: setMoviePoster,
             primary: true,
-            icon: <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-        }
+            icon: (
+                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+            ),
+        },
     ];
 
     const handleUploadPhoto = (evt) => {
@@ -109,7 +111,7 @@ export default function MoviePhotoCatalog() {
                 setSelectedFile(null);
                 setPreviewUrl(null);
                 if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
+                    fileInputRef.current.value = "";
                 }
                 setIsUploading(false);
 
@@ -129,7 +131,7 @@ export default function MoviePhotoCatalog() {
     };
 
     const handleLoadMore = () => {
-        setLimit(prevLimit => prevLimit + 24);
+        setLimit((prevLimit) => prevLimit + 24);
     };
 
     const formatNumber = (num) => {
@@ -139,7 +141,7 @@ export default function MoviePhotoCatalog() {
     return (
         <div className="movie-photos">
             <NavigationBar />
-            
+
             <div className="movie-photos__content">
                 <div className="movie-photos__card">
                     <div className="movie-photos__header">
@@ -150,12 +152,12 @@ export default function MoviePhotoCatalog() {
                     </div>
 
                     <div className="movie-photos__controls">
-                        <Link 
-                            to={`/movie/${id}`} 
+                        <Link
+                            to={`/movie/${id}`}
                             className="movie-photos__back-button"
                         >
-                            <svg 
-                                className="movie-photos__back-icon" 
+                            <svg
+                                className="movie-photos__back-icon"
                                 viewBox="0 0 24 24"
                             >
                                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
@@ -165,8 +167,8 @@ export default function MoviePhotoCatalog() {
 
                         <div className="movie-photos__stats">
                             <div className="movie-photos__stat">
-                                <svg 
-                                    className="movie-photos__stat-icon" 
+                                <svg
+                                    className="movie-photos__stat-icon"
                                     viewBox="0 0 24 24"
                                 >
                                     <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
@@ -176,17 +178,25 @@ export default function MoviePhotoCatalog() {
                                 </span>
                                 <span>photos</span>
                             </div>
-                            
+
                             <div className="movie-photos__filters">
-                                <select 
+                                <select
                                     className="movie-photos__select"
                                     value={sort}
                                     onChange={handleSortChange}
                                 >
-                                    <option value="uploadedAt:desc">Newest First</option>
-                                    <option value="uploadedAt:asc">Oldest First</option>
-                                    <option value="fileSize:desc">Largest First</option>
-                                    <option value="fileSize:asc">Smallest First</option>
+                                    <option value="uploadedAt:desc">
+                                        Newest First
+                                    </option>
+                                    <option value="uploadedAt:asc">
+                                        Oldest First
+                                    </option>
+                                    <option value="fileSize:desc">
+                                        Largest First
+                                    </option>
+                                    <option value="fileSize:asc">
+                                        Smallest First
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -212,18 +222,19 @@ export default function MoviePhotoCatalog() {
                         </div>
                     ) : pageResponse.content.length === 0 ? (
                         <div className="movie-photos__empty">
-                            <svg 
-                                className="movie-photos__empty-icon" 
+                            <svg
+                                className="movie-photos__empty-icon"
                                 viewBox="0 0 24 24"
                             >
                                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
                             </svg>
-                            <h3 className="movie-photos__empty-title">No Photos Yet</h3>
+                            <h3 className="movie-photos__empty-title">
+                                No Photos Yet
+                            </h3>
                             <p className="movie-photos__empty-text">
-                                {isAccessToEdit 
+                                {isAccessToEdit
                                     ? "Upload the first photo to get started!"
-                                    : "No photos have been uploaded for this movie yet."
-                                }
+                                    : "No photos have been uploaded for this movie yet."}
                             </p>
                         </div>
                     ) : (
@@ -244,8 +255,11 @@ export default function MoviePhotoCatalog() {
                         setSelectedPhoto={setSelectedPhoto}
                         additionalActions={movieActions}
                         photos={pageResponse.content}
-                        currentIndex={pageResponse.content.findIndex(photo => 
-                            selectedPhoto && (photo.id === selectedPhoto.id || photo.url === selectedPhoto.url)
+                        currentIndex={pageResponse.content.findIndex(
+                            (photo) =>
+                                selectedPhoto &&
+                                (photo.id === selectedPhoto.id ||
+                                    photo.url === selectedPhoto.url),
                         )}
                         onIndexChange={(newIndex) => {
                             setSelectedPhoto(pageResponse.content[newIndex]);

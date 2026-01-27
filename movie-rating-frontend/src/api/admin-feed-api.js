@@ -7,10 +7,10 @@ export const createPost = async (post) => {
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(post)
-            }
+                body: JSON.stringify(post),
+            },
         );
         return await response.json();
     } catch (error) {
@@ -25,10 +25,10 @@ export const updatePost = async (id, post) => {
             {
                 method: "PATCH",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(post)
-            }
+                body: JSON.stringify(post),
+            },
         );
         return await response.json();
     } catch (error) {
@@ -41,8 +41,8 @@ export const deletePost = async (id) => {
         const response = await customRequest(
             `${process.env.REACT_APP_FEED_SERVICE_URL}/admin/posts/${id}`,
             {
-                method: "DELETE"
-            }
+                method: "DELETE",
+            },
         );
         return response;
     } catch (error) {

@@ -5,7 +5,7 @@ import "./post-function-panel.css";
 
 export default function PostFunctionPanel({ onClickComment, postId }) {
     const navigate = useNavigate();
-    
+
     const [showMenu, setShowMenu] = useState(false);
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0); // Примерное количество лайков
@@ -22,7 +22,11 @@ export default function PostFunctionPanel({ onClickComment, postId }) {
     };
 
     const handleDelete = () => {
-        if (window.confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
+        if (
+            window.confirm(
+                "Are you sure you want to delete this post? This action cannot be undone.",
+            )
+        ) {
             setShowMenu(false);
             deletePost(postId)
                 .then(() => {
@@ -38,7 +42,7 @@ export default function PostFunctionPanel({ onClickComment, postId }) {
 
     const handleLike = () => {
         setLiked(!liked);
-        setLikeCount(prev => liked ? prev - 1 : prev + 1);
+        setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
         // Здесь можно добавить API вызов для лайка
     };
 
@@ -71,42 +75,33 @@ export default function PostFunctionPanel({ onClickComment, postId }) {
 
     return (
         <div className="post-function-panel">
-            <span 
-                className="post-function-like"
-                onClick={handleLike}
-            >
-                {liked ? 'Liked' : 'Like'} ({likeCount})
+            <span className="post-function-like" onClick={handleLike}>
+                {liked ? "Liked" : "Like"} ({likeCount})
             </span>
-            
-            <span
-                className="post-function-comment"
-                onClick={onClickComment}
-            >
+
+            <span className="post-function-comment" onClick={onClickComment}>
                 Comment
             </span>
-            
+
             {isAdmin() && (
                 <div className="post-function-more-container">
-                    <span 
+                    <span
                         ref={moreButtonRef}
                         className="post-function-more"
                         onClick={toggleMenu}
                     >
                         More...
                     </span>
-                    
+
                     {showMenu && (
-                        <div 
-                            ref={menuRef}
-                            className="post-function-menu"
-                        >
-                            <button 
+                        <div ref={menuRef} className="post-function-menu">
+                            <button
                                 className="post-function-menu-item post-function-menu-update"
                                 onClick={handleUpdate}
                             >
                                 Update Post
                             </button>
-                            <button 
+                            <button
                                 className="post-function-menu-item post-function-menu-delete"
                                 onClick={handleDelete}
                             >

@@ -1,319 +1,331 @@
 /* Блок полосы превью фотографий */
 .photo-strip {
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.9));
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(
+        135deg,
+        rgba(20, 20, 20, 0.9),
+        rgba(10, 10, 10, 0.9)
+    );
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Заголовок полосы */
 .photo-strip__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-  padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .photo-strip__title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-light);
-  margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-light);
+    margin: 0;
 }
 
 .photo-strip__view-all {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  color: var(--color-secondary);
-  text-decoration: none;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast);
 }
 
 .photo-strip__view-all:hover {
-  color: var(--color-secondary-light);
-  gap: var(--spacing-sm);
+    color: var(--color-secondary-light);
+    gap: var(--spacing-sm);
 }
 
 .photo-strip__view-all svg {
-  width: 16px;
-  height: 16px;
-  transition: transform var(--transition-fast);
+    width: 16px;
+    height: 16px;
+    transition: transform var(--transition-fast);
 }
 
 .photo-strip__view-all:hover svg {
-  transform: translateX(4px);
+    transform: translateX(4px);
 }
 
 /* Обертка для прокрутки */
 .photo-strip__wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 /* Кнопки прокрутки */
 .photo-strip__scroll-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background-color: rgba(10, 10, 10, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  color: var(--color-text-light);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-  z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--color-text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 10;
 }
 
 .photo-strip__scroll-button:hover {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  transform: translateY(-50%) scale(1.1);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: translateY(-50%) scale(1.1);
 }
 
 .photo-strip__scroll-button--left {
-  left: -20px;
+    left: -20px;
 }
 
 .photo-strip__scroll-button--right {
-  right: -20px;
+    right: -20px;
 }
 
 .photo-strip__scroll-button svg {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 /* Контейнер для фотографий */
 .photo-strip__container {
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-primary) rgba(255, 255, 255, 0.1);
-  flex: 1;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) rgba(255, 255, 255, 0.1);
+    flex: 1;
 }
 
 .photo-strip__container::-webkit-scrollbar {
-  height: 6px;
+    height: 6px;
 }
 
 .photo-strip__container::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
 }
 
 .photo-strip__container::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: 3px;
+    background: var(--color-primary);
+    border-radius: 3px;
 }
 
 /* Внутренний контейнер для фотографий */
 .photo-strip__scroll {
-  display: flex;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm) 0;
-  min-height: 150px;
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+    min-height: 150px;
 }
 
 /* Элемент фотографии */
 .photo-strip__item {
-  flex: 0 0 auto;
-  width: 200px;
-  height: 150px;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  transition: all var(--transition-fast);
-  border: 2px solid transparent;
+    flex: 0 0 auto;
+    width: 200px;
+    height: 150px;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
 }
 
 .photo-strip__item:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-lg);
 }
 
 .photo-strip__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform var(--transition-medium);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-medium);
 }
 
 .photo-strip__item:hover .photo-strip__image {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 /* Карточка "еще" */
 .photo-strip__more-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(10, 10, 10, 0.9));
-  text-decoration: none;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(10, 10, 10, 0.9)
+    );
+    text-decoration: none;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
 }
 
 .photo-strip__more-card:hover {
-  border-color: var(--color-secondary);
-  background: linear-gradient(135deg, rgba(36, 36, 36, 0.9), rgba(20, 20, 20, 0.9));
+    border-color: var(--color-secondary);
+    background: linear-gradient(
+        135deg,
+        rgba(36, 36, 36, 0.9),
+        rgba(20, 20, 20, 0.9)
+    );
 }
 
 .photo-strip__more-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  color: var(--color-text-gray);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-text-gray);
 }
 
 .photo-strip__more-icon {
-  width: 32px;
-  height: 32px;
-  opacity: 0.7;
+    width: 32px;
+    height: 32px;
+    opacity: 0.7;
 }
 
 .photo-strip__more-text {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
 }
 
 .photo-strip__more-count {
-  font-size: var(--font-size-xs);
-  background-color: var(--color-primary);
-  color: white;
-  padding: 2px 6px;
-  border-radius: var(--border-radius-sm);
-  margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    background-color: var(--color-primary);
+    color: white;
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    margin-top: var(--spacing-xs);
 }
 
 /* Оверлей при наведении */
 .photo-strip__item::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 50%);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 50%);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
 }
 
 .photo-strip__item:hover::after {
-  opacity: 1;
+    opacity: 1;
 }
 
 /* Количество фотографий */
 .photo-strip__count {
-  position: absolute;
-  bottom: var(--spacing-sm);
-  left: var(--spacing-sm);
-  color: white;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 2px 6px;
-  border-radius: var(--border-radius-sm);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 2;
+    position: absolute;
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    z-index: 2;
 }
 
 .photo-strip__item:hover .photo-strip__count {
-  opacity: 1;
+    opacity: 1;
 }
 
 /* Состояние загрузки */
 .photo-strip__loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 150px;
-  color: var(--color-text-gray);
-  font-size: var(--font-size-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
 }
 
 .photo-strip__spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: var(--spacing-md);
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: var(--spacing-md);
 }
 
 /* Состояние без фотографий */
 .photo-strip__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 150px;
-  color: var(--color-text-gray);
-  text-align: center;
-  padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+    color: var(--color-text-gray);
+    text-align: center;
+    padding: var(--spacing-lg);
 }
 
 .photo-strip__empty-icon {
-  width: 48px;
-  height: 48px;
-  opacity: 0.3;
-  margin-bottom: var(--spacing-md);
+    width: 48px;
+    height: 48px;
+    opacity: 0.3;
+    margin-bottom: var(--spacing-md);
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .photo-strip {
-    padding: var(--spacing-lg);
-  }
-  
-  .photo-strip__item {
-    width: 160px;
-    height: 120px;
-  }
-  
-  .photo-strip__scroll-button {
-    display: none; /* Скрываем кнопки на мобильных */
-  }
-  
-  .photo-strip__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
+    .photo-strip {
+        padding: var(--spacing-lg);
+    }
+
+    .photo-strip__item {
+        width: 160px;
+        height: 120px;
+    }
+
+    .photo-strip__scroll-button {
+        display: none; /* Скрываем кнопки на мобильных */
+    }
+
+    .photo-strip__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
 }
 
 @media (max-width: 480px) {
-  .photo-strip__item {
-    width: 120px;
-    height: 90px;
-  }
-  
-  .photo-strip__more-content {
-    gap: 2px;
-  }
-  
-  .photo-strip__more-icon {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .photo-strip__more-text {
-    font-size: var(--font-size-xs);
-  }
+    .photo-strip__item {
+        width: 120px;
+        height: 90px;
+    }
+
+    .photo-strip__more-content {
+        gap: 2px;
+    }
+
+    .photo-strip__more-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .photo-strip__more-text {
+        font-size: var(--font-size-xs);
+    }
 }

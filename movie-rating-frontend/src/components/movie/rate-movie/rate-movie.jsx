@@ -20,7 +20,7 @@ function RateMovie({ movieId }) {
             setIsLoading(false);
             return;
         }
-        
+
         getRating(userId, movieId)
             .then((data) => {
                 setRating(data.rating);
@@ -42,7 +42,7 @@ function RateMovie({ movieId }) {
 
         const formData = {
             movieId: movieId,
-            rating: rateValue
+            rating: rateValue,
         };
 
         rateMovie(formData)
@@ -78,7 +78,7 @@ function RateMovie({ movieId }) {
 
     // Текущее отображаемое значение (hover или фактическое)
     const currentDisplayRating = hoverRating || rating;
-    
+
     // Определяем цвет текущего рейтинга для текста
     const getRatingColor = () => {
         if (!currentDisplayRating) return "var(--color-text-light)";
@@ -120,7 +120,9 @@ function RateMovie({ movieId }) {
                         <button
                             key={rateValue}
                             className={`rate-movie__star-button ${colorClass} ${
-                                isCurrent ? "rate-movie__star-button--current" : ""
+                                isCurrent
+                                    ? "rate-movie__star-button--current"
+                                    : ""
                             }`}
                             onClick={() => handleSubmit(rateValue)}
                             onMouseEnter={() => setHoverRating(rateValue)}
@@ -145,8 +147,10 @@ function RateMovie({ movieId }) {
             <div className="rate-movie__info">
                 {rating ? (
                     <div className="rate-movie__current-rating">
-                        <span className="rate-movie__rating-text">Your rating:</span>
-                        <span 
+                        <span className="rate-movie__rating-text">
+                            Your rating:
+                        </span>
+                        <span
                             className="rate-movie__rating-value"
                             style={{ color: getRatingColor() }}
                         >
@@ -157,8 +161,8 @@ function RateMovie({ movieId }) {
                             onClick={handleDelete}
                             aria-label="Delete rating"
                         >
-                            <svg 
-                                className="rate-movie__delete-icon" 
+                            <svg
+                                className="rate-movie__delete-icon"
                                 viewBox="0 0 24 24"
                             >
                                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
@@ -168,8 +172,8 @@ function RateMovie({ movieId }) {
                     </div>
                 ) : (
                     <div className="rate-movie__no-rating">
-                        <svg 
-                            className="rate-movie__no-rating-icon" 
+                        <svg
+                            className="rate-movie__no-rating-icon"
                             viewBox="0 0 24 24"
                             fill="currentColor"
                         >

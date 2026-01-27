@@ -14,28 +14,22 @@ function NavigationBar() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         navigate("/login");
-    }
+    };
 
     return (
         <nav className="nav">
             <div className="nav__left">
-                <Link
-                    className="nav__link nav__link--brand"
-                    to="/"
-                >
+                <Link className="nav__link nav__link--brand" to="/">
                     MOVIE CLUSTER
                 </Link>
             </div>
-            
+
             <div className="nav__search">
                 <SearchField />
             </div>
-            
+
             <div className="nav__right">
-                <Link 
-                    className="nav__link "
-                    to="/feed"
-                >
+                <Link className="nav__link " to="/feed">
                     News Feed
                 </Link>
                 {token && (
@@ -46,19 +40,19 @@ function NavigationBar() {
                         Profile
                     </Link>
                 )}
-                
+
                 <div className="nav__auth-buttons">
                     {token ? (
                         <>
                             {adminStatus && (
-                                <button 
+                                <button
                                     className="nav__auth-button nav__auth-button--admin"
                                     onClick={() => navigate("/admin")}
                                 >
                                     Admin
                                 </button>
                             )}
-                            <button 
+                            <button
                                 className="nav__auth-button nav__auth-button--logout"
                                 onClick={handleLogout}
                             >
@@ -67,13 +61,13 @@ function NavigationBar() {
                         </>
                     ) : (
                         <>
-                            <button 
+                            <button
                                 className="nav__auth-button"
                                 onClick={() => navigate("/register")}
                             >
                                 Register
                             </button>
-                            <button 
+                            <button
                                 className="nav__auth-button"
                                 onClick={() => navigate("/login")}
                             >
@@ -84,7 +78,7 @@ function NavigationBar() {
                 </div>
             </div>
         </nav>
-    )
+    );
 }
 
 export default NavigationBar;

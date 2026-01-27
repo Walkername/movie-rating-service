@@ -1,176 +1,185 @@
 /* Блок панели функций поста */
 .post-function-panel {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xl);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: var(--spacing-lg);
-  position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: var(--spacing-lg);
+    position: relative;
 }
 
 /* Общие стили для элементов панели */
 .post-function-like,
 .post-function-comment,
 .post-function-more {
-  color: var(--color-text-gray);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) 0;
-  transition: all var(--transition-fast);
-  position: relative;
+    color: var(--color-text-gray);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) 0;
+    transition: all var(--transition-fast);
+    position: relative;
 }
 
 .post-function-like::before,
 .post-function-comment::before,
 .post-function-more::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--gradient-primary);
-  transition: width var(--transition-fast);
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    transition: width var(--transition-fast);
 }
 
 .post-function-like:hover,
 .post-function-comment:hover,
 .post-function-more:hover {
-  color: var(--color-text-light);
+    color: var(--color-text-light);
 }
 
 .post-function-like:hover::before,
 .post-function-comment:hover::before,
 .post-function-more:hover::before {
-  width: 100%;
+    width: 100%;
 }
 
 .post-function-like::after {
-  content: '♥';
-  font-size: var(--font-size-sm);
+    content: "♥";
+    font-size: var(--font-size-sm);
 }
 
 .post-function-comment::after {
-  content: '💬';
-  font-size: var(--font-size-sm);
+    content: "💬";
+    font-size: var(--font-size-sm);
 }
 
 .post-function-more::after {
-  content: '⋯';
-  font-size: var(--font-size-lg);
-  line-height: 1;
+    content: "⋯";
+    font-size: var(--font-size-lg);
+    line-height: 1;
 }
 
 /* Контейнер для выпадающего меню */
 .post-function-more-container {
-  position: relative;
+    position: relative;
 }
 
 /* Выпадающее меню */
 .post-function-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(10, 10, 10, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-sm) 0;
-  min-width: 160px;
-  box-shadow: 
-    var(--shadow-lg),
-    0 10px 30px rgba(0, 0, 0, 0.5);
-  z-index: 100;
-  animation: menuAppear 0.2s ease-out;
-  backdrop-filter: blur(10px);
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.95),
+        rgba(10, 10, 10, 0.98)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) 0;
+    min-width: 160px;
+    box-shadow:
+        var(--shadow-lg),
+        0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    animation: menuAppear 0.2s ease-out;
+    backdrop-filter: blur(10px);
 }
 
 @keyframes menuAppear {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Элементы меню */
 .post-function-menu-item {
-  display: block;
-  width: 100%;
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: none;
-  border: none;
-  text-align: left;
-  color: var(--color-text-light);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-  overflow: hidden;
+    display: block;
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: none;
+    border: none;
+    text-align: left;
+    color: var(--color-text-light);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
 }
 
 .post-function-menu-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(229, 9, 20, 0.1), transparent);
-  transition: left 0.3s ease;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(229, 9, 20, 0.1),
+        transparent
+    );
+    transition: left 0.3s ease;
 }
 
 .post-function-menu-item:hover::before {
-  left: 100%;
+    left: 100%;
 }
 
 .post-function-menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-primary);
 }
 
 .post-function-menu-update::after {
-  content: '✎';
-  margin-left: var(--spacing-sm);
-  opacity: 0.7;
+    content: "✎";
+    margin-left: var(--spacing-sm);
+    opacity: 0.7;
 }
 
 .post-function-menu-delete {
-  color: #ff6b6b;
+    color: #ff6b6b;
 }
 
 .post-function-menu-delete:hover {
-  background-color: rgba(229, 9, 20, 0.1);
-  color: #ff6b6b;
+    background-color: rgba(229, 9, 20, 0.1);
+    color: #ff6b6b;
 }
 
 .post-function-menu-delete::after {
-  content: '🗑️';
-  margin-left: var(--spacing-sm);
-  opacity: 0.7;
+    content: "🗑️";
+    margin-left: var(--spacing-sm);
+    opacity: 0.7;
 }
 
 /* Адаптивность */
 @media (max-width: 480px) {
-  .post-function-panel {
-    gap: var(--spacing-lg);
-    justify-content: space-between;
-  }
-  
-  .post-function-like,
-  .post-function-comment,
-  .post-function-more {
-    font-size: var(--font-size-xs);
-  }
-  
-  .post-function-menu {
-    min-width: 140px;
-  }
+    .post-function-panel {
+        gap: var(--spacing-lg);
+        justify-content: space-between;
+    }
+
+    .post-function-like,
+    .post-function-comment,
+    .post-function-more {
+        font-size: var(--font-size-xs);
+    }
+
+    .post-function-menu {
+        min-width: 140px;
+    }
 }

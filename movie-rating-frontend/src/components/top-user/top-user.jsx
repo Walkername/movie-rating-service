@@ -5,7 +5,7 @@ function TopUser() {
     const [topUser, setTopUser] = useState({
         username: "",
         averageRating: "",
-        scores: ""
+        scores: "",
     });
 
     useEffect(() => {
@@ -16,20 +16,21 @@ function TopUser() {
             .catch((error) => {
                 console.error("Error fetching movie:", error);
             });
-
     }, []);
 
     return (
         <div>
             <h2>Top User: {topUser.username}</h2>
             <div>
-                <b>Average rating: </b>{topUser.averageRating}
+                <b>Average rating: </b>
+                {topUser.averageRating}
             </div>
             <div>
-                <b>Scores: </b>{topUser.scores}
+                <b>Scores: </b>
+                {topUser.scores}
             </div>
         </div>
-    )
+    );
 }
 
 export default TopUser;

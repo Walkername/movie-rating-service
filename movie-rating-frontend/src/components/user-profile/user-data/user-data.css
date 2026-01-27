@@ -1,364 +1,382 @@
 /* Основной контейнер профиля */
 .user-profile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
 }
 
 /* Основная информация (аватар + контент) */
 .user-profile__main {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: var(--spacing-xxl);
-  align-items: start;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-xxl);
+    align-items: start;
 }
 
 /* Контейнер для разделителя */
 .user-profile__divider-container {
-  width: 100%;
-  padding: var(--spacing-md) 0;
+    width: 100%;
+    padding: var(--spacing-md) 0;
 }
 
 .user-profile__divider {
-  border: none;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 180, 216, 0.3),
-    rgba(229, 9, 20, 0.3),
-    transparent
-  );
-  margin: 0;
+    border: none;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 180, 216, 0.3),
+        rgba(229, 9, 20, 0.3),
+        transparent
+    );
+    margin: 0;
 }
 
 /* Секция фотографий с ограничением */
 .user-profile__photos-section {
-  width: 100%;
-  overflow: hidden; /* Важно для предотвращения выхода за границы */
+    width: 100%;
+    overflow: hidden; /* Важно для предотвращения выхода за границы */
 }
 
 /* Если PhotoPreviewStrip не ограничивает ширину сам, добавьте: */
 .user-profile__photos-section :global(.photo-preview-strip) {
-  max-width: 100%;
-  overflow-x: auto; /* Добавляет скролл если фотографий слишком много */
+    max-width: 100%;
+    overflow-x: auto; /* Добавляет скролл если фотографий слишком много */
 }
 
 /* Можно добавить кастомный скролл */
 .user-profile__photos-section :global(.photo-preview-strip)::-webkit-scrollbar {
-  height: 8px;
+    height: 8px;
 }
 
-.user-profile__photos-section :global(.photo-preview-strip)::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+.user-profile__photos-section
+    :global(.photo-preview-strip)::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
 }
 
-.user-profile__photos-section :global(.photo-preview-strip)::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
-  border-radius: 4px;
+.user-profile__photos-section
+    :global(.photo-preview-strip)::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        135deg,
+        var(--color-secondary),
+        var(--color-primary)
+    );
+    border-radius: 4px;
 }
 
 /* Секция с оценёнными фильмами */
 .user-profile__rated-movies-section {
-  width: 100%;
+    width: 100%;
 }
 
 /* Аватар пользователя */
 .user-profile__avatar {
-  position: relative;
-  border-radius: var(--border-radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  aspect-ratio: 1/1;
-  background: linear-gradient(135deg, rgba(0, 180, 216, 0.3), rgba(229, 9, 20, 0.2));
-  border: 3px solid var(--color-secondary);
-  max-width: 300px; /* Ограничение максимальной ширины */
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    aspect-ratio: 1/1;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 180, 216, 0.3),
+        rgba(229, 9, 20, 0.2)
+    );
+    border: 3px solid var(--color-secondary);
+    max-width: 300px; /* Ограничение максимальной ширины */
 }
 
 .user-profile__avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform var(--transition-medium);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-medium);
 }
 
 .user-profile__avatar:hover .user-profile__avatar-img {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 /* Бейдж на аватаре */
 .user-profile__avatar-badge {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  background: var(--gradient-primary);
-  color: white;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  z-index: 2;
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: var(--gradient-primary);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 2;
 }
 
 .user-profile__avatar-badge--admin {
-  background: linear-gradient(135deg, var(--color-accent), #ffaa00);
+    background: linear-gradient(135deg, var(--color-accent), #ffaa00);
 }
 
 /* Контент профиля */
 .user-profile__content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  min-width: 0; /* Важно для предотвращения переполнения */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    min-width: 0; /* Важно для предотвращения переполнения */
 }
 
 /* Заголовок */
 .user-profile__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
 }
 
 .user-profile__username {
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-black);
-  color: var(--color-text-light);
-  margin: 0;
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  word-break: break-word; /* Перенос длинных имён */
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-text-light);
+    margin: 0;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    word-break: break-word; /* Перенос длинных имён */
 }
 
 .user-profile__user-id {
-  color: var(--color-text-gray);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-normal);
-  margin-left: var(--spacing-sm);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-normal);
+    margin-left: var(--spacing-sm);
 }
 
 /* Основная информация */
 .user-profile__info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
 }
 
 /* Секции профиля */
 .user-profile__section {
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.9));
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow-wrap: break-word; /* Перенос длинного текста */
+    background: linear-gradient(
+        135deg,
+        rgba(20, 20, 20, 0.9),
+        rgba(10, 10, 10, 0.9)
+    );
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-wrap: break-word; /* Перенос длинного текста */
 }
 
 .user-profile__section-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-secondary);
-  margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 2px solid rgba(0, 180, 216, 0.3);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid rgba(0, 180, 216, 0.3);
 }
 
 .user-profile__section-text {
-  color: var(--color-text-gray);
-  font-size: var(--font-size-md);
-  line-height: 1.7;
-  margin: 0;
-  word-break: break-word; /* Перенос длинного текста */
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
+    line-height: 1.7;
+    margin: 0;
+    word-break: break-word; /* Перенос длинного текста */
 }
 
 .user-profile__section-text--empty {
-  font-style: italic;
-  opacity: 0.7;
+    font-style: italic;
+    opacity: 0.7;
 }
 
 /* Статистика пользователя */
 .user-profile__stats {
-  display: flex;
-  gap: var(--spacing-xl);
-  flex-wrap: wrap;
-  margin-top: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-md);
 }
 
 .user-profile__stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--spacing-md);
-  background: linear-gradient(135deg, rgba(0, 180, 216, 0.1), rgba(229, 9, 20, 0.1));
-  border-radius: var(--border-radius-md);
-  min-width: 120px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0; /* Предотвращает сжатие */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 180, 216, 0.1),
+        rgba(229, 9, 20, 0.1)
+    );
+    border-radius: var(--border-radius-md);
+    min-width: 120px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0; /* Предотвращает сжатие */
 }
 
 .user-profile__stat-value {
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-accent);
-  line-height: 1;
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    line-height: 1;
 }
 
 .user-profile__stat-label {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-gray);
-  margin-top: var(--spacing-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-gray);
+    margin-top: var(--spacing-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Мета-информация */
 .user-profile__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-gray);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-gray);
 }
 
 .user-profile__meta-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  flex-shrink: 0; /* Предотвращает сжатие */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-shrink: 0; /* Предотвращает сжатие */
 }
 
 .user-profile__meta-icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-  flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    flex-shrink: 0;
 }
 
 /* Кнопка редактирования */
 .user-profile__actions {
-  margin-top: var(--spacing-xl);
-  display: flex;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
+    margin-top: var(--spacing-xl);
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
 }
 
 .user-profile__edit-button {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-xl);
-  background: linear-gradient(135deg, var(--color-secondary), #0088a3);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: linear-gradient(135deg, var(--color-secondary), #0088a3);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
 }
 
 .user-profile__edit-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  background: linear-gradient(135deg, #00c6ff, #006d84);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, #00c6ff, #006d84);
 }
 
 .user-profile__edit-button::before {
-  content: '✎';
-  font-size: var(--font-size-lg);
+    content: "✎";
+    font-size: var(--font-size-lg);
 }
 
 /* Ссылка на галерею фотографий */
 .user-profile__photos-link {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-xl);
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-md);
-  color: var(--color-text-light);
-  text-decoration: none;
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-light);
+    text-decoration: none;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
 }
 
 .user-profile__photos-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: var(--color-primary);
-  transform: translateX(4px);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-primary);
+    transform: translateX(4px);
 }
 
 .user-profile__photos-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .user-profile__main {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-xl);
-  }
-  
-  .user-profile__avatar {
-    max-width: 250px;
-    margin: 0 auto;
-  }
-  
-  .user-profile__username {
-    font-size: var(--font-size-xl);
-  }
-  
-  .user-profile__stats {
-    gap: var(--spacing-md);
-  }
-  
-  .user-profile__stat {
-    min-width: 100px;
-    padding: var(--spacing-sm);
-  }
-  
-  .user-profile__photos-section {
-    overflow-x: auto;
-  }
+    .user-profile__main {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+
+    .user-profile__avatar {
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .user-profile__username {
+        font-size: var(--font-size-xl);
+    }
+
+    .user-profile__stats {
+        gap: var(--spacing-md);
+    }
+
+    .user-profile__stat {
+        min-width: 100px;
+        padding: var(--spacing-sm);
+    }
+
+    .user-profile__photos-section {
+        overflow-x: auto;
+    }
 }
 
 @media (max-width: 480px) {
-  .user-profile__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-  
-  .user-profile__stats {
-    justify-content: center;
-  }
-  
-  .user-profile__actions {
-    flex-direction: column;
-  }
-  
-  .user-profile__edit-button,
-  .user-profile__photos-link {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .user-profile__section {
-    padding: var(--spacing-md);
-  }
+    .user-profile__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .user-profile__stats {
+        justify-content: center;
+    }
+
+    .user-profile__actions {
+        flex-direction: column;
+    }
+
+    .user-profile__edit-button,
+    .user-profile__photos-link {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-profile__section {
+        padding: var(--spacing-md);
+    }
 }

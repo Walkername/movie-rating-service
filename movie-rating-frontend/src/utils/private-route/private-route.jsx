@@ -7,7 +7,5 @@ export default function PrivateRoute() {
     const authStatus = Date.now() / 1000 <= exp;
     console.log("Auth Status:", authStatus);
 
-    return (
-        authStatus ? <Outlet /> : <Navigate to="/login" />
-    )
+    return authStatus ? <Outlet /> : <Navigate to="/login" />;
 }

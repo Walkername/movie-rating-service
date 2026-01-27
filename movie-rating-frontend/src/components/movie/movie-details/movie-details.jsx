@@ -13,7 +13,7 @@ function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
             setIsPosterLoading(false);
             return;
         }
-        
+
         setIsPosterLoading(true);
         downloadFile(movie.posterPicId)
             .then((data) => {
@@ -29,10 +29,10 @@ function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
 
     // Определяем цвет рейтинга
     const getRatingColorClass = () => {
-        if (!movie.averageRating) return '';
-        if (movie.averageRating >= 8.0) return 'movie-details__rating--high';
-        if (movie.averageRating >= 5.0) return 'movie-details__rating--medium';
-        return 'movie-details__rating--low';
+        if (!movie.averageRating) return "";
+        if (movie.averageRating >= 8.0) return "movie-details__rating--high";
+        if (movie.averageRating >= 5.0) return "movie-details__rating--medium";
+        return "movie-details__rating--low";
     };
 
     // Форматируем дату
@@ -55,57 +55,67 @@ function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
                         }}
                     />
                 )}
-                
+
                 {/* Бейдж для высокого рейтинга */}
                 {movie.averageRating >= 8.0 && (
-                    <div className="movie-details__poster-badge">
-                        Top Rated
-                    </div>
+                    <div className="movie-details__poster-badge">Top Rated</div>
                 )}
             </div>
-            
+
             <div className="movie-details__content">
                 <div className="movie-details__header">
                     <h1 className="movie-details__title">
                         {movie.title}
-                        <span className="movie-details__year">({movie.releaseYear})</span>
+                        <span className="movie-details__year">
+                            ({movie.releaseYear})
+                        </span>
                     </h1>
-                    
+
                     {movie.averageRating > 0 && (
-                        <div className={`movie-details__rating ${getRatingColorClass()}`}>
+                        <div
+                            className={`movie-details__rating ${getRatingColorClass()}`}
+                        >
                             {movie.averageRating.toFixed(1)}
                         </div>
                     )}
                 </div>
-                
+
                 <div className="movie-details__info">
                     <div className="movie-details__description">
                         {movie.description}
                     </div>
-                    
+
                     <div className="movie-details__stats">
                         <div className="movie-details__stat">
                             <span className="movie-details__stat-value">
-                                {movie.averageRating > 0 ? movie.averageRating.toFixed(1) : '—'}
+                                {movie.averageRating > 0
+                                    ? movie.averageRating.toFixed(1)
+                                    : "—"}
                             </span>
-                            <span className="movie-details__stat-label">Rating</span>
+                            <span className="movie-details__stat-label">
+                                Rating
+                            </span>
                         </div>
-                        
+
                         <div className="movie-details__stat">
                             <span className="movie-details__stat-value">
                                 {movie.scores || 0}
                             </span>
-                            <span className="movie-details__stat-label">Votes</span>
+                            <span className="movie-details__stat-label">
+                                Votes
+                            </span>
                         </div>
-                        
+
                         <div className="movie-details__stat">
                             <span className="movie-details__stat-value">
                                 {movie.releaseYear}
                             </span>
-                            <span className="movie-details__stat-label">Year</span>
+                            <span className="movie-details__stat-label">
+                                Year
+                            </span>
                         </div>
                     </div>
-                    
+
                     <div className="movie-details__meta">
                         <div className="movie-details__meta-item">
                             <strong>Release Year:</strong> {movie.releaseYear}
@@ -118,10 +128,10 @@ function MovieDetails({ isAccessToEdit, movie, handleEdit }) {
                         </div>
                     </div>
                 </div>
-                
+
                 {isAccessToEdit && (
                     <div className="movie-details__actions">
-                        <button 
+                        <button
                             className="movie-details__edit-button"
                             onClick={handleEdit}
                         >

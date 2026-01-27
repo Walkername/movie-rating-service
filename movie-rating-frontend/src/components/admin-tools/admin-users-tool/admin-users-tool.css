@@ -32,7 +32,7 @@
 }
 
 .users-tool-header h2::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -8px;
     left: 50%;
@@ -52,7 +52,11 @@
 
 /* Контейнер поиска */
 .search-container {
-    background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+    background: linear-gradient(
+        135deg,
+        rgba(30, 30, 30, 0.8),
+        rgba(20, 20, 20, 0.9)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
@@ -72,7 +76,11 @@
 .tab-button {
     flex: 1;
     padding: var(--spacing-md) var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.01)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-gray);
@@ -86,13 +94,21 @@
 }
 
 .tab-button:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     color: var(--color-text-light);
     border-color: rgba(229, 9, 20, 0.3);
 }
 
 .tab-button.active {
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.2),
+        rgba(229, 9, 20, 0.1)
+    );
     color: var(--color-primary);
     border-color: var(--color-primary);
     box-shadow: 0 0 20px rgba(229, 9, 20, 0.1);
@@ -124,7 +140,11 @@
 .search-input {
     width: 100%;
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md);
     color: var(--color-text-light);
@@ -136,7 +156,11 @@
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.07),
+        rgba(255, 255, 255, 0.03)
+    );
 }
 
 .search-input::placeholder {
@@ -205,13 +229,21 @@
 }
 
 .status-message.success {
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 204, 113, 0.1),
+        rgba(46, 204, 113, 0.05)
+    );
     border: 1px solid rgba(46, 204, 113, 0.2);
     color: #2ecc71;
 }
 
 .status-message.error {
-    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(231, 76, 60, 0.1),
+        rgba(231, 76, 60, 0.05)
+    );
     border: 1px solid rgba(231, 76, 60, 0.2);
     color: #e74c3c;
 }
@@ -245,7 +277,11 @@
 
 /* Карточка пользователя */
 .user-card {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(15, 15, 15, 0.95));
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9),
+        rgba(15, 15, 15, 0.95)
+    );
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -255,7 +291,7 @@
 }
 
 .user-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -292,7 +328,11 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-secondary)
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -374,7 +414,11 @@
 .user-description {
     margin-bottom: var(--spacing-xl);
     padding: var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.01)
+    );
     border-radius: var(--border-radius-md);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -409,7 +453,7 @@
 }
 
 .user-edit-section h4::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -441,25 +485,25 @@
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .form-group {
         min-width: auto;
     }
-    
+
     .search-button {
         width: 100%;
     }
-    
+
     .user-card-header {
         flex-direction: column;
         text-align: center;
         gap: var(--spacing-lg);
     }
-    
+
     .user-stats {
         justify-content: center;
     }
-    
+
     .user-description {
         padding: var(--spacing-md);
     }
@@ -469,16 +513,16 @@
     .search-container {
         padding: var(--spacing-lg);
     }
-    
+
     .tab-button {
         padding: var(--spacing-sm) var(--spacing-md);
         font-size: var(--font-size-xs);
     }
-    
+
     .user-card {
         padding: var(--spacing-lg);
     }
-    
+
     .profile-pic,
     .profile-pic-placeholder {
         width: 80px;
@@ -493,13 +537,21 @@
 }
 
 .search-button.secondary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-text-light);
 }
 
 .search-button.secondary:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.04)
+    );
     border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -513,7 +565,11 @@
 .empty-state-button {
     margin-top: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.2),
+        rgba(229, 9, 20, 0.1)
+    );
     border: 1px solid rgba(229, 9, 20, 0.3);
     border-radius: var(--border-radius-md);
     color: var(--color-primary);
@@ -523,13 +579,21 @@
 }
 
 .empty-state-button:hover {
-    background: linear-gradient(135deg, rgba(229, 9, 20, 0.3), rgba(229, 9, 20, 0.2));
+    background: linear-gradient(
+        135deg,
+        rgba(229, 9, 20, 0.3),
+        rgba(229, 9, 20, 0.2)
+    );
     transform: translateY(-2px);
 }
 
 /* Информационное сообщение */
 .status-message.info {
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(52, 152, 219, 0.1),
+        rgba(52, 152, 219, 0.05)
+    );
     border: 1px solid rgba(52, 152, 219, 0.2);
     color: #3498db;
 }

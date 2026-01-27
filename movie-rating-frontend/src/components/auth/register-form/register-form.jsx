@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import { register } from "../../../api/auth-api";
 import { useNavigate } from "react-router-dom";
 import "./register-form.css";
@@ -10,13 +10,13 @@ export default function RegisterForm() {
     const [fieldErrors, setFieldErrors] = useState({
         username: "",
         password: "",
-        passwordConfirmation: ""
+        passwordConfirmation: "",
     });
 
     const [clientForm, setClientForm] = useState({
         username: "",
         password: "",
-        passwordConfirmation: ""
+        passwordConfirmation: "",
     });
 
     const [passwordStrength, setPasswordStrength] = useState("");
@@ -24,24 +24,37 @@ export default function RegisterForm() {
     const validateField = (name, value, allFormData) => {
         switch (name) {
             case "username":
-                if (value.length < 5) return "Username must be at least 5 characters";
-                if (value.length > 20) return "Username must be less than 20 characters";
-                if (!/^[a-zA-Z0-9_]+$/.test(value)) return "Only letters, numbers and underscore";
+                if (value.length < 5)
+                    return "Username must be at least 5 characters";
+                if (value.length > 20)
+                    return "Username must be less than 20 characters";
+                if (!/^[a-zA-Z0-9_]+$/.test(value))
+                    return "Only letters, numbers and underscore";
                 return "";
             case "password":
-                if (value.length < 5) return "Password must be at least 5 characters";
-                
+                if (value.length < 5)
+                    return "Password must be at least 5 characters";
+
                 // Проверка силы пароля
                 let strength = "weak";
                 if (value.length >= 8) strength = "medium";
-                if (value.length >= 12 && /[A-Z]/.test(value) && /[0-9]/.test(value)) strength = "strong";
+                if (
+                    value.length >= 12 &&
+                    /[A-Z]/.test(value) &&
+                    /[0-9]/.test(value)
+                )
+                    strength = "strong";
                 setPasswordStrength(strength);
-                
-                if (allFormData.passwordConfirmation && value !== allFormData.passwordConfirmation)
+
+                if (
+                    allFormData.passwordConfirmation &&
+                    value !== allFormData.passwordConfirmation
+                )
                     return "Passwords don't match";
                 return "";
             case "passwordConfirmation":
-                if (value.length < 5) return "Password must be at least 5 characters";
+                if (value.length < 5)
+                    return "Password must be at least 5 characters";
                 if (allFormData.password && value !== allFormData.password)
                     return "Passwords don't match";
                 return "";
@@ -56,19 +69,27 @@ export default function RegisterForm() {
         setClientForm(updatedFormData);
 
         if (name === "password" || name === "passwordConfirmation") {
-            const passwordError = validateField("password", updatedFormData.password, updatedFormData);
-            const passwordConfirmationError = validateField("passwordConfirmation", updatedFormData.passwordConfirmation, updatedFormData);
+            const passwordError = validateField(
+                "password",
+                updatedFormData.password,
+                updatedFormData,
+            );
+            const passwordConfirmationError = validateField(
+                "passwordConfirmation",
+                updatedFormData.passwordConfirmation,
+                updatedFormData,
+            );
 
-            setFieldErrors(prev => ({
+            setFieldErrors((prev) => ({
                 ...prev,
                 password: passwordError,
-                passwordConfirmation: passwordConfirmationError
+                passwordConfirmation: passwordConfirmationError,
             }));
         } else {
             const error = validateField(name, value, updatedFormData);
-            setFieldErrors(prev => ({
+            setFieldErrors((prev) => ({
                 ...prev,
-                [name]: error
+                [name]: error,
             }));
         }
     };
@@ -77,13 +98,25 @@ export default function RegisterForm() {
         const errors = {};
         let isValid = true;
 
-        errors.username = validateField("username", clientForm.username, clientForm);
+        errors.username = validateField(
+            "username",
+            clientForm.username,
+            clientForm,
+        );
         if (errors.username) isValid = false;
 
-        errors.password = validateField("password", clientForm.password, clientForm);
+        errors.password = validateField(
+            "password",
+            clientForm.password,
+            clientForm,
+        );
         if (errors.password) isValid = false;
 
-        errors.passwordConfirmation = validateField("passwordConfirmation", clientForm.passwordConfirmation, clientForm);
+        errors.passwordConfirmation = validateField(
+            "passwordConfirmation",
+            clientForm.passwordConfirmation,
+            clientForm,
+        );
         if (errors.passwordConfirmation) isValid = false;
 
         setFieldErrors(errors);
@@ -101,8 +134,8 @@ export default function RegisterForm() {
         if (clientForm.password === clientForm.passwordConfirmation) {
             const formData = {
                 username: clientForm.username,
-                password: clientForm.password
-            }
+                password: clientForm.password,
+            };
 
             register(formData)
                 .then(() => {
@@ -111,26 +144,37 @@ export default function RegisterForm() {
                     navigate("/login");
                 })
                 .catch((error) => {
-                    const messages = error.message ? error.message.split(';') : ["Registration failed"];
+                    const messages = error.message
+                        ? error.message.split(";")
+                        : ["Registration failed"];
                     setErrorMessages(messages);
-                })
+                });
         } else {
-            setErrorMessages(["Password confirmation failed!"])
+            setErrorMessages(["Password confirmation failed!"]);
         }
     };
 
-    const isFormValid = !fieldErrors.username && !fieldErrors.password && !fieldErrors.passwordConfirmation
-        && clientForm.username && clientForm.password && clientForm.passwordConfirmation;
+    const isFormValid =
+        !fieldErrors.username &&
+        !fieldErrors.password &&
+        !fieldErrors.passwordConfirmation &&
+        clientForm.username &&
+        clientForm.password &&
+        clientForm.passwordConfirmation;
 
     return (
         <div className="auth-form">
-            <form className="auth-form__form" method="POST" onSubmit={handleSubmit}>
+            <form
+                className="auth-form__form"
+                method="POST"
+                onSubmit={handleSubmit}
+            >
                 <div className="auth-form__field">
                     <label className="auth-form__label" htmlFor="username">
                         Username
                     </label>
                     <input
-                        className={`auth-form__input ${fieldErrors.username ? 'auth-form__input--error' : ''}`}
+                        className={`auth-form__input ${fieldErrors.username ? "auth-form__input--error" : ""}`}
                         id="username"
                         name="username"
                         type="text"
@@ -142,7 +186,9 @@ export default function RegisterForm() {
                         placeholder="Enter 5-20 characters"
                     />
                     {fieldErrors.username && (
-                        <span className="auth-form__error">{fieldErrors.username}</span>
+                        <span className="auth-form__error">
+                            {fieldErrors.username}
+                        </span>
                     )}
                 </div>
 
@@ -151,7 +197,7 @@ export default function RegisterForm() {
                         Password
                     </label>
                     <input
-                        className={`auth-form__input ${fieldErrors.password ? 'auth-form__input--error' : ''}`}
+                        className={`auth-form__input ${fieldErrors.password ? "auth-form__input--error" : ""}`}
                         id="password"
                         name="password"
                         type="password"
@@ -162,27 +208,40 @@ export default function RegisterForm() {
                         placeholder="Minimum 5 characters"
                     />
                     {fieldErrors.password ? (
-                        <span className="auth-form__error">{fieldErrors.password}</span>
-                    ) : clientForm.password && (
-                        <div className="auth-form__password-strength">
-                            <div className={`auth-form__password-strength-meter auth-form__password-strength-meter--${passwordStrength}`}></div>
-                        </div>
+                        <span className="auth-form__error">
+                            {fieldErrors.password}
+                        </span>
+                    ) : (
+                        clientForm.password && (
+                            <div className="auth-form__password-strength">
+                                <div
+                                    className={`auth-form__password-strength-meter auth-form__password-strength-meter--${passwordStrength}`}
+                                ></div>
+                            </div>
+                        )
                     )}
-                    
+
                     {clientForm.password && (
                         <div className="auth-form__password-hints">
-                            <div className="auth-form__password-hint">At least 5 characters</div>
-                            <div className="auth-form__password-hint">Strong: 12+ chars with uppercase & numbers</div>
+                            <div className="auth-form__password-hint">
+                                At least 5 characters
+                            </div>
+                            <div className="auth-form__password-hint">
+                                Strong: 12+ chars with uppercase & numbers
+                            </div>
                         </div>
                     )}
                 </div>
 
                 <div className="auth-form__field">
-                    <label className="auth-form__label" htmlFor="password-confirmation">
+                    <label
+                        className="auth-form__label"
+                        htmlFor="password-confirmation"
+                    >
                         Confirm Password
                     </label>
                     <input
-                        className={`auth-form__input ${fieldErrors.passwordConfirmation ? 'auth-form__input--error' : ''}`}
+                        className={`auth-form__input ${fieldErrors.passwordConfirmation ? "auth-form__input--error" : ""}`}
                         id="password-confirmation"
                         name="passwordConfirmation"
                         type="password"
@@ -193,7 +252,9 @@ export default function RegisterForm() {
                         placeholder="Confirm your password"
                     />
                     {fieldErrors.passwordConfirmation && (
-                        <span className="auth-form__error">{fieldErrors.passwordConfirmation}</span>
+                        <span className="auth-form__error">
+                            {fieldErrors.passwordConfirmation}
+                        </span>
                     )}
                 </div>
 
@@ -205,16 +266,20 @@ export default function RegisterForm() {
                     Create Account
                 </button>
             </form>
-            
+
             {errorMessages.length > 0 && (
                 <div className="auth-form__errors">
-                    {errorMessages.map((message, index) => (
-                        message && (
-                            <div key={index} className="auth-form__error-message">
-                                {message}
-                            </div>
-                        )
-                    ))}
+                    {errorMessages.map(
+                        (message, index) =>
+                            message && (
+                                <div
+                                    key={index}
+                                    className="auth-form__error-message"
+                                >
+                                    {message}
+                                </div>
+                            ),
+                    )}
                 </div>
             )}
         </div>

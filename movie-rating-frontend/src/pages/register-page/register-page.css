@@ -1,122 +1,130 @@
 /* Блок страницы регистрации */
 .register-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Контейнер контента (SMACSS: layout) */
 .register-page__content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl) var(--spacing-lg);
-  background: var(--gradient-cinematic);
-  position: relative;
-  overflow: hidden;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xxl) var(--spacing-lg);
+    background: var(--gradient-cinematic);
+    position: relative;
+    overflow: hidden;
 }
 
 /* Кинематографичный фон */
 .register-page__content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 50%, rgba(229, 9, 20, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 214, 10, 0.1) 0%, transparent 50%);
-  z-index: 0;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(
+            circle at 20% 50%,
+            rgba(229, 9, 20, 0.15) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 214, 10, 0.1) 0%,
+            transparent 50%
+        );
+    z-index: 0;
 }
 
 /* Контейнер формы */
 .register-page__form-container {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 500px;
-  background-color: rgba(10, 10, 10, 0.95);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xxl);
-  box-shadow: 
-    var(--shadow-lg),
-    0 0 40px rgba(229, 9, 20, 0.2),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 500px;
+    background-color: rgba(10, 10, 10, 0.95);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xxl);
+    box-shadow:
+        var(--shadow-lg),
+        0 0 40px rgba(229, 9, 20, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Заголовок страницы */
 .register-page__title {
-  text-align: center;
-  margin-bottom: var(--spacing-xxl);
-  color: var(--color-text-light);
-  font-size: var(--font-size-xxl);
-  font-weight: var(--font-weight-black);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  position: relative;
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+    color: var(--color-text-light);
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .register-page__title::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 4px;
-  background: var(--gradient-primary);
-  margin: var(--spacing-md) auto 0;
-  border-radius: 2px;
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: var(--gradient-primary);
+    margin: var(--spacing-md) auto 0;
+    border-radius: 2px;
 }
 
 /* Ссылка на логин */
 .register-page__login-link {
-  text-align: center;
-  margin-top: var(--spacing-xl);
-  color: var(--color-text-gray);
-  font-size: var(--font-size-md);
+    text-align: center;
+    margin-top: var(--spacing-xl);
+    color: var(--color-text-gray);
+    font-size: var(--font-size-md);
 }
 
 .register-page__login-link a {
-  color: var(--color-secondary);
-  text-decoration: none;
-  font-weight: var(--font-weight-medium);
-  transition: color var(--transition-fast);
+    color: var(--color-secondary);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: color var(--transition-fast);
 }
 
 .register-page__login-link a:hover {
-  color: var(--color-secondary-light);
-  text-decoration: underline;
+    color: var(--color-secondary-light);
+    text-decoration: underline;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .register-page__content {
-    padding: var(--spacing-xl) var(--spacing-md);
-  }
-  
-  .register-page__form-container {
-    padding: var(--spacing-xl) var(--spacing-lg);
-  }
-  
-  .register-page__title {
-    font-size: var(--font-size-xl);
-  }
+    .register-page__content {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .register-page__form-container {
+        padding: var(--spacing-xl) var(--spacing-lg);
+    }
+
+    .register-page__title {
+        font-size: var(--font-size-xl);
+    }
 }
 
 /* Анимация появления */
 @keyframes pageFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .register-page__form-container {
-  animation: pageFadeIn var(--transition-slow) ease-out;
+    animation: pageFadeIn var(--transition-slow) ease-out;
 }

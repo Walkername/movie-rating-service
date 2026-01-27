@@ -1,31 +1,31 @@
 /* Сетка для каталога */
 .movie-catalog__grid {
-  display: grid;
-  grid-template-columns: repeat(var(--catalog-grid-columns), 1fr);
-  gap: var(--catalog-grid-gap);
+    display: grid;
+    grid-template-columns: repeat(var(--catalog-grid-columns), 1fr);
+    gap: var(--catalog-grid-gap);
 }
 
 .movie-catalog__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
 /* Адаптивная сетка */
 @media (max-width: 1200px) {
-  .movie-catalog__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+    .movie-catalog__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-  .movie-catalog__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .movie-catalog__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 480px) {
-  .movie-catalog__grid {
-    grid-template-columns: 1fr;
-  }
+    .movie-catalog__grid {
+        grid-template-columns: 1fr;
+    }
 }

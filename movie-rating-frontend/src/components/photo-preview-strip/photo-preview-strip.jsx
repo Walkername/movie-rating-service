@@ -9,7 +9,7 @@ export default function PhotoPreviewStrip({
     context,
     contextId,
     additionalActions = [],
-    maxPhotos = 10
+    maxPhotos = 10,
 }) {
     const [isLoading, setIsLoading] = useState(true);
     const [viewStatus, setViewStatus] = useState(false);
@@ -22,7 +22,7 @@ export default function PhotoPreviewStrip({
         limit: 0,
         page: 0,
         totalElements: 0,
-        totalPages: 0
+        totalPages: 0,
     });
 
     const handlePhotoClick = (photo) => {
@@ -57,7 +57,7 @@ export default function PhotoPreviewStrip({
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollBy({
                 left: -300,
-                behavior: 'smooth'
+                behavior: "smooth",
             });
         }
     };
@@ -66,7 +66,7 @@ export default function PhotoPreviewStrip({
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollBy({
                 left: 300,
-                behavior: 'smooth'
+                behavior: "smooth",
             });
         }
     };
@@ -76,27 +76,28 @@ export default function PhotoPreviewStrip({
             const container = scrollContainerRef.current;
             setShowLeftButton(container.scrollLeft > 10);
             setShowRightButton(
-                container.scrollLeft < container.scrollWidth - container.clientWidth - 10
+                container.scrollLeft <
+                    container.scrollWidth - container.clientWidth - 10,
             );
         }
     }, []);
 
     useEffect(() => {
         checkScrollButtons();
-        
+
         const container = scrollContainerRef.current;
         const handleScroll = () => checkScrollButtons();
-        
+
         if (container) {
-            container.addEventListener('scroll', handleScroll);
-            window.addEventListener('resize', checkScrollButtons);
+            container.addEventListener("scroll", handleScroll);
+            window.addEventListener("resize", checkScrollButtons);
         }
 
         return () => {
             if (container) {
-                container.removeEventListener('scroll', handleScroll);
+                container.removeEventListener("scroll", handleScroll);
             }
-            window.removeEventListener('resize', checkScrollButtons);
+            window.removeEventListener("resize", checkScrollButtons);
         };
     }, [pageResponse.content, checkScrollButtons]);
 
@@ -127,8 +128,8 @@ export default function PhotoPreviewStrip({
                     </Link>
                 </div>
                 <div className="photo-strip__empty">
-                    <svg 
-                        className="photo-strip__empty-icon" 
+                    <svg
+                        className="photo-strip__empty-icon"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                     >
@@ -178,9 +179,9 @@ export default function PhotoPreviewStrip({
                 >
                     <div className="photo-strip__scroll">
                         {pageResponse.content.map((photo, index) => (
-                            <div 
-                                key={photo.id || index} 
-                                className="photo-strip__item" 
+                            <div
+                                key={photo.id || index}
+                                className="photo-strip__item"
                                 onClick={() => handlePhotoClick(photo)}
                                 role="button"
                                 tabIndex={0}
@@ -191,15 +192,16 @@ export default function PhotoPreviewStrip({
                                     className="photo-strip__image"
                                     loading="lazy"
                                     onError={(e) => {
-                                        e.target.src = 'https://via.placeholder.com/200x150/333/666?text=Photo+Error';
+                                        e.target.src =
+                                            "https://via.placeholder.com/200x150/333/666?text=Photo+Error";
                                     }}
                                 />
-                                    <span className="photo-strip__count">
-                                        {index + 1}/{pageResponse.totalElements}
-                                    </span>
+                                <span className="photo-strip__count">
+                                    {index + 1}/{pageResponse.totalElements}
+                                </span>
                             </div>
                         ))}
-                        
+
                         {pageResponse.totalElements > maxPhotos && (
                             <Link
                                 to={`/${context}/${contextId}/photos`}
@@ -213,7 +215,9 @@ export default function PhotoPreviewStrip({
                                     >
                                         <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                                     </svg>
-                                    <span className="photo-strip__more-text">View All</span>
+                                    <span className="photo-strip__more-text">
+                                        View All
+                                    </span>
                                     {remainingPhotos > 0 && (
                                         <span className="photo-strip__more-count">
                                             +{remainingPhotos}
@@ -247,8 +251,10 @@ export default function PhotoPreviewStrip({
                     setSelectedPhoto={setSelectedPhoto}
                     additionalActions={additionalActions}
                     photos={pageResponse.content} // Передаем все фотографии для навигации
-                    currentIndex={pageResponse.content.findIndex(photo => 
-                        selectedPhoto && (photo.fileId === selectedPhoto.fileId)
+                    currentIndex={pageResponse.content.findIndex(
+                        (photo) =>
+                            selectedPhoto &&
+                            photo.fileId === selectedPhoto.fileId,
                     )}
                     onIndexChange={(newIndex) => {
                         // Можно обновить состояние, если нужно

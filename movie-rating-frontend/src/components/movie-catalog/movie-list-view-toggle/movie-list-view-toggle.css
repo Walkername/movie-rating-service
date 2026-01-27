@@ -1,67 +1,67 @@
 /* Блок переключения вида */
 .view-toggle {
-  display: flex;
-  gap: var(--spacing-xs);
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-xs);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: var(--spacing-xs);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-xs);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Кнопки переключения */
 .view-toggle__button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: none;
-  border: none;
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  color: var(--color-text-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-text-gray);
 }
 
 .view-toggle__button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--color-text-light);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-light);
 }
 
 .view-toggle__button--active {
-  background-color: var(--color-primary);
-  color: white;
+    background-color: var(--color-primary);
+    color: white;
 }
 
 .view-toggle__button--active:hover {
-  background-color: var(--color-primary-dark);
-  color: white;
+    background-color: var(--color-primary-dark);
+    color: white;
 }
 
 /* Иконки */
 .view-toggle__icon {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
 }
 
 /* Подсказки */
 .view-toggle__button[title] {
-  position: relative;
+    position: relative;
 }
 
 .view-toggle__button[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--color-dark);
-  color: var(--color-text-light);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-xs);
-  white-space: nowrap;
-  z-index: 1000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-dark);
+    color: var(--color-text-light);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    white-space: nowrap;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }

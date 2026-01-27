@@ -1,26 +1,26 @@
 /* Импортируем все стили */
-@import './styles/base/_variables.css';
-@import './styles/layout/_navigation.css';
+@import "./styles/base/_variables.css";
+@import "./styles/layout/_navigation.css";
 
 /* Глобальные стили приложения */
 .app {
-  min-height: 100vh;
-  background: var(--gradient-cinematic);
-  color: var(--color-text-light);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background: var(--gradient-cinematic);
+    color: var(--color-text-light);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Утилитарные классы */
 .text-cinematic {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .glow-effect {
-  box-shadow: var(--shadow-cinematic);
+    box-shadow: var(--shadow-cinematic);
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
 }

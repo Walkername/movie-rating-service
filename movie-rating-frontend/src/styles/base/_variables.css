@@ -84,17 +84,17 @@
 
     /* Анимации */
     --loading-animation: loading 1.5s ease-in-out infinite;
-    
+
     /* Галерея */
     --gallery-grid-gap: var(--spacing-lg);
     --gallery-grid-columns: 4;
-    
+
     /* Загрузка файлов */
     --file-upload-max-size: 10MB;
-    
+
     /* Анимации галереи */
     --transition-gallery: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* Для каталога фильмов */
     --catalog-grid-gap: var(--spacing-lg);
     --catalog-grid-columns: 4;
@@ -112,40 +112,40 @@
     --genre-scifi: #00d2d3;
     --genre-romance: #ff6b81;
     --genre-thriller: #a4b0be;
-    
+
     /* Спиннеры */
     --spinner-size-sm: 24px;
     --spinner-size-md: 40px;
     --spinner-size-lg: 60px;
     --spinner-border-width: 3px;
-    
+
     /* Модальные окна */
     --modal-backdrop: rgba(0, 0, 0, 0.9);
     --modal-border: 1px solid rgba(255, 255, 255, 0.1);
     --modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    
+
     /* Анимации */
     --transition-modal: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 /* Адаптивные переменные для сетки галереи */
 @media (max-width: 1200px) {
-  :root {
-    --gallery-grid-columns: 3;
-  }
+    :root {
+        --gallery-grid-columns: 3;
+    }
 }
 
 @media (max-width: 768px) {
-  :root {
-    --gallery-grid-columns: 2;
-    --gallery-grid-gap: var(--spacing-md);
-  }
+    :root {
+        --gallery-grid-columns: 2;
+        --gallery-grid-gap: var(--spacing-md);
+    }
 }
 
 @media (max-width: 480px) {
-  :root {
-    --gallery-grid-columns: 1;
-  }
+    :root {
+        --gallery-grid-columns: 1;
+    }
 }
 
 @keyframes loading {
@@ -245,17 +245,21 @@
 
 /* Спиннер для кнопок */
 @keyframes buttonSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .delete-confirm-modal__spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: buttonSpin 0.6s linear infinite;
-  margin-right: var(--spacing-xs);
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: buttonSpin 0.6s linear infinite;
+    margin-right: var(--spacing-xs);
 }

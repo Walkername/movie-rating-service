@@ -7,10 +7,10 @@ export const addMovie = async (formData) => {
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData)
-            }
+                body: JSON.stringify(formData),
+            },
         );
         return await response;
     } catch (error) {
@@ -25,10 +25,10 @@ export const updateMovie = async (id, formData) => {
             {
                 method: "PATCH",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData)
-            }
+                body: JSON.stringify(formData),
+            },
         );
         return response;
     } catch (error) {
@@ -41,8 +41,8 @@ export const updateMoviePoster = async (id, fileId) => {
         const response = await customRequest(
             `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/${id}/poster-pic?fileId=${fileId}`,
             {
-                method: "PATCH"
-            }
+                method: "PATCH",
+            },
         );
         return response;
     } catch (error) {
@@ -55,8 +55,8 @@ export const deleteMovie = async (id) => {
         const response = await customRequest(
             `${process.env.REACT_APP_MOVIE_SERVICE_URL}/admin/movies/${id}`,
             {
-                method: "DELETE"
-            }
+                method: "DELETE",
+            },
         );
         return response;
     } catch (error) {

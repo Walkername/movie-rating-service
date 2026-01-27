@@ -7,14 +7,15 @@ export default function RegisterPage() {
     return (
         <div className="register-page">
             <NavigationBar />
-            
+
             <div className="register-page__content">
                 <div className="register-page__form-container">
                     <h1 className="register-page__title">Join Movie Cluster</h1>
                     <RegisterForm />
-                    
+
                     <div className="register-page__login-link">
-                        Already have an account? <Link to="/login">Sign In</Link>
+                        Already have an account?{" "}
+                        <Link to="/login">Sign In</Link>
                     </div>
                 </div>
             </div>
