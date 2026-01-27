@@ -7,7 +7,13 @@
   box-shadow: var(--shadow-lg);
   transition: all var(--transition-medium);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 1;
+}
+
+.post-container + .post-container {
+  position: relative;
+  z-index: 0;
 }
 
 .post-container:hover {

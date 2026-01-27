@@ -20,6 +20,7 @@ import FeedPage from "./pages/feed-page/feed-page";
 import AdminPostsTool from "./components/admin-tools/admin-posts-tool/admin-posts-tool";
 import ScrollToTop from "./utils/scroll-reset/scroll-to-top";
 import AdminPostUpdate from "./pages/admin-post-update/admin-post-update";
+import NotificationSystem from "./components/notification-system/notification-system";
 
 function App() {
     return (
@@ -55,6 +56,8 @@ function App() {
                 
                 <Route path=""></Route>
             </Routes>
+            
+            <NotificationSystem />
         </Router>
     );
 }
