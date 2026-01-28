@@ -16,17 +16,6 @@ function MainPage() {
                     </p>
                 </div>
 
-                {/* Опционально: герой-секция
-                <div className="main-page__hero">
-                    <div className="main-page__hero-content">
-                        <h2 className="main-page__hero-title">Featured Collection</h2>
-                        <p className="main-page__hero-text">
-                            Explore our hand-picked selection of critically acclaimed movies
-                        </p>
-                    </div>
-                </div>
-                */}
-
                 <div className="main-page__catalog">
                     <MovieList />
                 </div>

@@ -21,8 +21,11 @@ import AdminPostsTool from "./components/admin-tools/admin-posts-tool/admin-post
 import ScrollToTop from "./utils/scroll-reset/scroll-to-top";
 import AdminPostUpdate from "./pages/admin-post-update/admin-post-update";
 import NotificationSystem from "./components/notification-system/notification-system";
+import { useAuth } from "./utils/auth-hook/use-auth";
 
 function App() {
+    const isAuthenticated = useAuth();
+
     return (
         <Router>
             <ScrollToTop />
@@ -40,7 +43,10 @@ function App() {
                         />
                         <Route path="posts-tool" element={<AdminPostsTool />} />
                     </Route>
-                    <Route path="admin/posts/update/:id" element={<AdminPostUpdate />} />
+                    <Route
+                        path="admin/posts/update/:id"
+                        element={<AdminPostUpdate />}
+                    />
                 </Route>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/user/:id" element={<UserPage />} />
@@ -53,11 +59,11 @@ function App() {
                     element={<MoviePhotoCatalog />}
                 />
                 <Route path="/feed" element={<FeedPage />} />
-                
+
                 <Route path=""></Route>
             </Routes>
-            
-            <NotificationSystem />
+
+            {isAuthenticated && <NotificationSystem />}
         </Router>
     );
 }

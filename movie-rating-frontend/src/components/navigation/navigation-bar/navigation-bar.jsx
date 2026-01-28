@@ -13,6 +13,9 @@ function NavigationBar() {
     const handleLogout = (e) => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
+
+        window.dispatchEvent(new Event("authChange"));
+
         navigate("/login");
     };
 

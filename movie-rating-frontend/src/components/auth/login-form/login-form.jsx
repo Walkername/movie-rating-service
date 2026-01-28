@@ -92,6 +92,8 @@ export default function LoginForm() {
                 console.log("Login successful");
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
+                
+                window.dispatchEvent(new Event("authChange"));
 
                 // Опционально: сохранить в localStorage если rememberMe
                 if (formData.rememberMe) {

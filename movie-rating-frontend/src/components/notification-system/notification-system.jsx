@@ -3,12 +3,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import { getNotifications } from "../../api/notification-api";
+import NotificationPanel from "./notification-panel/notifications-panel";
 import "./notification-system.css";
 
 const NotificationSystem = () => {
+    const accessToken = localStorage.getItem("accessToken");
+    
     const [displayedNotifications, setDisplayedNotifications] = useState([]);
     const maxDisplayed = 3;
-    const displayDuration = 20000; // 5 секунд
+    const displayDuration = 20000; // 1000 = 1 second
 
     // Используем useRef для таймеров и очереди, чтобы избежать замыканий
     const timersRef = useRef([]);
@@ -16,8 +20,6 @@ const NotificationSystem = () => {
     const displayedRef = useRef([]);
 
     const functionsRef = useRef({});
-
-    const accessToken = localStorage.getItem("accessToken");
 
     // Функция для удаления уведомления
     const removeNotification = useCallback((id) => {
@@ -104,7 +106,7 @@ const NotificationSystem = () => {
         }
 
         const stompClient = new Client({
-            brokerURL: "ws://localhost:8087/ws",
+            brokerURL: process.env.REACT_APP_NOTIFICATION_WEBSOCKET_URL,
             connectHeaders: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -157,6 +159,18 @@ const NotificationSystem = () => {
     // Отображаем количество в очереди (опционально, для отладки)
     const queueLength = queueRef.current.length;
 
+    const [notifications, setNotifications] = useState([]);
+    
+    useEffect(() => {
+        getNotifications()
+            .then((data) => {
+                setNotifications(data.content);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [displayedNotifications]);
+    
     return createPortal(
         <div className="notification-system">
             {/* Индикатор очереди (только в development) */}
@@ -177,6 +191,9 @@ const NotificationSystem = () => {
                     />
                 ))}
             </div>
+            
+            {/* ВОТ ЗДЕСЬ! */}
+            <NotificationPanel notifications={notifications} setNotifications={setNotifications} />
         </div>,
         document.body,
     );
@@ -218,9 +235,16 @@ const NotificationToast = ({ notification, onClose, duration }) => {
     const navigate = useNavigate();
 
     const handleClose = () => {
+        setIsVisible(false);
+        setTimeout(() => {
+            onClose(notification.id);
+        }, 300); // Даем время для анимации исчезновения
+    };
+    
+    const handlePopupClick = () => {
         const urlToNavigate = defineUrlToNavigate(notification);
         navigate(urlToNavigate);
-
+        
         setIsVisible(false);
         setTimeout(() => {
             onClose(notification.id);
@@ -230,7 +254,7 @@ const NotificationToast = ({ notification, onClose, duration }) => {
     return (
         <div
             className={`notification-toast ${isVisible ? "visible" : "hiding"}`}
-            onClick={handleClose}
+            onClick={handlePopupClick}
         >
             <div className="notification-header">
                 <div className="notification-title">{notification.title}</div>
@@ -254,7 +278,7 @@ const NotificationToast = ({ notification, onClose, duration }) => {
             </div>
             <div className="notification-footer">
                 <small>
-                    {new Date(notification.deliveredAt).toLocaleTimeString()}
+                    {new Date(notification.createdAt).toLocaleTimeString()}
                 </small>
                 <div
                     className="notification-progress"
