@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.walkername.notification_service.exceptions.InvalidJWTException;
 import ru.walkername.notification_service.services.TokenService;
 
 import java.util.Collections;
@@ -32,12 +33,12 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
             List<String> authHeaders = accessor.getNativeHeader("Authorization");
 
             if (authHeaders == null || authHeaders.isEmpty()) {
-                throw new RuntimeException("Authorization header is required");
+                throw new InvalidJWTException("Authorization header is required");
             }
 
             String authHeader = authHeaders.getFirst();
             if (!authHeader.startsWith("Bearer ")) {
-                throw new RuntimeException("Authorization header is incorrect");
+                throw new InvalidJWTException("Authorization header is required");
             }
 
             String token = authHeader.substring(7);
@@ -67,7 +68,7 @@ public class WebSocketChannelInterceptor implements ChannelInterceptor {
             accessor.setUser(auth);
 
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Invalid JWT token");
+            throw new InvalidJWTException("Invalid JWT token");
         }
     }
 }

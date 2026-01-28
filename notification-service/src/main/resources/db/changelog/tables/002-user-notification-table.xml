@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="001-create-user-notification-table" author="walkername">
+        <createTable tableName="user_notification">
+            <column name="id" type="BIGINT" autoIncrement="true" generationType="BY DEFAULT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="user_id" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="notification_id" type="BIGINT" >
+                <constraints nullable="false" unique="true"
+                             foreignKeyName="fk_user_notification_notification_id" references="notification(id)" />
+            </column>
+            <column name="is_read" type="BOOLEAN" defaultValue="false" >
+                <constraints nullable="false" />
+            </column>
+            <column name="read_at" type="TIMESTAMPTZ" >
+                <constraints nullable="true" />
+            </column>
+            <column name="delivered_at" type="TIMESTAMPTZ" defaultValueComputed="CURRENT_TIMESTAMP" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="002-fix-user-notification-unique" author="walkername">
+        <dropUniqueConstraint
+                tableName="user_notification"
+                constraintName="user_notification_notification_id_key"/>
+
+        <addUniqueConstraint
+                tableName="user_notification"
+                columnNames="user_id, notification_id"
+                constraintName="user_notification_notification_id_key"/>
+    </changeSet>
+
+
+</databaseChangeLog>

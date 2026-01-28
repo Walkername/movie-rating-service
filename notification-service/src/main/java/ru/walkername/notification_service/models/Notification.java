@@ -8,9 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -18,8 +17,7 @@ import java.time.Instant;
 import java.util.Map;
 
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "notification")
 public class Notification {
@@ -45,14 +43,8 @@ public class Notification {
     @Column(name = "entity_type")
     private EntityType entityType;
 
-    @Column(name = "delivered_at")
-    private Instant deliveredAt;
-
-    @Column(name = "is_read", nullable = false)
-    private boolean read;
-
-    @Column(name = "read_at")
-    private Instant readAt;
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")

@@ -28,7 +28,7 @@ public class NotificationResponse {
 
     private EntityType entityType;
 
-    private Instant deliveredAt;
+    private Instant createdAt;
 
     private boolean read;
 
