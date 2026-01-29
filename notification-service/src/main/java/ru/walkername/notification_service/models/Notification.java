@@ -46,6 +46,9 @@ public class Notification {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Column(name = "expires_at")
+    private Instant expiresAt;
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")
     private Map<String, Object> metadata;

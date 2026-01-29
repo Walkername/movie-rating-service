@@ -40,5 +40,12 @@
                 constraintName="user_notification_notification_id_key"/>
     </changeSet>
 
+    <changeSet id="003-add-expires-at-field" author="walkername">
+        <addColumn tableName="user_notification">
+            <column name="expires_at" type="TIMESTAMPTZ">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

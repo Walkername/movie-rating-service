@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.walkername.notification_service.dto.UserNotificationResponse;
 import ru.walkername.notification_service.models.UserNotification;
-import ru.walkername.notification_service.models.UserNotificationView;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +20,13 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
     @Transactional
     @Modifying
     @Query(value = """
-            INSERT INTO user_notification (user_id, notification_id, is_read, delivered_at)
+            INSERT INTO user_notification (user_id, notification_id, is_read, delivered_at, expires_at)
             SELECT
                 :userId,
                 n.id,
                 false,
-                n.created_at
+                n.created_at,
+                n.expires_at
             FROM notification n
             WHERE
                 (
@@ -43,21 +44,23 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
     int createMissingUserNotifications(@Param("userId") Long userId);
 
     @Query("""
-            SELECT
-                        un.id as id,
-                        n.id as notificationId,
-                        n.entityType as entityType,
-                        n.title as title,
-                        n.message as message,
-                        un.read as read,
-                        un.readAt as readAt,
-                        un.deliveredAt as deliveredAt
+            SELECT new ru.walkername.notification_service.dto.UserNotificationResponse(
+                        un.id,
+                        n.id,
+                        n.entityType,
+                        n.title,
+                        n.message,
+                        un.read,
+                        un.readAt,
+                        un.deliveredAt,
+                        un.expiresAt
+                                    )
                     FROM UserNotification un
                     JOIN Notification n ON n.id = un.notificationId
                     WHERE un.userId = :userId
                     ORDER BY n.createdAt DESC
             """)
-    Page<UserNotificationView> findUserNotifications(
+    Page<UserNotificationResponse> findUserNotifications(
             @Param("userId") Long userId,
             Pageable pageable
     );
@@ -68,5 +71,10 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
     @Modifying
     @Query("UPDATE UserNotification un SET un.read = true, un.readAt = CURRENT_TIMESTAMP WHERE un.id IN :ids")
     void markAsReadByIds(List<Long> ids);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM UserNotification WHERE expiresAt < CURRENT_TIMESTAMP")
+    void deleteExpired();
 
 }

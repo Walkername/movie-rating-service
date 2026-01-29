@@ -34,4 +34,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="002-add-expires-at-field" author="walkername">
+        <addColumn tableName="notification">
+            <column name="expires_at" type="TIMESTAMPTZ">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

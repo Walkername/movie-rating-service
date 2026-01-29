@@ -1,7 +1,6 @@
 package ru.walkername.notification_service.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.walkername.notification_service.dto.NotificationResponse;
-import ru.walkername.notification_service.models.UserNotificationView;
+import ru.walkername.notification_service.dto.PageResponse;
+import ru.walkername.notification_service.dto.UserNotificationResponse;
 import ru.walkername.notification_service.security.UserPrincipal;
 import ru.walkername.notification_service.services.NotificationService;
-import ru.walkername.notification_service.util.NotificationModelMapper;
 
 import java.util.List;
 
@@ -26,13 +25,11 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    private final NotificationModelMapper notificationModelMapper;
-
     @GetMapping("")
-    public ResponseEntity<Page<UserNotificationView>> getNotifications(
+    public ResponseEntity<PageResponse<UserNotificationResponse>> getNotifications(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        Page<UserNotificationView> notifications = notificationService.getUserNotifications(userPrincipal.getUserId());
+        PageResponse<UserNotificationResponse> notifications = notificationService.getUserNotifications(userPrincipal.getUserId());
 
         return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
