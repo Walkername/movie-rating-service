@@ -22,7 +22,7 @@ jobs:
       - name: Check changes
         id: check
         run: |
-          JAVA_PROJECTS="user-profile movie-catalog rating-system file-service user-library feed-service notification-service report-service"
+          JAVA_PROJECTS="user-profile movie-catalog rating-system file-service user-library feed-service notification-service conversation-service"
           BUILD_JAVA="false"
           BUILD_JS="false"
           
@@ -62,7 +62,7 @@ jobs:
 
       - name: Build all Java projects
         run: |
-          JAVA_PROJECTS="user-profile movie-catalog rating-system file-service user-library feed-service notification-service report-service"
+          JAVA_PROJECTS="user-profile movie-catalog rating-system file-service user-library feed-service notification-service conversation-service"
           
           # Iterate all Java project directories
           for dir in $JAVA_PROJECTS; do
