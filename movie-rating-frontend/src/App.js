@@ -22,6 +22,7 @@ import ScrollToTop from "./utils/scroll-reset/scroll-to-top";
 import AdminPostUpdate from "./pages/admin-post-update/admin-post-update";
 import NotificationSystem from "./components/notification-system/notification-system";
 import { useAuth } from "./utils/auth-hook/use-auth";
+import SupportPage from "./pages/support-page/support-page";
 
 function App() {
     const isAuthenticated = useAuth();
@@ -59,6 +60,7 @@ function App() {
                     element={<MoviePhotoCatalog />}
                 />
                 <Route path="/feed" element={<FeedPage />} />
+                <Route path="/support" element={<SupportPage />} />
 
                 <Route path=""></Route>
             </Routes>
