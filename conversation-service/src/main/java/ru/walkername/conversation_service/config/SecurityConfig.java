@@ -25,9 +25,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/chat", "/chat/messages"
-                        ).permitAll()
+//                        .requestMatchers(
+//                                "/chat", "/chat/messages"
+//                        ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)

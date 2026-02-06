@@ -1,5 +1,6 @@
 package ru.walkername.conversation_service.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,7 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")
+    @JsonBackReference
     private Chat chat;
 
     @Column(name = "user_id")

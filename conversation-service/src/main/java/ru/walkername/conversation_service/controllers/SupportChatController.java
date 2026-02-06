@@ -4,51 +4,39 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.walkername.conversation_service.dto.ChatRequest;
 import ru.walkername.conversation_service.dto.ChatResponse;
-import ru.walkername.conversation_service.exceptions.ChatWrongValidationException;
 import ru.walkername.conversation_service.models.Chat;
 import ru.walkername.conversation_service.security.UserPrincipal;
-import ru.walkername.conversation_service.services.ChatService;
+import ru.walkername.conversation_service.services.SupportChatService;
 import ru.walkername.conversation_service.util.ChatModelMapper;
-import ru.walkername.conversation_service.util.DTOValidator;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/chats")
-public class ChatController {
+@RequestMapping("/support-chats")
+public class SupportChatController {
 
-    private final ChatService chatService;
+    private final SupportChatService supportChatService;
     private final ChatModelMapper chatModelMapper;
 
-    @GetMapping("/{chatId}")
+    @GetMapping()
     public ResponseEntity<ChatResponse> get(
-            @PathVariable Long chatId,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        Chat chat = chatService.findOne(chatId, userPrincipal.getUserId());
+        Chat chat = supportChatService.get(userPrincipal.getUserId());
         ChatResponse chatResponse = chatModelMapper.toChatResponse(chat);
         return new ResponseEntity<>(chatResponse, HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<ChatResponse> create(
-            @RequestBody ChatRequest chatRequest,
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            BindingResult bindingResult
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        DTOValidator.validate(bindingResult, ChatWrongValidationException::new);
-
-        Chat chat = chatModelMapper.toChat(chatRequest);
-        Chat savedChat = chatService.save(chat, userPrincipal.getUserId());
-        ChatResponse chatResponse = chatModelMapper.toChatResponse(savedChat);
+        Chat chat = supportChatService.create(userPrincipal.getUserId());
+        ChatResponse chatResponse = chatModelMapper.toChatResponse(chat);
         return new ResponseEntity<>(chatResponse, HttpStatus.CREATED);
     }
 
