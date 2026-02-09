@@ -41,19 +41,17 @@ public class MessageController {
         DTOValidator.validate(bindingResult, MessageWrongValidationException::new);
 
         Message message = messageModelMapper.toMessage(messageRequest);
-        message.setUserId(userPrincipal.getUserId());
 
-        Message savedMessage = messageService.save(message, chatId);
+        Message savedMessage = messageService.send(message, chatId, userPrincipal);
 
         return new ResponseEntity<>(savedMessage, HttpStatus.CREATED);
     }
 
     @GetMapping()
     public ResponseEntity<List<MessageResponse>> getMessagesByChat(
-            @PathVariable Long chatId,
-            @AuthenticationPrincipal UserPrincipal userPrincipal
+            @PathVariable Long chatId
     ) {
-        List<Message> messages = messageService.findMessagesByChatId(chatId, userPrincipal.getUserId());
+        List<Message> messages = messageService.findMessagesByChatId(chatId);
         List<MessageResponse> messageResponses = messages.stream().map(messageModelMapper::toMessageResponse).toList();
         return new ResponseEntity<>(messageResponses, HttpStatus.OK);
     }

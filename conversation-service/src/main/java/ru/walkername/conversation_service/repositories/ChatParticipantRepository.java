@@ -6,4 +6,7 @@ import ru.walkername.conversation_service.models.ChatParticipant;
 
 @Repository
 public interface ChatParticipantRepository extends JpaRepository<ChatParticipant, Long> {
+
+    boolean existsByChatIdAndUserId(Long chatId, Long userId);
+
 }

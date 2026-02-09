@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.conversation_service.exceptions.ChatNotFoundException;
 import ru.walkername.conversation_service.models.Chat;
 import ru.walkername.conversation_service.models.ChatParticipant;
-import ru.walkername.conversation_service.models.ChatType;
 import ru.walkername.conversation_service.repositories.ChatParticipantRepository;
 import ru.walkername.conversation_service.repositories.ChatRepository;
+import ru.walkername.conversation_service.security.UserPrincipal;
 
 import java.time.Instant;
 
@@ -28,7 +28,6 @@ public class ChatService {
 
     @Transactional
     public Chat save(Chat chat, Long userId) {
-        chat.setType(ChatType.GROUP);
         chat.setCreatedAt(Instant.now());
         Chat savedChat = chatRepository.save(chat);
 
@@ -43,6 +42,18 @@ public class ChatService {
         chatParticipant.setChatId(chatId);
         chatParticipant.setJoinedAt(Instant.now());
         chatParticipantRepository.save(chatParticipant);
+    }
+
+    public boolean canAccessChat(Long chatId, UserPrincipal userPrincipal) {
+        if (!chatRepository.existsById(chatId)) {
+            return false;
+        }
+
+        if (userPrincipal.getRole().equals("ADMIN")) {
+            return true;
+        }
+
+        return chatParticipantRepository.existsByChatIdAndUserId(chatId, userPrincipal.getUserId());
     }
 
     @Transactional
