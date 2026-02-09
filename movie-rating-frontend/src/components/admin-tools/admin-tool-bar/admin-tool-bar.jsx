@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./admin-tool-bar.css";
 
 const ADMIN_TOOLS = [
@@ -18,10 +18,18 @@ const ADMIN_TOOLS = [
         path: "./posts-tool",
         className: "admin-toolbar__button--posts",
     },
+    {
+        name: "Support",
+        path: "./support",
+        className: "admin-toolbar__button--support"
+    }
 ];
 
 export default function AdminToolBar() {
-    const [activeTool, setActiveTool] = useState(ADMIN_TOOLS[0]);
+    const location = useLocation();
+    const currentTool = computeCurrentTool(location);
+    
+    const [activeTool, setActiveTool] = useState(currentTool);
 
     const navigate = useNavigate();
 
@@ -57,4 +65,12 @@ export default function AdminToolBar() {
             </div>
         </div>
     );
+}
+
+function computeCurrentTool(location) {
+    const currentPath = "./" + location.pathname.split("/").filter(Boolean).at(-1);
+    let currentTool = ADMIN_TOOLS.find(tool => tool.path === currentPath);
+    currentTool = currentTool === undefined ? ADMIN_TOOLS[0] : currentTool;
+    
+    return currentTool;
 }

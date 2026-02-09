@@ -36,12 +36,21 @@ function NavigationBar() {
                     News Feed
                 </Link>
                 {token && (
-                    <Link
-                        className="nav__link nav__link--profile"
-                        to={`/user/${id}`}
-                    >
-                        Profile
-                    </Link>
+                    <>
+                        <Link
+                            className="nav__link nav__link--profile"
+                            to={`/user/${id}`}
+                        >
+                            Profile
+                        </Link>
+
+                        <Link
+                            className="nav__link nav__link--support"
+                            to="/support"
+                        >
+                            Support
+                        </Link>
+                    </>
                 )}
 
                 <div className="nav__auth-buttons">

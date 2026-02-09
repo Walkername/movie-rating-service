@@ -23,6 +23,7 @@ import AdminPostUpdate from "./pages/admin-post-update/admin-post-update";
 import NotificationSystem from "./components/notification-system/notification-system";
 import { useAuth } from "./utils/auth-hook/use-auth";
 import SupportPage from "./pages/support-page/support-page";
+import AdminSupportChat from "./components/admin-tools/admin-support-chat/admin-support-chat";
 
 function App() {
     const isAuthenticated = useAuth();
@@ -43,6 +44,7 @@ function App() {
                             element={<AdminMoviesTool />}
                         />
                         <Route path="posts-tool" element={<AdminPostsTool />} />
+                        <Route path="support" element={<AdminSupportChat />} />
                     </Route>
                     <Route
                         path="admin/posts/update/:id"
