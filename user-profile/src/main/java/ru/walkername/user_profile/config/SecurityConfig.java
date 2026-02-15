@@ -43,6 +43,7 @@ public class SecurityConfig {
                                 "/users/username/{username}",
                                 "/users/batch"
                         ).permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

@@ -128,6 +128,24 @@ services:
         networks:
             - moviecluster
     
+    prometheus:
+        image: prom/prometheus:v3.9.1
+        container_name: prometheus
+        volumes:
+            - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+            - "9090:9090"
+        networks:
+            - moviecluster
+    
+    grafana:
+        image: grafana/grafana:12.3
+        container_name: grafana
+        ports:
+            - "3001:3000"
+        networks:
+            - moviecluster
+    
     filebeat:
         image: elastic/filebeat:9.1.5
         container_name: filebeat
