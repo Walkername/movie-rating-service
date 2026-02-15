@@ -1,5 +1,5 @@
-FROM openjdk:21-jdk-oracle
+FROM eclipse-temurin:25-jre
 WORKDIR /app
-COPY target/user-profile.jar /app/user-profile.jar
+COPY target/user-profile.jar user-profile.jar
 #EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "user-profile.jar"]
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "user-profile.jar"]

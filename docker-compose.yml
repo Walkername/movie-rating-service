@@ -142,8 +142,23 @@ services:
         networks:
             - moviecluster
     
+    user-profile:
+        build:
+            context: ./user-profile
+            dockerfile: Dockerfile
+        container_name: user-profile
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=postgres
+            - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
+            - SPRING_DATA_REDIS_HOST=redis-cache
+            - SPRING_DATA_REDIS_PORT=6379
+        ports:
+            - "8080:8080"
         depends_on:
             - esearch-storage
+            - postgresql
         networks:
             - moviecluster
     

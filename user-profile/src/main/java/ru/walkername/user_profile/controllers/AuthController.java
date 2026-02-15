@@ -77,6 +77,7 @@ public class AuthController {
         // Update refresh token
         authService.updateRefreshToken(userDB.getId(), refreshToken);
         JWTResponse jwtResponse = new JWTResponse(accessToken, refreshToken);
+
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 

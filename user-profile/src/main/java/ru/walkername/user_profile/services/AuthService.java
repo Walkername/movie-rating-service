@@ -1,6 +1,7 @@
 package ru.walkername.user_profile.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,8 @@ import ru.walkername.user_profile.repositories.UsersRepository;
 import java.util.Date;
 import java.util.Optional;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
@@ -21,19 +24,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokensRepository refreshTokensRepository;
 
-    @Autowired
-    public AuthService(
-            UsersRepository usersRepository,
-            PasswordEncoder passwordEncoder,
-            RefreshTokensRepository refreshTokensRepository) {
-        this.usersRepository = usersRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.refreshTokensRepository = refreshTokensRepository;
-    }
-
     @Transactional
     public void register(User user) {
         if (usersRepository.existsByUsername(user.getUsername())) {
+            log.warn("Registration attempt for existing username: {}", user.getUsername());
             throw new UserExistsException("User with such username already exists");
         }
 
@@ -42,17 +36,24 @@ public class AuthService {
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
         usersRepository.save(user);
+
+        log.debug("User registered successfully: {}", user.getUsername());
     }
 
     public User checkAndGet(User user) {
-        User dbUser = usersRepository.findByUsername(user.getUsername()).orElseThrow(
-                () -> new UserNotFoundException("Wrong credentials")
-        );
+        User dbUser = usersRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> {
+                            log.warn("Login attempt with non-existing username: {}", user.getUsername());
+                            return new UserNotFoundException("Wrong credentials");
+                        }
+                );
 
         if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+            log.warn("Invalid password attempt for username: {}", user.getUsername());
             throw new InvalidCredentials("Wrong credentials");
         }
 
+        log.debug("User successfully authenticated: {}", dbUser.getUsername());
         return dbUser;
     }
 

@@ -1,6 +1,7 @@
 package ru.walkername.user_profile.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class UsersService {
@@ -34,23 +37,13 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final UserModelMapper userModelMapper;
 
-    @Autowired
-    public UsersService(
-            UsersRepository usersRepository,
-            UserModelMapper userModelMapper) {
-        this.usersRepository = usersRepository;
-        this.userModelMapper = userModelMapper;
-    }
+    private static final String USER_AVATAR = "user-avatar";
 
     @Cacheable(cacheNames = "user", key = "#id", unless = "#result == null")
     public User findOne(Long id) {
-        Optional<User> user = usersRepository.findById(id);
-        return user.orElse(null);
-    }
-
-    @Transactional
-    public void save(User user) {
-        usersRepository.save(user);
+        return usersRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
     }
 
     @CacheEvict(cacheNames = "user", key = "#id")
@@ -58,31 +51,45 @@ public class UsersService {
     public void delete(Long id) {
         boolean userExists = usersRepository.existsById(id);
         if (!userExists) {
+            log.warn("Delete attempt for non-existent user with id={}", id);
             throw new UserNotFoundException("User not found");
         }
         usersRepository.deleteById(id);
+
+        log.debug("User with id {} has been deleted", id);
     }
 
     @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
     public void update(Long id, UserDTO newUser) {
         User user = usersRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User not found")
+                () -> {
+                    log.warn("Update attempt for non-existent user with id={}", id);
+                    return new UserNotFoundException("User not found");
+                }
         );
 
         userModelMapper.convertToUser(newUser, user);
+
+        log.debug("User with id {} has been updated", id);
     }
 
     @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
     public void updateUsername(Long id, String newUsername) {
         User user = usersRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User not found")
+                () -> {
+                    log.warn("Update username attempt for non-existent user with id={}", id);
+                    return new UserNotFoundException("User not found");
+                }
         );
         if (usersRepository.existsByUsername(newUsername)) {
+            log.warn("Update username attempt for existing username with id={}", id);
             throw new UserExistsException("User with such username already exists");
         }
         user.setUsername(newUsername);
+
+        log.debug("User username with id {} has been updated", id);
     }
 
     @CacheEvict(cacheNames = "user", key = "#fileUploaded.getContextId()",
@@ -94,24 +101,36 @@ public class UsersService {
             containerFactory = "fileUploadedContainerFactory"
     )
     public void saveProfilePicture(FileUploaded fileUploaded) {
-        if (fileUploaded.getContext() != null && fileUploaded.getContext().equals("user-avatar")) {
-            Optional<User> currentUser = usersRepository.findById(fileUploaded.getContextId());
-            currentUser.ifPresent(user -> user.setProfilePicId(fileUploaded.getFileId()));
+        if (fileUploaded.getContext() != null && fileUploaded.getContext().equals(USER_AVATAR)) {
+            User currentUser = usersRepository.findById(fileUploaded.getContextId())
+                    .orElseThrow(() -> {
+                                log.warn(
+                                        "From kafka: update profile-pic-id attempt for not existing user with id={}",
+                                        fileUploaded.getContextId()
+                                );
+                                return new UserNotFoundException("User not found");
+                            }
+                    );
+
+            currentUser.setProfilePicId(fileUploaded.getFileId());
+            log.debug("User (#{}) profile-pic-id has been updated on: {}", currentUser.getId(), fileUploaded.getFileId());
+        } else if (fileUploaded.getContext() == null) {
+            log.error("Kafka event FileUploaded context is null");
         }
     }
 
     @CacheEvict(cacheNames = "user", key = "#userId")
     @Transactional
     public void updateProfilePicture(Long userId, Long fileId) {
-        Optional<User> currentUser = usersRepository.findById(userId);
-        currentUser.ifPresent(user -> user.setProfilePicId(fileId));
-    }
+        User currentUser = usersRepository.findById(userId)
+                .orElseThrow(() -> {
+                            log.warn("From API: update profile-pic-id attempt for not existing user with id={}", userId);
+                            return new UserNotFoundException("User not found");
+                        }
+                );
 
-    // The method is prohibited
-    // Get list only with pagination
-//    public List<User> getAll() {
-//        return usersRepository.findAll();
-//    }
+        currentUser.setProfilePicId(fileId);
+    }
 
     public User findByUsername(String username) {
         return usersRepository.findByUsername(username).orElseThrow(
@@ -122,35 +141,6 @@ public class UsersService {
     public boolean existsByUsername(String username) {
         return usersRepository.existsByUsername(username);
     }
-
-//    public List<UserDetails> getUsersByMovie(Long id) {
-//        String url = RATING_SERVICE_API + "/ratings/movie/" + id;
-//
-//        RatingsResponse ratingsResponse = restTemplate.getForObject(url, RatingsResponse.class);
-//        List<Rating> ratings = Objects.requireNonNull(ratingsResponse).getRatings();
-//        List<Long> userIds = new ArrayList<>();
-//        if (ratings != null) {
-//            for (Rating rating : ratings) {
-//                userIds.add(rating.getUserId());
-//            }
-//        }
-//
-//        List<UserDetails> usersByMovie = new ArrayList<>();
-//        List<User> users = usersRepository.findAllById(userIds);
-//        // TODO: improve algorithm, because this will be very slow with big amount of data
-//        if (ratings != null) {
-//            for (Rating rating : ratings) {
-//                for (User user : users) {
-//                    if (rating.getUserId().equals(user.getId())) {
-//                        UserDetails userDetails = new UserDetails(user, rating);
-//                        usersByMovie.add(userDetails);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return usersByMovie;
-//    }
 
     @Caching(evict = {
             // delete cache getTopUser()
@@ -166,6 +156,12 @@ public class UsersService {
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
         Optional<User> user = usersRepository.findById(ratingCreated.getUserId());
+        if (user.isEmpty()) {
+            log.warn(
+                    "From kafka: update avg rating (create new) attempt for non-existing user with id={}",
+                    ratingCreated.getUserId()
+            );
+        }
         user.ifPresent(value -> {
             int newRating = ratingCreated.getRating();
             int scores = value.getScores(); // current scores
@@ -192,6 +188,12 @@ public class UsersService {
     )
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
         Optional<User> user = usersRepository.findById(ratingUpdated.getUserId());
+        if (user.isEmpty()) {
+            log.warn(
+                    "From kafka: update avg rating (update existing) attempt for non-existing user with id={}",
+                    ratingUpdated.getUserId()
+            );
+        }
         user.ifPresent(value -> {
             int newRating = ratingUpdated.getRating();
             int oldRating = ratingUpdated.getOldRating();
@@ -218,6 +220,12 @@ public class UsersService {
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
         Optional<User> user = usersRepository.findById(ratingDeleted.getUserId());
+        if (user.isEmpty()) {
+            log.warn(
+                    "From kafka: update avg rating (delete existing) attempt for non-existing user with id={}",
+                    ratingDeleted.getUserId()
+            );
+        }
         user.ifPresent(value -> {
             int ratingToDelete = ratingDeleted.getRating();
             int scores = value.getScores();
