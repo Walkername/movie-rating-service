@@ -1,0 +1,169 @@
+filebeat.inputs:
+  - type: filestream
+    id: user-profile-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "user-profile"
+      - add_fields:
+          target: ''
+          fields:
+            service: "user-profile"
+
+  - type: filestream
+    id: movie-catalog-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "movie-catalog"
+      - add_fields:
+          target: ''
+          fields:
+            service: "movie-catalog"
+
+  - type: filestream
+    id: rating-system-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "rating-system"
+      - add_fields:
+          target: ''
+          fields:
+            service: "rating-system"
+
+  - type: filestream
+    id: file-service-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "file-service"
+      - add_fields:
+          target: ''
+          fields:
+            service: "file-service"
+
+  - type: filestream
+    id: user-library-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "user-library"
+      - add_fields:
+          target: ''
+          fields:
+            service: "user-library"
+
+  - type: filestream
+    id: feed-service-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "feed-service"
+      - add_fields:
+          target: ''
+          fields:
+            service: "feed-service"
+
+  - type: filestream
+    id: notification-service-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "notification-service"
+      - add_fields:
+          target: ''
+          fields:
+            service: "notification-service"
+
+  - type: filestream
+    id: conversation-service-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    parsers: {}
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              equals:
+                container.name: "conversation-service"
+      - add_fields:
+          target: ''
+          fields:
+            service: "conversation-service"
+
+output.elasticsearch:
+  hosts: ["http://esearch-storage:9200"]
+  indices:
+    - index: "logs-%{[service]}-%{+yyyy.MM.dd}"
+
+setup.ilm.enabled: true
+setup.ilm.rollover_alias: "logs"
+setup.ilm.pattern: "daily"
+setup.ilm.policy_name: "logs-policy"
+setup.ilm.policy:
+  phases:
+    hot:
+      min_age: 0ms
+      actions:
+        rollover:
+          max_size: 5gb
+          max_age: 7d
+    delete:
+      min_age: 30d
+      actions:
+        delete: {}
+
+setup.kibana:
+  host: "http://kibana:5601"
