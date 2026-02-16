@@ -144,6 +144,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>conversation-service</finalName>
     </build>
 
 </project>
