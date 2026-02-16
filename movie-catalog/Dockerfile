@@ -1,5 +1,4 @@
-FROM openjdk:21-jdk-oracle
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY target/movie-catalog.jar /app/movie-catalog.jar
-#EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "movie-catalog.jar"]
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "movie-catalog.jar"]
