@@ -12,7 +12,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.user_profile.dto.PageResponse;
-import ru.walkername.user_profile.dto.UserDTO;
+import ru.walkername.user_profile.dto.UserRequest;
 import ru.walkername.user_profile.dto.UserResponse;
 import ru.walkername.user_profile.events.FileUploaded;
 import ru.walkername.user_profile.events.RatingCreated;
@@ -20,9 +20,9 @@ import ru.walkername.user_profile.events.RatingDeleted;
 import ru.walkername.user_profile.events.RatingUpdated;
 import ru.walkername.user_profile.exceptions.UserExistsException;
 import ru.walkername.user_profile.exceptions.UserNotFoundException;
+import ru.walkername.user_profile.mapper.UserMapper;
 import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.repositories.UsersRepository;
-import ru.walkername.user_profile.util.UserModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.Optional;
 public class UsersService {
 
     private final UsersRepository usersRepository;
-    private final UserModelMapper userModelMapper;
+    private final UserMapper userMapper;
 
     private static final String USER_AVATAR = "user-avatar";
 
@@ -61,7 +61,7 @@ public class UsersService {
 
     @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
-    public void update(Long id, UserDTO newUser) {
+    public void update(Long id, UserRequest newUser) {
         User user = usersRepository.findById(id).orElseThrow(
                 () -> {
                     log.warn("Update attempt for non-existent user with id={}", id);
@@ -69,7 +69,7 @@ public class UsersService {
                 }
         );
 
-        userModelMapper.convertToUser(newUser, user);
+        userMapper.toUser(newUser, user);
 
         log.debug("User with id {} has been updated", id);
     }
@@ -92,8 +92,8 @@ public class UsersService {
         log.debug("User username with id {} has been updated", id);
     }
 
-    @CacheEvict(cacheNames = "user", key = "#fileUploaded.getContextId()",
-            condition = "#fileUploaded.getContext() != null && #fileUploaded.getContext().equals('user-avatar')")
+    @CacheEvict(cacheNames = "user", key = "#fileUploaded.contextId()",
+            condition = "#fileUploaded.context() != null && #fileUploaded.context().equals('user-avatar')")
     @Transactional
     @KafkaListener(
             topics = "file-uploaded",
@@ -101,20 +101,20 @@ public class UsersService {
             containerFactory = "fileUploadedContainerFactory"
     )
     public void saveProfilePicture(FileUploaded fileUploaded) {
-        if (fileUploaded.getContext() != null && fileUploaded.getContext().equals(USER_AVATAR)) {
-            User currentUser = usersRepository.findById(fileUploaded.getContextId())
+        if (fileUploaded.context() != null && fileUploaded.context().equals(USER_AVATAR)) {
+            User currentUser = usersRepository.findById(fileUploaded.contextId())
                     .orElseThrow(() -> {
                                 log.warn(
                                         "From kafka: update profile-pic-id attempt for not existing user with id={}",
-                                        fileUploaded.getContextId()
+                                        fileUploaded.contextId()
                                 );
                                 return new UserNotFoundException("User not found");
                             }
                     );
 
-            currentUser.setProfilePicId(fileUploaded.getFileId());
-            log.debug("User (#{}) profile-pic-id has been updated on: {}", currentUser.getId(), fileUploaded.getFileId());
-        } else if (fileUploaded.getContext() == null) {
+            currentUser.setProfilePicId(fileUploaded.fileId());
+            log.debug("User (#{}) profile-pic-id has been updated on: {}", currentUser.getId(), fileUploaded.fileId());
+        } else if (fileUploaded.context() == null) {
             log.error("Kafka event FileUploaded context is null");
         }
     }
@@ -138,15 +138,11 @@ public class UsersService {
         );
     }
 
-    public boolean existsByUsername(String username) {
-        return usersRepository.existsByUsername(username);
-    }
-
     @Caching(evict = {
             // delete cache getTopUser()
             @CacheEvict(cacheNames = "top-user", allEntries = true),
             // delete cache findOne()
-            @CacheEvict(cacheNames = "user", key = "#ratingCreated.getUserId()", condition = "#ratingCreated.getUserId() != null")
+            @CacheEvict(cacheNames = "user", key = "#ratingCreated.userId()", condition = "#ratingCreated.userId() != null")
     })
     @Transactional
     @KafkaListener(
@@ -155,15 +151,15 @@ public class UsersService {
             containerFactory = "ratingCreatedContainerFactory"
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
-        Optional<User> user = usersRepository.findById(ratingCreated.getUserId());
+        Optional<User> user = usersRepository.findById(ratingCreated.userId());
         if (user.isEmpty()) {
             log.warn(
                     "From kafka: update avg rating (create new) attempt for non-existing user with id={}",
-                    ratingCreated.getUserId()
+                    ratingCreated.userId()
             );
         }
         user.ifPresent(value -> {
-            int newRating = ratingCreated.getRating();
+            int newRating = ratingCreated.rating();
             int scores = value.getScores(); // current scores
             double averageRating = value.getAverageRating(); // current average rating
 
@@ -178,7 +174,7 @@ public class UsersService {
             // delete cache getTopUser()
             @CacheEvict(cacheNames = "top-user", allEntries = true),
             // delete cache findOne()
-            @CacheEvict(cacheNames = "user", key = "#ratingUpdated.getUserId()", condition = "#ratingUpdated.getUserId() != null")
+            @CacheEvict(cacheNames = "user", key = "#ratingUpdated.userId()", condition = "#ratingUpdated.userId() != null")
     })
     @Transactional
     @KafkaListener(
@@ -187,16 +183,16 @@ public class UsersService {
             containerFactory = "ratingUpdatedContainerFactory"
     )
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
-        Optional<User> user = usersRepository.findById(ratingUpdated.getUserId());
+        Optional<User> user = usersRepository.findById(ratingUpdated.userId());
         if (user.isEmpty()) {
             log.warn(
                     "From kafka: update avg rating (update existing) attempt for non-existing user with id={}",
-                    ratingUpdated.getUserId()
+                    ratingUpdated.userId()
             );
         }
         user.ifPresent(value -> {
-            int newRating = ratingUpdated.getRating();
-            int oldRating = ratingUpdated.getOldRating();
+            int newRating = ratingUpdated.rating();
+            int oldRating = ratingUpdated.oldRating();
             int scores = value.getScores(); // current scores
             double averageRating = value.getAverageRating(); // current average rating
 
@@ -210,7 +206,7 @@ public class UsersService {
             // delete cache getTopUser()
             @CacheEvict(cacheNames = "top-user", allEntries = true),
             // delete cache findOne()
-            @CacheEvict(cacheNames = "user", key = "#ratingDeleted.getUserId()", condition = "#ratingDeleted.getUserId() != null")
+            @CacheEvict(cacheNames = "user", key = "#ratingDeleted.userId()", condition = "#ratingDeleted.userId() != null")
     })
     @Transactional
     @KafkaListener(
@@ -219,15 +215,15 @@ public class UsersService {
             containerFactory = "ratingDeletedContainerFactory"
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
-        Optional<User> user = usersRepository.findById(ratingDeleted.getUserId());
+        Optional<User> user = usersRepository.findById(ratingDeleted.userId());
         if (user.isEmpty()) {
             log.warn(
                     "From kafka: update avg rating (delete existing) attempt for non-existing user with id={}",
-                    ratingDeleted.getUserId()
+                    ratingDeleted.userId()
             );
         }
         user.ifPresent(value -> {
-            int ratingToDelete = ratingDeleted.getRating();
+            int ratingToDelete = ratingDeleted.rating();
             int scores = value.getScores();
             double averageRating = value.getAverageRating();
 
@@ -257,7 +253,7 @@ public class UsersService {
         List<UserResponse> userResponses = new ArrayList<>();
 
         for (User user : usersPage.getContent()) {
-            UserResponse userResponse = userModelMapper.convertToUserResponse(user);
+            UserResponse userResponse = userMapper.toUserResponse(user);
             userResponses.add(userResponse);
         }
 

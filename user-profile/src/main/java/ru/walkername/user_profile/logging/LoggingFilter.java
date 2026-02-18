@@ -29,9 +29,9 @@ public class LoggingFilter extends OncePerRequestFilter {
 
             if (auth != null && auth.isAuthenticated()) {
                 UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
-                MDC.put("username", principal.getUsername());
-                MDC.put("userId", principal.getUserId().toString());
-                MDC.put("role", principal.getRole());
+                MDC.put("username", principal.username());
+                MDC.put("userId", principal.userId().toString());
+                MDC.put("role", principal.role());
             }
 
             MDC.put("method", request.getMethod());

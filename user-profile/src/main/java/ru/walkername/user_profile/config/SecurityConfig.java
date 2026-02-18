@@ -1,6 +1,6 @@
 package ru.walkername.user_profile.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,18 +18,13 @@ import ru.walkername.user_profile.security.JWTFilter;
 
 import java.util.Arrays;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
     private final JWTFilter jwtFilter;
 
     private final LoggingFilter loggingFilter;
-
-    @Autowired
-    public SecurityConfig(JWTFilter jwtFilter, LoggingFilter loggingFilter) {
-        this.jwtFilter = jwtFilter;
-        this.loggingFilter = loggingFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -1,59 +1,37 @@
 package ru.walkername.user_profile.controllers;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.walkername.user_profile.dto.UserDTO;
-import ru.walkername.user_profile.dto.UsernameDTO;
-import ru.walkername.user_profile.exceptions.UserInvalidFields;
-import ru.walkername.user_profile.exceptions.UserInvalidUsername;
-import ru.walkername.user_profile.models.User;
+import ru.walkername.user_profile.dto.UserRequest;
+import ru.walkername.user_profile.dto.UsernameRequest;
 import ru.walkername.user_profile.services.UsersService;
-import ru.walkername.user_profile.util.DTOValidator;
-import ru.walkername.user_profile.util.UserModelMapper;
-import ru.walkername.user_profile.util.UserValidator;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/users")
 @CrossOrigin
 public class AdminUsersController {
 
-    private final UserModelMapper userModelMapper;
     private final UsersService usersService;
-    private final UserValidator userValidator;
-
-    public AdminUsersController(UserModelMapper userModelMapper, UsersService usersService, UserValidator userValidator) {
-        this.userModelMapper = userModelMapper;
-        this.usersService = usersService;
-        this.userValidator = userValidator;
-    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> update(
-        @PathVariable("id") Long id,
-        @RequestBody UserDTO userDTO,
-        BindingResult bindingResult
+            @PathVariable("id") Long id,
+            @RequestBody @Valid UserRequest userRequest
     ) {
-        DTOValidator.validate(bindingResult, UserInvalidFields::new);
-
-        usersService.update(id, userDTO);
+        usersService.update(id, userRequest);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}/username")
     public ResponseEntity<HttpStatus> updateUsername(
             @PathVariable("id") Long id,
-            @RequestBody @Valid UsernameDTO usernameDTO,
-            BindingResult bindingResult
+            @RequestBody @Valid UsernameRequest usernameRequest
     ) {
-        User newUser = userModelMapper.convertToUser(usernameDTO);
-        // check if it has the existing username or not
-        userValidator.validate(newUser, bindingResult);
-        DTOValidator.validate(bindingResult, UserInvalidUsername::new);
-
-        usersService.updateUsername(id, newUser.getUsername());
+        usersService.updateUsername(id, usernameRequest.username());
         return ResponseEntity.ok().build();
     }
 

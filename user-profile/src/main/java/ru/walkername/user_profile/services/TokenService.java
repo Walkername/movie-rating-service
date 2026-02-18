@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.walkername.user_profile.models.User;
 
-import java.time.ZonedDateTime;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class TokenService {
@@ -22,28 +22,28 @@ public class TokenService {
     private String refreshToken;
 
     public String generateAccessToken(User user) {
-        Date expiresAt = Date.from(ZonedDateTime.now().plusMinutes(15).toInstant());
+        Instant expiresAt = Instant.now().plus(15, ChronoUnit.MINUTES);
 
         return JWT.create()
                 .withSubject("User details")
                 .withClaim("id", user.getId())
                 .withClaim("username", user.getUsername())
-                .withClaim("role", user.getRole())
-                .withIssuedAt(new Date())
+                .withClaim("role", user.getRole().toString())
+                .withIssuedAt(Instant.now())
                 .withIssuer("auth-service")
                 .withExpiresAt(expiresAt)
                 .sign(Algorithm.HMAC256(accessToken));
     }
 
     public String generateRefreshToken(User user) {
-        Date expiresAt = Date.from(ZonedDateTime.now().plusDays(30).toInstant());
+        Instant expiresAt = Instant.now().plus(30, ChronoUnit.DAYS);
 
         return JWT.create()
                 .withSubject("User details")
                 .withClaim("id", user.getId())
                 .withClaim("username", user.getUsername())
-                .withClaim("role", user.getRole())
-                .withIssuedAt(new Date())
+                .withClaim("role", user.getRole().toString())
+                .withIssuedAt(Instant.now())
                 .withIssuer("auth-service")
                 .withExpiresAt(expiresAt)
                 .sign(Algorithm.HMAC256(refreshToken));
