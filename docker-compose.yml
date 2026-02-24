@@ -166,6 +166,7 @@ services:
             dockerfile: Dockerfile
         container_name: user-profile
         environment:
+            - SPRING_PROFILES_ACTIVE=prod
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
