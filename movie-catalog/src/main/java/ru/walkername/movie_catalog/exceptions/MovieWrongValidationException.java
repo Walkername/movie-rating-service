@@ -1,4 +1,4 @@
-package ru.walkername.movie_catalog.util;
+package ru.walkername.movie_catalog.exceptions;
 
 public class MovieWrongValidationException extends RuntimeException {
 

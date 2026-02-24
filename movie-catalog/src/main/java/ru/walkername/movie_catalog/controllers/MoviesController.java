@@ -1,31 +1,25 @@
 package ru.walkername.movie_catalog.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.walkername.movie_catalog.dto.MovieByUserResponse;
 import ru.walkername.movie_catalog.dto.MovieResponse;
 import ru.walkername.movie_catalog.dto.PageResponse;
+import ru.walkername.movie_catalog.mapper.MovieMapper;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.services.MoviesService;
-import ru.walkername.movie_catalog.util.MovieModelMapper;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/movies")
-@CrossOrigin
 public class MoviesController {
 
     private final MoviesService moviesService;
-    private final MovieModelMapper movieModelMapper;
-
-    @Autowired
-    public MoviesController(MoviesService moviesService, MovieModelMapper movieModelMapper) {
-        this.moviesService = moviesService;
-        this.movieModelMapper = movieModelMapper;
-    }
+    private final MovieMapper movieMapper;
 
     @GetMapping()
     public ResponseEntity<PageResponse<MovieResponse>> index(
@@ -34,6 +28,7 @@ public class MoviesController {
             @RequestParam(value = "sort", defaultValue = "averageRating:desc") String[] sort
     ) {
         PageResponse<MovieResponse> pageResponse = moviesService.getAllMoviesWithPagination(page, limit, sort);
+
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
@@ -41,7 +36,10 @@ public class MoviesController {
     public ResponseEntity<MovieResponse> getMovie(
             @PathVariable("id") Long id
     ) {
-        MovieResponse movieResponse = movieModelMapper.convertToMovieResponse(moviesService.findOne(id));
+        Movie movie = moviesService.findOne(id);
+
+        MovieResponse movieResponse = movieMapper.toMovieResponse(movie);
+
         return new ResponseEntity<>(movieResponse, HttpStatus.OK);
     }
 
@@ -53,14 +51,19 @@ public class MoviesController {
             @RequestParam(value = "sort", defaultValue = "ratedAt:desc") String[] sort
     ) {
         PageResponse<MovieByUserResponse> pageResponse = moviesService.getMoviesByUser(id, page, limit, sort);
+
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public List<Movie> search(
+    public ResponseEntity<List<MovieResponse>> search(
         @RequestParam(value = "query") String query
     ) {
-        return moviesService.findByTitleStartingWith(query);
+        List<Movie> movies = moviesService.findByTitleStartingWith(query);
+
+        List<MovieResponse> movieResponses = movies.stream().map(movieMapper::toMovieResponse).toList();
+
+        return new ResponseEntity<>(movieResponses, HttpStatus.OK);
     }
 
 }

@@ -1,6 +1,6 @@
 package ru.walkername.movie_catalog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
@@ -10,40 +10,42 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import ru.walkername.movie_catalog.events.MovieDeleted;
 import ru.walkername.movie_catalog.events.MovieUpdated;
 import ru.walkername.movie_catalog.exceptions.MovieNotFound;
+import ru.walkername.movie_catalog.mapper.MovieMapper;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
 
-import java.util.Date;
+import java.time.Instant;
 
+@RequiredArgsConstructor
 @Service
 public class AdminMoviesService {
 
     private final MoviesRepository moviesRepository;
     private final KafkaProducerService kafkaProducerService;
-
-    @Autowired
-    public AdminMoviesService(MoviesRepository moviesRepository, KafkaProducerService kafkaProducerService) {
-        this.moviesRepository = moviesRepository;
-        this.kafkaProducerService = kafkaProducerService;
-    }
+    private final MovieMapper movieMapper;
 
     @Caching(evict = {
-            // delete cache getMoviesWithPagination()
             @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
     })
     @Transactional
     public void save(Movie movie) {
-        movie.setCreatedAt(new Date());
+        movie.setCreatedAt(Instant.now());
+
         moviesRepository.save(movie);
     }
 
     @CacheEvict(cacheNames = "movie", key = "#id")
     @Transactional
     public void update(Long id, Movie updatedMovie) {
-        updatedMovie.setId(id);
-        moviesRepository.save(updatedMovie);
+        Movie movie = moviesRepository.findById(id).orElseThrow(
+                () -> new MovieNotFound("Movie not found")
+        );
 
-        registerMovieUpdatedEvent(updatedMovie);
+        movieMapper.toMovie(updatedMovie, movie);
+
+        moviesRepository.save(movie);
+
+        registerMovieUpdatedEvent(movie);
     }
 
     private void registerMovieUpdatedEvent(Movie movie) {
@@ -79,8 +81,6 @@ public class AdminMoviesService {
     public void delete(Long id) {
         moviesRepository.deleteById(id);
 
-        // Kafka: send to Rating Service in order
-        // to delete all ratings with this movieId
         registerMovieDeletedEvent(id);
     }
 

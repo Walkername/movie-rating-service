@@ -4,9 +4,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.Date;
+import java.time.Instant;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "movie")
 public class Movie {
@@ -39,97 +47,5 @@ public class Movie {
     private Long posterPicId;
 
     @Column(name = "created_at")
-    private Date createdAt;
-
-    public Movie() {
-
-    }
-
-    public Movie(String title, int releaseYear, String description, double averageRating, int scores, Long posterPicId, Date createdAt) {
-        this.title = title;
-        this.releaseYear = releaseYear;
-        this.description = description;
-        this.averageRating = averageRating;
-        this.scores = scores;
-        this.posterPicId = posterPicId;
-        this.createdAt = createdAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getAverageRating() {
-        return averageRating;
-    }
-
-    public void setAverageRating(double averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public int getScores() {
-        return scores;
-    }
-
-    public void setScores(int scores) {
-        this.scores = scores;
-    }
-
-    public Long getPosterPicId() {
-        return posterPicId;
-    }
-
-    public void setPosterPicId(Long posterPicId) {
-        this.posterPicId = posterPicId;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", releaseYear=" + releaseYear +
-                ", description='" + description + '\'' +
-                ", averageRating=" + averageRating +
-                ", scores=" + scores +
-                ", posterPicId=" + posterPicId +
-                ", createdAt=" + createdAt +
-                '}';
-    }
+    private Instant createdAt;
 }

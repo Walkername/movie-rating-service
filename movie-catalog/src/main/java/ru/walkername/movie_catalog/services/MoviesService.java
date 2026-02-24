@@ -26,9 +26,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.*;
 import ru.walkername.movie_catalog.events.*;
 import ru.walkername.movie_catalog.exceptions.MovieNotFound;
+import ru.walkername.movie_catalog.mapper.MovieMapper;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
-import ru.walkername.movie_catalog.util.MovieModelMapper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,21 +41,21 @@ public class MoviesService {
     private final MoviesRepository moviesRepository;
     private final String RATING_SERVICE_API;
     private final RestTemplate restTemplate;
-    private final MovieModelMapper movieModelMapper;
     private final KafkaProducerService kafkaProducerService;
+    private final MovieMapper movieMapper;
 
     @Autowired
     public MoviesService(
             MoviesRepository moviesRepository,
             @Value("${rating.service.url}") String RATING_SERVICE_API,
-            RestTemplate restTemplate, MovieModelMapper movieModelMapper,
-            KafkaProducerService kafkaProducerService
-    ) {
+            RestTemplate restTemplate,
+            KafkaProducerService kafkaProducerService,
+            MovieMapper movieMapper) {
         this.moviesRepository = moviesRepository;
         this.RATING_SERVICE_API = RATING_SERVICE_API;
         this.restTemplate = restTemplate;
-        this.movieModelMapper = movieModelMapper;
         this.kafkaProducerService = kafkaProducerService;
+        this.movieMapper = movieMapper;
     }
 
     @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
@@ -66,7 +66,7 @@ public class MoviesService {
 
     @Caching(evict = {
             // delete cache findOne()
-            @CacheEvict(cacheNames = "movie", key = "#ratingCreated.getMovieId()", condition = "#ratingCreated.getMovieId() != null"),
+            @CacheEvict(cacheNames = "movie", key = "#ratingCreated.movieId()", condition = "#ratingCreated.movieId() != null"),
             // delete cache getMoviesByUser()
             @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
             // delete cache getMoviesWithPagination()
@@ -79,9 +79,9 @@ public class MoviesService {
             containerFactory = "ratingCreatedContainerFactory"
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
-        Optional<Movie> movie = moviesRepository.findById(ratingCreated.getMovieId());
+        Optional<Movie> movie = moviesRepository.findById(ratingCreated.movieId());
         movie.ifPresent(value -> {
-            int newRating = ratingCreated.getRating();
+            int newRating = ratingCreated.rating();
             int scores = value.getScores(); // current scores
             double averageRating = value.getAverageRating(); // current average rating
 
@@ -97,7 +97,7 @@ public class MoviesService {
 
     @Caching(evict = {
             // delete cache findOne()
-            @CacheEvict(cacheNames = "movie", key = "#ratingUpdated.getMovieId()", condition = "#ratingUpdated.getMovieId() != null"),
+            @CacheEvict(cacheNames = "movie", key = "#ratingUpdated.movieId()", condition = "#ratingUpdated.movieId() != null"),
             // delete cache getMoviesByUser()
             @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
             // delete cache getMoviesWithPagination()
@@ -110,10 +110,10 @@ public class MoviesService {
             containerFactory = "ratingUpdatedContainerFactory"
     )
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
-        Optional<Movie> movie = moviesRepository.findById(ratingUpdated.getMovieId());
+        Optional<Movie> movie = moviesRepository.findById(ratingUpdated.movieId());
         movie.ifPresent(value -> {
-            int newRating = ratingUpdated.getRating();
-            int oldRating = ratingUpdated.getOldRating();
+            int newRating = ratingUpdated.rating();
+            int oldRating = ratingUpdated.oldRating();
             int scores = value.getScores(); // current scores
             double averageRating = value.getAverageRating(); // current average rating
 
@@ -128,7 +128,7 @@ public class MoviesService {
 
     @Caching(evict = {
             // delete cache findOne()
-            @CacheEvict(cacheNames = "movie", key = "#ratingDeleted.getMovieId()", condition = "#ratingDeleted.getMovieId() != null"),
+            @CacheEvict(cacheNames = "movie", key = "#ratingDeleted.movieId()", condition = "#ratingDeleted.movieId() != null"),
             // delete cache getMoviesByUser()
             @CacheEvict(cacheNames = "movies-by-user", allEntries = true),
             // delete cache getMoviesWithPagination()
@@ -141,9 +141,9 @@ public class MoviesService {
             containerFactory = "ratingDeletedContainerFactory"
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
-        Optional<Movie> movie = moviesRepository.findById(ratingDeleted.getMovieId());
+        Optional<Movie> movie = moviesRepository.findById(ratingDeleted.movieId());
         movie.ifPresent(value -> {
-            int ratingToDelete = ratingDeleted.getRating();
+            int ratingToDelete = ratingDeleted.rating();
             int scores = value.getScores();
             double averageRating = value.getAverageRating();
 
@@ -199,26 +199,17 @@ public class MoviesService {
 
         List<FileAttachmentResponse> files = getAllPosterUrls(movieIds);
 
-        List<MovieResponse> movieResponses = new ArrayList<>();
-
-        for (Movie movie : moviesPage.getContent()) {
-            MovieResponse movieResponse = movieModelMapper.convertToMovieResponse(movie);
-            movieResponses.add(movieResponse);
-        }
-
         Map<Long, String> posterUrlMap = files.stream()
                 .collect(Collectors.toMap(
-                        FileAttachmentResponse::getEntityId,
-                        FileAttachmentResponse::getUrl,
+                        FileAttachmentResponse::entityId,
+                        FileAttachmentResponse::url,
                         (existing, _) -> existing)
                 );
 
-        movieResponses = movieResponses.stream()
-                .peek(movie -> {
+        List<MovieResponse> movieResponses = moviesPage.getContent().stream()
+                .map(movie -> {
                     String posterUrl = posterUrlMap.get(movie.getId());
-                    if (posterUrl != null) {
-                        movie.setPosterPicUrl(posterUrl);
-                    }
+                    return movieMapper.toMovieResponse(movie, posterUrl);
                 }).toList();
 
         return new PageResponse<>(
@@ -242,7 +233,8 @@ public class MoviesService {
                 url,
                 HttpMethod.POST,
                 entity,
-                new ParameterizedTypeReference<>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
 
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -284,7 +276,7 @@ public class MoviesService {
 
         // Getting Rating list by user_id
         RatingsResponse ratingsResponse = restTemplate.getForObject(builder.toUriString(), RatingsResponse.class);
-        if (ratingsResponse == null || ratingsResponse.getPageResponse() == null) {
+        if (ratingsResponse == null || ratingsResponse.pageResponse() == null) {
             return new PageResponse<>(
                     Collections.emptyList(),
                     page,
@@ -293,14 +285,14 @@ public class MoviesService {
                     0
             );
         }
-        PageResponse<RatingResponse> pageResponse = ratingsResponse.getPageResponse();
+        PageResponse<RatingResponse> pageResponse = ratingsResponse.pageResponse();
 
-        List<RatingResponse> ratings = pageResponse.getContent();
+        List<RatingResponse> ratings = pageResponse.content();
 
         // Building list with movieIds from Rating list
         List<Long> movieIds = new ArrayList<>();
         for (RatingResponse rating : ratings) {
-            movieIds.add(rating.getMovieId());
+            movieIds.add(rating.movieId());
         }
 
         // Getting Movie list by movieIds list
@@ -311,7 +303,7 @@ public class MoviesService {
         // TODO: maybe improve algorithm, because this will be very slow with big amount of data
         for (RatingResponse rating : ratings) {
             for (Movie movie : ratedMovies) {
-                if (rating.getMovieId().equals(movie.getId())) {
+                if (rating.movieId().equals(movie.getId())) {
                     MovieByUserResponse movieByUserResponse = new MovieByUserResponse(movie, rating);
                     movieByUserResponseList.add(movieByUserResponse);
                 }
@@ -322,8 +314,8 @@ public class MoviesService {
                 movieByUserResponseList,
                 page,
                 moviesPerPage,
-                pageResponse.getTotalElements(),
-                pageResponse.getTotalPages()
+                pageResponse.totalElements(),
+                pageResponse.totalPages()
         );
     }
 
@@ -334,8 +326,8 @@ public class MoviesService {
         return moviesRepository.findByTitleStartingWithIgnoreCase(title);
     }
 
-    @CacheEvict(cacheNames = "movie", key = "#fileUploaded.getContextId()",
-            condition = "#fileUploaded.getContext() != null && #fileUploaded.getContext().equals('movie-poster')")
+    @CacheEvict(cacheNames = "movie", key = "#fileUploaded.contextId()",
+            condition = "#fileUploaded.context() != null && #fileUploaded.context().equals('movie-poster')")
     @Transactional
     @KafkaListener(
             topics = "file-uploaded",
@@ -343,11 +335,11 @@ public class MoviesService {
             containerFactory = "fileUploadedContainerFactory"
     )
     public void saveMoviePoster(FileUploaded fileUploaded) {
-        if (fileUploaded.getContext() != null && fileUploaded.getContext().equals("movie-poster")) {
-            Movie movie = moviesRepository.findById(fileUploaded.getContextId()).orElseThrow(
+        if (fileUploaded.context() != null && fileUploaded.context().equals("movie-poster")) {
+            Movie movie = moviesRepository.findById(fileUploaded.contextId()).orElseThrow(
                     () -> new MovieNotFound("Movie not found")
             );
-            movie.setPosterPicId(fileUploaded.getFileId());
+            movie.setPosterPicId(fileUploaded.fileId());
         }
     }
 
