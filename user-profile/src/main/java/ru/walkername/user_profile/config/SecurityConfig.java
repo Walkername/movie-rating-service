@@ -16,6 +16,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.walkername.user_profile.logging.LoggingFilter;
 import ru.walkername.user_profile.security.JWTFilter;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class SecurityConfig {
     private final LoggingFilter loggingFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -68,6 +69,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecureRandom secureRandom() {
+        return new SecureRandom();
     }
 
 }

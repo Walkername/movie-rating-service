@@ -16,7 +16,11 @@ import ru.walkername.user_profile.models.UserRole;
 import ru.walkername.user_profile.repositories.RefreshTokensRepository;
 import ru.walkername.user_profile.repositories.UsersRepository;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Optional;
 
 @Slf4j
@@ -29,6 +33,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokensRepository refreshTokensRepository;
     private final TokenService tokenService;
+    private static final String HASH_ALGORITHM = "SHA-256";
+    private final SecureRandom secureRandom;
 
     @Transactional
     public void register(User user) {
@@ -97,7 +103,7 @@ public class AuthService {
 
             RefreshToken existingRefreshToken = refreshToken.get();
             String existingRefreshTokenHash = existingRefreshToken.getTokenHash();
-            if (!passwordEncoder.matches(rawRefreshToken, existingRefreshTokenHash)) {
+            if (!verifyToken(rawRefreshToken, existingRefreshTokenHash)) {
                 log.warn("Mismatch between the refresh token from the database and the request by userId: {}",  userId);
                 throw new InvalidRefreshTokenException("Invalid refresh token");
             }
@@ -106,6 +112,11 @@ public class AuthService {
         } catch (JWTVerificationException e) {
             throw new InvalidRefreshTokenException("Invalid refresh token");
         }
+    }
+
+    private boolean verifyToken(String rawToken, String storedHash) {
+        String newHash = hashTokenWithSalt(rawToken);
+        return newHash.equals(storedHash);
     }
 
     private JWTResponse generateAndStoreTokens(User user) {
@@ -119,7 +130,7 @@ public class AuthService {
 
     private void updateRefreshToken(Long userId, String rawRefreshToken) {
         Optional<RefreshToken> dbRefreshToken = refreshTokensRepository.findByUserId(userId);
-        String refreshTokenHash = passwordEncoder.encode(rawRefreshToken);
+        String refreshTokenHash = hashTokenWithSalt(rawRefreshToken);
 
         if (dbRefreshToken.isPresent()) {
             RefreshToken existingRefreshToken = dbRefreshToken.get();
@@ -127,6 +138,25 @@ public class AuthService {
         } else {
             RefreshToken newRefreshToken = new RefreshToken(userId, refreshTokenHash);
             refreshTokensRepository.save(newRefreshToken);
+        }
+    }
+
+    private String hashTokenWithSalt(String token) {
+        try {
+            byte[] salt = new byte[16];
+            secureRandom.nextBytes(salt);
+
+            MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
+            digest.update(salt);
+            byte[] hash = digest.digest(token.getBytes());
+
+            byte[] saltAndHash = new byte[salt.length + hash.length];
+            System.arraycopy(salt, 0, saltAndHash, 0, salt.length);
+            System.arraycopy(hash, 0, saltAndHash, salt.length, hash.length);
+
+            return Base64.getEncoder().encodeToString(saltAndHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Hashing algorithm not found", e);
         }
     }
 
