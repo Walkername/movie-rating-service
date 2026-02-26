@@ -192,7 +192,8 @@ services:
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
-            - RATING_SERVICE_URL=http://localhost:8082
+            - RATING_SERVICE_URL=http://rating-system:8080
+            - FILE_SERVICE_URL=http://file-service:8080
             - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
             - SPRING_DATA_REDIS_HOST=redis-cache
             - SPRING_DATA_REDIS_PORT=6379

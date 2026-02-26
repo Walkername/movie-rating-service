@@ -1,5 +1,6 @@
 package ru.walkername.movie_catalog.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
@@ -33,26 +34,32 @@ import ru.walkername.movie_catalog.repositories.MoviesRepository;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @CacheConfig(cacheNames = "movie-cache")
 public class MoviesService {
 
     private final MoviesRepository moviesRepository;
-    private final String RATING_SERVICE_API;
+    private final String RATING_SERVICE_URL;
+    private final String FILE_SERVICE_URL;
     private final RestTemplate restTemplate;
     private final KafkaProducerService kafkaProducerService;
     private final MovieMapper movieMapper;
 
+    private static final String MOVIE_POSTER = "movie-poster";
+
     @Autowired
     public MoviesService(
             MoviesRepository moviesRepository,
-            @Value("${rating.service.url}") String RATING_SERVICE_API,
+            @Value("${rating.service.url}") String RATING_SERVICE_URL,
+            @Value("${file.service.url}") String FILE_SERVICE_URL,
             RestTemplate restTemplate,
             KafkaProducerService kafkaProducerService,
             MovieMapper movieMapper) {
         this.moviesRepository = moviesRepository;
-        this.RATING_SERVICE_API = RATING_SERVICE_API;
+        this.RATING_SERVICE_URL = RATING_SERVICE_URL;
+        this.FILE_SERVICE_URL = FILE_SERVICE_URL;
         this.restTemplate = restTemplate;
         this.kafkaProducerService = kafkaProducerService;
         this.movieMapper = movieMapper;
@@ -80,6 +87,12 @@ public class MoviesService {
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
         Optional<Movie> movie = moviesRepository.findById(ratingCreated.movieId());
+        if (movie.isEmpty()) {
+            log.warn(
+                    "From kafka: update avg rating (create new) attempt for non-existent movie with id={}",
+                    ratingCreated.movieId()
+            );
+        }
         movie.ifPresent(value -> {
             int newRating = ratingCreated.rating();
             int scores = value.getScores(); // current scores
@@ -111,6 +124,12 @@ public class MoviesService {
     )
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
         Optional<Movie> movie = moviesRepository.findById(ratingUpdated.movieId());
+        if (movie.isEmpty()) {
+            log.warn(
+                    "From kafka: update avg rating (update existing) attempt for non-existent movie with id={}",
+                    ratingUpdated.movieId()
+            );
+        }
         movie.ifPresent(value -> {
             int newRating = ratingUpdated.rating();
             int oldRating = ratingUpdated.oldRating();
@@ -142,6 +161,12 @@ public class MoviesService {
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
         Optional<Movie> movie = moviesRepository.findById(ratingDeleted.movieId());
+        if (movie.isEmpty()) {
+            log.warn(
+                    "From kafka: update avg rating (delete existing) attempt for non-existent movie with id={}",
+                    ratingDeleted.movieId()
+            );
+        }
         movie.ifPresent(value -> {
             int ratingToDelete = ratingDeleted.rating();
             int scores = value.getScores();
@@ -227,10 +252,14 @@ public class MoviesService {
 
         HttpEntity<List<Long>> entity = new HttpEntity<>(new ArrayList<>(movieIds), headers);
 
-        String url = "http://localhost:8083/files/download-by-array/signed-url?entityType=movie";
+        String endpoint = "/files/download-by-array/signed-url";
+
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromUriString(FILE_SERVICE_URL + endpoint)
+                .queryParam("entityType", "movie");
 
         ResponseEntity<List<FileAttachmentResponse>> response = restTemplate.exchange(
-                url,
+                builder.toUriString(),
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {
@@ -264,7 +293,7 @@ public class MoviesService {
     @Cacheable(cacheNames = "movies-by-user", key = "#id + '-' + #page + '-' + #moviesPerPage + '-' " +
             "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
     public PageResponse<MovieByUserResponse> getMoviesByUser(Long id, int page, int moviesPerPage, String[] sort) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(RATING_SERVICE_API + "/ratings/user/" + id)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(RATING_SERVICE_URL + "/ratings/user/" + id)
                 .queryParam("page", page)
                 .queryParam("limit", moviesPerPage);
 
@@ -335,11 +364,19 @@ public class MoviesService {
             containerFactory = "fileUploadedContainerFactory"
     )
     public void saveMoviePoster(FileUploaded fileUploaded) {
-        if (fileUploaded.context() != null && fileUploaded.context().equals("movie-poster")) {
+        if (fileUploaded.context() != null && fileUploaded.context().equals(MOVIE_POSTER)) {
             Movie movie = moviesRepository.findById(fileUploaded.contextId()).orElseThrow(
-                    () -> new MovieNotFound("Movie not found")
+                    () -> {
+                        log.warn(
+                                "From kafka: update movie poster-pic-id attempt for non-existent movie with id = {}",
+                                fileUploaded.contextId()
+                        );
+                        return new MovieNotFound("Movie not found");
+                    }
             );
             movie.setPosterPicId(fileUploaded.fileId());
+        } else if (fileUploaded.context() == null) {
+            log.error("Kafka event FileUploaded context is null");
         }
     }
 

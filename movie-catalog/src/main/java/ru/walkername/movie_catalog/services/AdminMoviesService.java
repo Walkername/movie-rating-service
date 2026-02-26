@@ -1,6 +1,7 @@
 package ru.walkername.movie_catalog.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import ru.walkername.movie_catalog.repositories.MoviesRepository;
 
 import java.time.Instant;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AdminMoviesService {
@@ -32,13 +34,18 @@ public class AdminMoviesService {
         movie.setCreatedAt(Instant.now());
 
         moviesRepository.save(movie);
+
+        log.info("Movie added successfully: id={}, title={}", movie.getId(), movie.getTitle());
     }
 
     @CacheEvict(cacheNames = "movie", key = "#id")
     @Transactional
     public void update(Long id, Movie updatedMovie) {
         Movie movie = moviesRepository.findById(id).orElseThrow(
-                () -> new MovieNotFound("Movie not found")
+                () -> {
+                    log.warn("Update attempt for non-existent movie with id={}", id);
+                    return new MovieNotFound("Movie not found");
+                }
         );
 
         movieMapper.toMovie(updatedMovie, movie);
@@ -46,6 +53,8 @@ public class AdminMoviesService {
         moviesRepository.save(movie);
 
         registerMovieUpdatedEvent(movie);
+
+        log.info("Movie updated successfully: id={}, title={}", id, movie.getTitle());
     }
 
     private void registerMovieUpdatedEvent(Movie movie) {
@@ -67,9 +76,14 @@ public class AdminMoviesService {
     @Transactional
     public void updatePosterPicture(Long movieId, Long fileId) {
         Movie movie = moviesRepository.findById(movieId).orElseThrow(
-                () -> new MovieNotFound("Movie not found")
+                () -> {
+                    log.warn("Update poster attempt for non-existent movie with id={}", movieId);
+                    return new MovieNotFound("Movie not found");
+                }
         );
         movie.setPosterPicId(fileId);
+
+        log.info("Movie poster updated successfully: id={}, title={}", movieId, movie.getTitle());
     }
 
     @Caching(evict = {
@@ -82,6 +96,8 @@ public class AdminMoviesService {
         moviesRepository.deleteById(id);
 
         registerMovieDeletedEvent(id);
+
+        log.info("Movie deleted successfully: id={}", id);
     }
 
     private void registerMovieDeletedEvent(Long movieId) {
