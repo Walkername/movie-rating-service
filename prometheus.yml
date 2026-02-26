@@ -6,3 +6,8 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['user-profile:8080']
+  
+  - job_name: 'movie-catalog'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+        - targets: ['movie-catalog:8080']
