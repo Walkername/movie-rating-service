@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.walkername.user_profile.dto.AuthRequest;
 import ru.walkername.user_profile.dto.JWTResponse;
 import ru.walkername.user_profile.dto.RefreshTokenRequest;
+import ru.walkername.user_profile.mapper.UserMapper;
+import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.services.AuthService;
 
 @RequiredArgsConstructor
@@ -17,12 +19,15 @@ import ru.walkername.user_profile.services.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> register(
             @RequestBody @Valid AuthRequest authRequest
     ) {
-        authService.register(authRequest);
+        User user = userMapper.toUser(authRequest);
+
+        authService.register(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

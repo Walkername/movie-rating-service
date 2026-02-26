@@ -12,7 +12,9 @@ public interface UserMapper {
 
     User toUser(AuthRequest authRequest);
 
-    void toUser(UserRequest newUser, @MappingTarget User updatedUser);
+    User toUser(UserRequest userRequest);
+
+    void toUser(User source, @MappingTarget User destination);
 
     UserResponse toUserResponse(User user);
 

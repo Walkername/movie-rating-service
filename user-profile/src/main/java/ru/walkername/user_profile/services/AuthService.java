@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.user_profile.dto.AuthRequest;
 import ru.walkername.user_profile.dto.JWTResponse;
 import ru.walkername.user_profile.exceptions.*;
-import ru.walkername.user_profile.mapper.UserMapper;
 import ru.walkername.user_profile.models.RefreshToken;
 import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.models.UserRole;
@@ -30,16 +29,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokensRepository refreshTokensRepository;
     private final TokenService tokenService;
-    private final UserMapper userMapper;
 
     @Transactional
-    public void register(AuthRequest request) {
-        if (usersRepository.existsByUsername(request.username())) {
-            log.warn("Registration attempt for existing username: {}", request.username());
+    public void register(User user) {
+        if (usersRepository.existsByUsername(user.getUsername())) {
+            log.warn("Registration attempt for existing username: {}", user.getUsername());
             throw new UserExistsException("User with such username already exists");
         }
 
-        User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.USER);
         user.setCreatedAt(Instant.now());

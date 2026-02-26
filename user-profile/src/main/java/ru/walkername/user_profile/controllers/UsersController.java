@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.walkername.user_profile.dto.*;
 import ru.walkername.user_profile.mapper.UserMapper;
+import ru.walkername.user_profile.models.User;
 import ru.walkername.user_profile.security.UserPrincipal;
 import ru.walkername.user_profile.services.UsersService;
 
@@ -26,7 +27,10 @@ public class UsersController {
     public ResponseEntity<UserResponse> getUser(
             @PathVariable("id") Long id
     ) {
-        UserResponse userResponse = userMapper.toUserResponse(usersService.findOne(id));
+        User dbUser = usersService.findOne(id);
+
+        UserResponse userResponse = userMapper.toUserResponse(dbUser);
+
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
@@ -34,25 +38,21 @@ public class UsersController {
     public ResponseEntity<UserResponse> getUserByUsername(
             @PathVariable("username") String username
     ) {
-        UserResponse userResponse = userMapper.toUserResponse(usersService.findByUsername(username));
+        User dbUser = usersService.findByUsername(username);
+
+        UserResponse userResponse = userMapper.toUserResponse(dbUser);
+
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-//    @GetMapping()
-//    public ResponseEntity<List<UserResponse>> index() {
-//        List<UserResponse> list = usersService.getAll().stream().map(userModelMapper::convertToUserResponse).toList();
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-//    }
-
     @PatchMapping("/me/profile-pic")
-    public ResponseEntity<String> updateProfilePic(
+    public ResponseEntity<HttpStatus> updateProfilePic(
             @RequestParam("fileId") Long fileId,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        // Check if the user who requested and updated user are the same
-        // Or if the admin, then he can do what he wants
         Long userId = userPrincipal.userId();
         usersService.updateProfilePicture(userId, fileId);
+
         return ResponseEntity.ok().build();
     }
 
@@ -61,7 +61,10 @@ public class UsersController {
             @RequestBody @Valid UserRequest userRequest,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        usersService.update(userPrincipal.userId(), userRequest);
+        User user = userMapper.toUser(userRequest);
+
+        usersService.update(userPrincipal.userId(), user);
+
         return ResponseEntity.ok().build();
     }
 
@@ -71,6 +74,7 @@ public class UsersController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         usersService.updateUsername(userPrincipal.userId(), usernameRequest.username());
+
         return ResponseEntity.ok().build();
     }
 
@@ -79,13 +83,8 @@ public class UsersController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         usersService.delete(userPrincipal.userId());
-        return ResponseEntity.ok().build();
-    }
 
-    @GetMapping("/top-user")
-    public ResponseEntity<UserResponse> getTopUser() {
-        UserResponse userResponse = userMapper.toUserResponse(usersService.getTopUser());
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/batch")
@@ -95,6 +94,7 @@ public class UsersController {
             @RequestBody List<Long> userIds
     ) {
         PageResponse<UserResponse> pageResponse = usersService.getUsersByIds(page, limit, userIds);
+
         return new ResponseEntity<>(pageResponse, HttpStatus.OK);
     }
 

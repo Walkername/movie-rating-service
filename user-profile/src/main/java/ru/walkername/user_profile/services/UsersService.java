@@ -12,7 +12,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.user_profile.dto.PageResponse;
-import ru.walkername.user_profile.dto.UserRequest;
 import ru.walkername.user_profile.dto.UserResponse;
 import ru.walkername.user_profile.events.FileUploaded;
 import ru.walkername.user_profile.events.RatingCreated;
@@ -61,7 +60,7 @@ public class UsersService {
 
     @CacheEvict(cacheNames = "user", key = "#id")
     @Transactional
-    public void update(Long id, UserRequest newUser) {
+    public void update(Long id, User newUser) {
         User user = usersRepository.findById(id).orElseThrow(
                 () -> {
                     log.warn("Update attempt for non-existent user with id={}", id);
@@ -237,13 +236,6 @@ public class UsersService {
                 value.setAverageRating(newAverageRating);
             }
         });
-    }
-
-    @Cacheable(cacheNames = "top-user")
-    public User getTopUser() {
-        return usersRepository.findUserWithHighestScores().orElseThrow(
-                () -> new UserNotFoundException("Top-user not found")
-        );
     }
 
     public PageResponse<UserResponse> getUsersByIds(int page, int limit, List<Long> userIds) {
