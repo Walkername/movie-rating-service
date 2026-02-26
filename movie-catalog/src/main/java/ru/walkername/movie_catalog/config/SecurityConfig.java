@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.walkername.movie_catalog.logging.LoggingFilter;
 import ru.walkername.movie_catalog.security.JWTFilter;
 
 import java.util.Arrays;
@@ -20,6 +21,8 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JWTFilter jwtFilter;
+
+    private final LoggingFilter loggingFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +39,8 @@ public class SecurityConfig {
                 });
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterAfter(loggingFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

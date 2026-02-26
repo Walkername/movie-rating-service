@@ -178,8 +178,33 @@ services:
         depends_on:
             - esearch-storage
             - postgresql
+            - kafka
         networks:
             - moviecluster
+    
+    movie-catalog:
+        build:
+            context: ./movie-catalog
+            dockerfile: Dockerfile
+        container_name: movie-catalog
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=postgres
+            - RATING_SERVICE_URL=http://localhost:8082
+            - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
+            - SPRING_DATA_REDIS_HOST=redis-cache
+            - SPRING_DATA_REDIS_PORT=6379
+        ports:
+            - "8081:8080"
+        depends_on:
+            - esearch-storage
+            - postgresql
+            - kafka
+        networks:
+            - moviecluster
+        
     
 volumes:
     postgre-data:
