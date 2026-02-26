@@ -1,6 +1,6 @@
 package ru.walkername.user_profile.dto;
 
-import java.util.Date;
+import java.time.Instant;
 
 public record UserResponse(
         Long id,
@@ -9,7 +9,7 @@ public record UserResponse(
         Integer profilePicId,
         double averageRating,
         int scores,
-        Date createdAt
+        Instant createdAt
 ) {
 
 }
