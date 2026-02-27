@@ -10,34 +10,34 @@ scrape_configs:
   - job_name: 'movie-catalog'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['movie-catalog:8080']
+      - targets: ['movie-catalog:8080']
         
   - job_name: 'rating-system'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['rating-system:8080']
+      - targets: ['rating-system:8080']
   
   - job_name: 'file-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['file-service:8080']
+      - targets: ['file-service:8080']
   
   - job_name: 'user-library'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['user-library:8080']
+      - targets: ['user-library:8080']
   
   - job_name: 'feed-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['feed-service:8080']
+      - targets: ['feed-service:8080']
   
   - job_name: 'notification-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['notification-service:8080']
+      - targets: ['notification-service:8080']
   
   - job_name: 'conversation-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-        - targets: ['conversation-service:8080']
+      - targets: ['conversation-service:8080']
