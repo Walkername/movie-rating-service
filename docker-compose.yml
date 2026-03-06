@@ -205,6 +205,26 @@ services:
             - kafka
         networks:
             - moviecluster
+    
+    rating-system:
+        build:
+            context: ./rating-system
+            dockerfile: Dockerfile
+        container_name: rating-system
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=postgres
+            - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
+        ports:
+            - "8082:8080"
+        depends_on:
+            - esearch-storage
+            - postgresql
+            - kafka
+        networks:
+            - moviecluster
         
     
 volumes:

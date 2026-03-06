@@ -14,13 +14,9 @@ public interface RatingsRepository extends JpaRepository<Rating, Long> {
 
     Optional<Rating> findByUserIdAndMovieId(Long userId, Long movieId);
 
-    List<Rating> findByUserId(Long id);
-
     Page<Rating> findAllByUserId(Long id, Pageable pageable);
 
     List<Rating> findByMovieId(Long id);
-
-    boolean existsByUserIdAndMovieId(Long userId, Long movieId);
 
     void deleteAllByMovieId(Long movieId);
 }

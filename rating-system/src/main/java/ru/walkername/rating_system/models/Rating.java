@@ -3,9 +3,17 @@ package ru.walkername.rating_system.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.Date;
+import java.time.Instant;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "rating", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "movie_id"})
@@ -15,7 +23,7 @@ public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long ratingId;
+    private Long id;
 
     @Column(name = "user_id")
     private Long userId;
@@ -29,66 +37,5 @@ public class Rating {
     private int rating;
 
     @Column(name = "rated_at")
-    private Date ratedAt;
-
-    public Rating() {
-
-    }
-
-    public Rating(Long userId, Long movieId, int rating) {
-        this.userId = userId;
-        this.movieId = movieId;
-        this.rating = rating;
-    }
-
-    public Long getRatingId() {
-        return ratingId;
-    }
-
-    public void setRatingId(Long ratingId) {
-        this.ratingId = ratingId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getMovieId() {
-        return movieId;
-    }
-
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public Date getRatedAt() {
-        return ratedAt;
-    }
-
-    public void setRatedAt(Date ratedAt) {
-        this.ratedAt = ratedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Rating{" +
-                "ratingId=" + ratingId +
-                ", userId=" + userId +
-                ", movieId=" + movieId +
-                ", rating=" + rating +
-                ", ratedAt=" + ratedAt +
-                '}';
-    }
+    private Instant ratedAt;
 }

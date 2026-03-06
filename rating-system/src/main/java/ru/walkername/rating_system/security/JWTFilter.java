@@ -2,34 +2,29 @@ package ru.walkername.rating_system.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.walkername.rating_system.dto.ErrorResponse;
 import ru.walkername.rating_system.services.TokenService;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 
+@RequiredArgsConstructor
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-
-    @Autowired
-    public JWTFilter(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -43,7 +38,7 @@ public class JWTFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             if (token.isBlank()) {
-                setResponse(response, request, "JWT token was not found");
+                handleJwtException(response, "Invalid JWT token");
                 return;
             } else {
                 try {
@@ -64,7 +59,7 @@ public class JWTFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (JWTVerificationException e) {
-                    setResponse(response, request, "Invalid JWT token");
+                    handleJwtException(response, "Invalid JWT token");
                     return;
                 }
 
@@ -74,23 +69,13 @@ public class JWTFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void setResponse(HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
-        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
-
+    private void handleJwtException(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
 
-        LinkedHashMap<String, String> responseMap = new LinkedHashMap<>();
-        responseMap.put("timestamp", now.toString());
-        responseMap.put("status", String.valueOf(response.getStatus()));
-        responseMap.put("error", message);
-        responseMap.put("path", request.getRequestURI());
+        ErrorResponse errorResponse = new ErrorResponse(message, System.currentTimeMillis());
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(responseMap);
-
-        response.getWriter().write(jsonResponse);
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
 }

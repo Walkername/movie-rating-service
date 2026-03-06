@@ -1,6 +1,6 @@
 package ru.walkername.rating_system.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,50 +17,29 @@ import ru.walkername.rating_system.events.MovieDeleted;
 import ru.walkername.rating_system.events.RatingCreated;
 import ru.walkername.rating_system.events.RatingDeleted;
 import ru.walkername.rating_system.events.RatingUpdated;
-import ru.walkername.rating_system.exceptions.RatingNotFound;
+import ru.walkername.rating_system.exceptions.RatingNotFoundException;
+import ru.walkername.rating_system.mapper.RatingMapper;
 import ru.walkername.rating_system.models.Rating;
 import ru.walkername.rating_system.repositories.RatingsRepository;
-import ru.walkername.rating_system.utils.RatingModelMapper;
 
+import java.time.Instant;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class RatingsService {
 
     private final RatingsRepository ratingsRepository;
     private final KafkaProducerService kafkaProducerService;
-    private final RatingModelMapper ratingModelMapper;
-
-    @Autowired
-    public RatingsService(
-            RatingsRepository ratingsRepository,
-            KafkaProducerService kafkaProducerService,
-            RatingModelMapper ratingModelMapper
-    ) {
-        this.ratingsRepository = ratingsRepository;
-        this.kafkaProducerService = kafkaProducerService;
-        this.ratingModelMapper = ratingModelMapper;
-    }
+    private final RatingMapper ratingMapper;
 
     public Rating findOne(Long userId, Long movieId) {
-        Optional<Rating> rating = ratingsRepository.findByUserIdAndMovieId(userId, movieId);
-        return rating.orElse(null);
-    }
-
-    public boolean existsByUserIdAndMovieId(Long userId, Long movieId) {
-        return ratingsRepository.existsByUserIdAndMovieId(userId, movieId);
+        return ratingsRepository.findByUserIdAndMovieId(userId, movieId).orElse(null);
     }
 
     @Transactional
     public void save(Rating rating) {
-//        // Save to db new added rating
-//        rating.setRatedAt(new Date());
-//        ratingsRepository.save(rating);
-//
-//        // Kafka: send to User and Movie services
-//        registerRatingCreatedEvent(rating.getUserId(), rating.getMovieId(), rating.getRating());
-
         Optional<Rating> existingRating = ratingsRepository
                 .findByUserIdAndMovieId(rating.getUserId(), rating.getMovieId());
 
@@ -68,14 +47,14 @@ public class RatingsService {
             // Update the existing rating
             Rating existing = existingRating.get();
             int oldRatingValue = existing.getRating();
-            rating.setRatingId(existing.getRatingId());
-            rating.setRatedAt(new Date());
+            rating.setId(existing.getId());
+            rating.setRatedAt(Instant.now());
             ratingsRepository.save(rating);
 
             registerRatingUpdatedEvent(rating, oldRatingValue);
         } else {
             // Create new rating
-            rating.setRatedAt(new Date());
+            rating.setRatedAt(Instant.now());
             ratingsRepository.save(rating);
             registerRatingCreatedEvent(rating);
         }
@@ -118,7 +97,7 @@ public class RatingsService {
     public void delete(Long movieId, Long userId) {
         Rating currentRating = ratingsRepository
                 .findByUserIdAndMovieId(userId, movieId)
-                .orElseThrow(() -> new RatingNotFound("Rating not found"));
+                .orElseThrow(() -> new RatingNotFoundException("Rating not found"));
 
         ratingsRepository.delete(currentRating);
 
@@ -148,8 +127,8 @@ public class RatingsService {
     )
     public void deleteRatingsByMovieId(MovieDeleted movieDeleted) {
         // This is inefficient, so we need to make it impossible to delete the movie
-        List<Rating> ratings = ratingsRepository.findByMovieId(movieDeleted.getMovieId());
-        ratingsRepository.deleteAllByMovieId(movieDeleted.getMovieId());
+        List<Rating> ratings = ratingsRepository.findByMovieId(movieDeleted.movieId());
+        ratingsRepository.deleteAllByMovieId(movieDeleted.movieId());
         ratings.forEach(this::registerRatingDeletedEvent);
     }
 
@@ -160,7 +139,7 @@ public class RatingsService {
 
         List<RatingResponse> ratingResponses = new ArrayList<>();
         for (Rating rating : ratings.getContent()) {
-            RatingResponse ratingResponse = ratingModelMapper.convertToRatingResponse(rating);
+            RatingResponse ratingResponse = ratingMapper.toRatingResponse(rating);
             ratingResponses.add(ratingResponse);
         }
 
@@ -184,9 +163,5 @@ public class RatingsService {
         Sort.Direction direction = parts.length > 1 ? Sort.Direction.fromString(parts[1]) : Sort.Direction.DESC;
         return new Sort.Order(direction, property);
     }
-
-//    public List<Rating> getRatingsByMovie(Long id) {
-//        return ratingsRepository.findByMovieId(id);
-//    }
 
 }
