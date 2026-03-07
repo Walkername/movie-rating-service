@@ -123,14 +123,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(InvalidJWTException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
 }

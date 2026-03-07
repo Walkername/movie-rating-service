@@ -12,8 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.walkername.user_profile.exceptions.InvalidJWTException;
+import ru.walkername.user_profile.dto.ErrorResponse;
 import ru.walkername.user_profile.services.TokenService;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Collections;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -36,7 +38,8 @@ public class JWTFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             if (token.isBlank()) {
-                throw new InvalidJWTException("Invalid JWT token");
+                handleJwtException(response, "Invalid JWT token");
+                return;
             } else {
                 try {
                     DecodedJWT jwt = tokenService.validateAccessToken(token);
@@ -56,12 +59,22 @@ public class JWTFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (JWTVerificationException e) {
-                    throw new InvalidJWTException("Invalid JWT token");
+                    handleJwtException(response, "Invalid JWT token");
+                    return;
                 }
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void handleJwtException(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        ErrorResponse errorResponse = new ErrorResponse(message, System.currentTimeMillis());
+
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
 }
