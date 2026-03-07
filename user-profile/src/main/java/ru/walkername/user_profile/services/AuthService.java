@@ -67,13 +67,13 @@ public class AuthService {
         User dbUser = usersRepository.findByUsername(request.username())
                 .orElseThrow(() -> {
                             log.warn("Login attempt with non-existing username: {}", request.username());
-                            return new UserNotFoundException("Wrong credentials");
+                            return new InvalidCredentialsException("Wrong credentials");
                         }
                 );
 
         if (!passwordEncoder.matches(request.password(), dbUser.getPassword())) {
             log.warn("Invalid password attempt for username: {}", request.username());
-            throw new InvalidCredentials("Wrong credentials");
+            throw new InvalidCredentialsException("Wrong credentials");
         }
 
         return dbUser;
