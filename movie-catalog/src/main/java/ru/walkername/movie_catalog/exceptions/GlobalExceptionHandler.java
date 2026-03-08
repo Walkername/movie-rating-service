@@ -24,33 +24,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(MovieWrongValidationException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(MovieNotFound ex) {
+    private ResponseEntity<ErrorResponse> handleException(MovieNotFoundException ex) {
         ErrorResponse response = new ErrorResponse(
                 ex.getMessage(),
                 System.currentTimeMillis()
         );
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(InvalidJWTException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 }

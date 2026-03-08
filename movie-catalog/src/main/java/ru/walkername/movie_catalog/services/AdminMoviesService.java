@@ -10,7 +10,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ru.walkername.movie_catalog.events.MovieDeleted;
 import ru.walkername.movie_catalog.events.MovieUpdated;
-import ru.walkername.movie_catalog.exceptions.MovieNotFound;
+import ru.walkername.movie_catalog.exceptions.MovieNotFoundException;
 import ru.walkername.movie_catalog.mapper.MovieMapper;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
@@ -44,7 +44,7 @@ public class AdminMoviesService {
         Movie movie = moviesRepository.findById(id).orElseThrow(
                 () -> {
                     log.warn("Update attempt for non-existent movie with id={}", id);
-                    return new MovieNotFound("Movie not found");
+                    return new MovieNotFoundException("Movie not found");
                 }
         );
 
@@ -78,7 +78,7 @@ public class AdminMoviesService {
         Movie movie = moviesRepository.findById(movieId).orElseThrow(
                 () -> {
                     log.warn("Update poster attempt for non-existent movie with id={}", movieId);
-                    return new MovieNotFound("Movie not found");
+                    return new MovieNotFoundException("Movie not found");
                 }
         );
         movie.setPosterPicId(fileId);

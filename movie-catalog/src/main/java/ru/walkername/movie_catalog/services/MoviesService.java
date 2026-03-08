@@ -26,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.*;
 import ru.walkername.movie_catalog.events.*;
-import ru.walkername.movie_catalog.exceptions.MovieNotFound;
+import ru.walkername.movie_catalog.exceptions.MovieNotFoundException;
 import ru.walkername.movie_catalog.mapper.MovieMapper;
 import ru.walkername.movie_catalog.models.Movie;
 import ru.walkername.movie_catalog.repositories.MoviesRepository;
@@ -68,7 +68,7 @@ public class MoviesService {
     @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
     public Movie findOne(Long id) {
         return moviesRepository.findById(id)
-                .orElseThrow(() -> new MovieNotFound("Movie not found"));
+                .orElseThrow(() -> new MovieNotFoundException("Movie not found"));
     }
 
     @Caching(evict = {
@@ -371,7 +371,7 @@ public class MoviesService {
                                 "From kafka: update movie poster-pic-id attempt for non-existent movie with id = {}",
                                 fileUploaded.contextId()
                         );
-                        return new MovieNotFound("Movie not found");
+                        return new MovieNotFoundException("Movie not found");
                     }
             );
             movie.setPosterPicId(fileUploaded.fileId());
