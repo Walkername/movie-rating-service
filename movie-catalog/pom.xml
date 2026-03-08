@@ -30,9 +30,6 @@
 		<java.version>25</java.version>
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<java-jwt.version>4.5.0</java-jwt.version>
-		<spring-kafka.version>4.0.0-M3</spring-kafka.version>
-		<jedis.version>6.1.0</jedis.version>
-		<liquibase-core.version>5.0.1</liquibase-core.version>
 	</properties>
 
 	<dependencies>
@@ -72,9 +69,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-kafka</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-			<version>${spring-kafka.version}</version>
+			<artifactId>spring-kafka-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
