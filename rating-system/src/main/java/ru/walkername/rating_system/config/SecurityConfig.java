@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.walkername.rating_system.logging.LoggingFilter;
 import ru.walkername.rating_system.security.JWTFilter;
 
 import java.util.Arrays;
@@ -22,22 +23,23 @@ public class SecurityConfig {
     private final JWTFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LoggingFilter loggingFilter) {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/ratings/{userId}/{movieId}", "/ratings/user/{id}", "/ratings/movie/{movieId}"
+                                "/ratings/{userId}/{movieId}", "/ratings/user/{id}"
                         ).permitAll()
                         .requestMatchers("/actuator/prometheus").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                });
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterAfter(loggingFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
