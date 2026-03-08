@@ -1,6 +1,7 @@
 package ru.walkername.rating_system.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import ru.walkername.rating_system.repositories.RatingsRepository;
 import java.time.Instant;
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -97,11 +99,31 @@ public class RatingsService {
     public void delete(Long movieId, Long userId) {
         Rating currentRating = ratingsRepository
                 .findByUserIdAndMovieId(userId, movieId)
-                .orElseThrow(() -> new RatingNotFoundException("Rating not found"));
+                .orElseThrow(() -> {
+                    log.warn("Delete attempt for non-existent rating with userId={} and movieId={}", userId, movieId);
+                    return new RatingNotFoundException("Rating not found");
+                });
 
         ratingsRepository.delete(currentRating);
 
         registerRatingDeletedEvent(currentRating);
+
+        log.debug("Rating deleted successfully: userId={}, movieId={}", userId, movieId);
+    }
+
+    @Transactional
+    @KafkaListener(
+            topics = "movies-deleted",
+            groupId = "rating-service-group",
+            containerFactory = "movieDeletedContainerFactory"
+    )
+    public void deleteRatingsByMovieId(MovieDeleted movieDeleted) {
+        // This is inefficient, so we need to make it impossible to delete the movie
+        List<Rating> ratings = ratingsRepository.findByMovieId(movieDeleted.movieId());
+        ratingsRepository.deleteAllByMovieId(movieDeleted.movieId());
+        ratings.forEach(this::registerRatingDeletedEvent);
+
+        log.info("All ratings by movieId deleted successfully: movieId={}", movieDeleted.movieId());
     }
 
     private void registerRatingDeletedEvent(Rating rating) {
@@ -117,19 +139,6 @@ public class RatingsService {
                 kafkaProducerService.publishRatingDeleted(ratingDeleted);
             }
         });
-    }
-
-    @Transactional
-    @KafkaListener(
-            topics = "movies-deleted",
-            groupId = "rating-service-group",
-            containerFactory = "movieDeletedContainerFactory"
-    )
-    public void deleteRatingsByMovieId(MovieDeleted movieDeleted) {
-        // This is inefficient, so we need to make it impossible to delete the movie
-        List<Rating> ratings = ratingsRepository.findByMovieId(movieDeleted.movieId());
-        ratingsRepository.deleteAllByMovieId(movieDeleted.movieId());
-        ratings.forEach(this::registerRatingDeletedEvent);
     }
 
     public RatingsResponse getRatingsByUser(Long id, int page, int moviesPerPage, String[] sort) {
