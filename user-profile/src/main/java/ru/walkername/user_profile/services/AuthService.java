@@ -93,7 +93,7 @@ public class AuthService {
     private Long validateRefreshToken(String rawRefreshToken) {
         try {
             DecodedJWT jwt = tokenService.validateRefreshToken(rawRefreshToken);
-            Long userId = jwt.getClaim("userId").asLong();
+            Long userId = jwt.getClaim("id").asLong();
 
             Optional<RefreshToken> refreshToken = findRefreshToken(userId);
             if (refreshToken.isEmpty()) {
@@ -115,8 +115,26 @@ public class AuthService {
     }
 
     private boolean verifyToken(String rawToken, String storedHash) {
-        String newHash = hashTokenWithSalt(rawToken);
-        return newHash.equals(storedHash);
+        try {
+            byte[] saltAndHash = Base64.getDecoder().decode(storedHash);
+
+            byte[] salt = new byte[16];
+            System.arraycopy(saltAndHash, 0, salt, 0, salt.length);
+
+            MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
+            digest.update(salt);
+            byte[] hash = digest.digest(rawToken.getBytes());
+
+            for (int i = 0; i < hash.length; i++) {
+                if (hash[i] != saltAndHash[i + salt.length]) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Hashing algorithm not found", e);
+        }
     }
 
     private JWTResponse generateAndStoreTokens(User user) {
