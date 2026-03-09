@@ -212,17 +212,17 @@ public class MoviesService {
      * @param sort          defines what field will be used in order to sort movies list
      * @return list of movies
      */
-    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
-            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
+//    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
+//            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
     public PageResponse<MovieResponse> getAllMoviesWithPagination(int page, int moviesPerPage, String[] sort) {
         Sort sorting = Sort.by(createOrders(sort));
         Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
 
         Page<Movie> moviesPage = moviesRepository.findAll(pageable);
 
-        List<Long> movieIds = moviesPage.getContent().stream().map(Movie::getId).toList();
+        List<Long> fileIds = moviesPage.getContent().stream().map(Movie::getPosterPicId).toList();
 
-        List<FileAttachmentResponse> files = getAllPosterUrls(movieIds);
+        List<FileAttachmentResponse> files = getAllPosterUrls(fileIds);
 
         Map<Long, String> posterUrlMap = files.stream()
                 .collect(Collectors.toMap(
@@ -255,8 +255,7 @@ public class MoviesService {
         String endpoint = "/files/download-by-array/signed-url";
 
         UriComponentsBuilder builder = UriComponentsBuilder
-                .fromUriString(FILE_SERVICE_URL + endpoint)
-                .queryParam("entityType", "movie");
+                .fromUriString(FILE_SERVICE_URL + endpoint);
 
         ResponseEntity<List<FileAttachmentResponse>> response = restTemplate.exchange(
                 builder.toUriString(),
@@ -355,8 +354,12 @@ public class MoviesService {
         return moviesRepository.findByTitleStartingWithIgnoreCase(title);
     }
 
-    @CacheEvict(cacheNames = "movie", key = "#fileUploaded.contextId()",
-            condition = "#fileUploaded.context() != null && #fileUploaded.context().equals('movie-poster')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "movie", key = "#fileUploaded.contextId()",
+                    condition = "#fileUploaded.context() != null && #fileUploaded.context().equals('movie-poster')"),
+            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+    })
+
     @Transactional
     @KafkaListener(
             topics = "file-uploaded",

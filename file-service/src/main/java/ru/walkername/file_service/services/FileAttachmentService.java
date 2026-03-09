@@ -1,6 +1,6 @@
 package ru.walkername.file_service.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,16 +12,12 @@ import ru.walkername.file_service.repositories.FileAttachmentRepository;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class FileAttachmentService {
 
     private final FileAttachmentRepository fileAttachmentRepository;
-
-    @Autowired
-    public FileAttachmentService(FileAttachmentRepository fileAttachmentRepository) {
-        this.fileAttachmentRepository = fileAttachmentRepository;
-    }
 
     @Transactional
     public void save(FileAttachment fileAttachment) {
@@ -32,8 +28,8 @@ public class FileAttachmentService {
         return fileAttachmentRepository.findByEntityTypeAndEntityId(entityType, entityId, pageable);
     }
 
-    public List<FileAttachmentResponse> findAllByEntityTypeAndEntityIds(String entityType, List<Long> entityIds) {
-        return fileAttachmentRepository.findAllByEntityTypeAndEntityIds(entityType, entityIds);
+    public List<FileAttachmentResponse> findAllById(List<Long> ids) {
+        return fileAttachmentRepository.findAllByIds(ids);
     }
 
 }

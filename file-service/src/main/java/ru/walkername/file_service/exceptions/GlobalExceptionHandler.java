@@ -53,4 +53,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(FileNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(
+                ex.getMessage(),
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 }

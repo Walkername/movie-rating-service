@@ -2,9 +2,15 @@ package ru.walkername.file_service.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Date;
+import java.time.Instant;
 
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "File")
 public class File {
@@ -18,39 +24,11 @@ public class File {
     @Column(name = "url")
     private String url;
 
-
     @Column(name = "uploaded_at")
-    private Date uploadedAt;
+    private Instant uploadedAt;
 
-    public File() {
-    }
-
-    public File(String url, Date uploadedAt) {
+    public File(String url, Instant uploadedAt) {
         this.url = url;
-        this.uploadedAt = uploadedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Date getUploadedAt() {
-        return uploadedAt;
-    }
-
-    public void setUploadedAt(Date uploadedAt) {
         this.uploadedAt = uploadedAt;
     }
 }

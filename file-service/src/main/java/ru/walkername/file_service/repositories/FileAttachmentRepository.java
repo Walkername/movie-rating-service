@@ -28,11 +28,9 @@ public interface FileAttachmentRepository extends JpaRepository<FileAttachment, 
     @Query("select new ru.walkername.file_service.dto.FileAttachmentResponse(fa.entityId, f.url, f.uploadedAt) " +
             "from FileAttachment fa " +
             "join fa.file f " +
-            "where fa.entityType = :entityType " +
-            "and fa.entityId in :entityIds")
-    List<FileAttachmentResponse> findAllByEntityTypeAndEntityIds(
-            @Param("entityType") String entityType,
-            @Param("entityIds") List<Long> entityIds
+            "where f.id in :ids")
+    List<FileAttachmentResponse> findAllByIds(
+            @Param("ids") List<Long> ids
     );
 
 }

@@ -1,5 +1,6 @@
 package ru.walkername.file_service.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,49 +8,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.walkername.file_service.exceptions.InvalidUploadContextException;
-import ru.walkername.file_service.services.FileService;
+import ru.walkername.file_service.services.AdminFileService;
 
-import java.util.UUID;
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/files")
 public class AdminFileController {
 
-    private final FileService fileService;
-
-    public AdminFileController(FileService fileService) {
-        this.fileService = fileService;
-    }
+    private final AdminFileService adminFileService;
 
     @PostMapping("/upload")
     public ResponseEntity<HttpStatus> upload(
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "context") String context,
-            @RequestParam(value = "id") Long id
+            @RequestParam(value = "id") Long contextId
     ) {
-        String uniqueUrl;
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
+        adminFileService.upload(file, context, contextId);
 
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-
-        // Admin can upload any files for any users or movies
-        // So it's not necessary to use auth principal in order to get authId
-        // But it is better not to use non-existent contexts
-        switch (context) {
-            case "user", "user-avatar", "movie", "movie-poster" -> {
-                String transformedContext = context.replaceAll("-.*", "");
-                uniqueUrl = transformedContext + "-" + id + "/" + UUID.randomUUID() + extension;
-            }
-
-            default -> {
-                throw new InvalidUploadContextException("There is no such context");
-            }
-        }
-        fileService.uploadFile(uniqueUrl, file, context, id);
         return ResponseEntity.ok().build();
     }
 

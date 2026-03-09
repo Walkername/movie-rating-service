@@ -103,7 +103,7 @@ function MoviePage() {
                                         isAccessToEdit={isAccessToEdit}
                                         context={"movie"}
                                         contextId={movie.id}
-                                        addionalActions={movieActions}
+                                        additionalActions={movieActions}
                                     />
 
                                     <hr className="movie-page__divider" />

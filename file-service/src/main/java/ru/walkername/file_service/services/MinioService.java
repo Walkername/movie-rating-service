@@ -3,15 +3,17 @@ package ru.walkername.file_service.services;
 import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.file_service.exceptions.FileUploadFailException;
+import ru.walkername.file_service.exceptions.UrlGenerationException;
 
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+@RequiredArgsConstructor
 @Service
 public class MinioService {
 
@@ -19,11 +21,6 @@ public class MinioService {
 
     @Value("${minio.bucket-name}")
     private String bucketName;
-
-    @Autowired
-    public MinioService(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
 
     @PostConstruct
     public void initBucket() {
@@ -67,7 +64,7 @@ public class MinioService {
                             .build()
             );
         } catch (Exception e) {
-            throw new RuntimeException("Error generating signed URL", e);
+            throw new UrlGenerationException("Error generating signed URL: " + e.getMessage());
         }
     }
 

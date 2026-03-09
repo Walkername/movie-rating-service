@@ -2,9 +2,15 @@ package ru.walkername.file_service.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Date;
+import java.time.Instant;
 
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "file_attachment")
 public class FileAttachment {
@@ -22,55 +28,12 @@ public class FileAttachment {
 
     private Long entityId;
 
-    private Date uploadedAt;
+    private Instant uploadedAt;
 
-    public FileAttachment() {
-    }
-
-    public FileAttachment(File file, String entityType, Long entityId, Date uploadedAt) {
+    public FileAttachment(File file, String entityType, Long entityId, Instant uploadedAt) {
         this.file = file;
         this.entityType = entityType;
         this.entityId = entityId;
-        this.uploadedAt = uploadedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getEntityType() {
-        return entityType;
-    }
-
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-
-    public Long getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(Long entityId) {
-        this.entityId = entityId;
-    }
-
-    public Date getUploadedAt() {
-        return uploadedAt;
-    }
-
-    public void setUploadedAt(Date uploadedAt) {
         this.uploadedAt = uploadedAt;
     }
 }

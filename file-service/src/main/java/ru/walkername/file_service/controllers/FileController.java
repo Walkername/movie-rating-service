@@ -1,6 +1,6 @@
 package ru.walkername.file_service.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,30 +9,23 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.walkername.file_service.dto.FileAttachmentResponse;
 import ru.walkername.file_service.dto.FileResponse;
 import ru.walkername.file_service.dto.PageResponse;
-import ru.walkername.file_service.exceptions.InvalidUploadContextException;
 import ru.walkername.file_service.security.UserPrincipal;
 import ru.walkername.file_service.services.FileService;
 
 import java.util.List;
-import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/files")
 public class FileController {
 
     private final FileService fileService;
 
-    @Autowired
-    public FileController(FileService fileService) {
-        this.fileService = fileService;
-    }
-
     @PostMapping("/download-by-array/signed-url")
     public ResponseEntity<List<FileAttachmentResponse>> downloadByArray(
-            @RequestParam(value = "entityType") String entityType,
-            @RequestBody List<Long> entityIds
+            @RequestBody List<Long> ids
     ) {
-        List<FileAttachmentResponse> fileResponses = fileService.findAllByEntityTypeAndEntityIds(entityType, entityIds);
+        List<FileAttachmentResponse> fileResponses = fileService.findAllByEntityTypeAndEntityIds(ids);
         return new ResponseEntity<>(fileResponses, HttpStatus.OK);
     }
 
@@ -41,9 +34,7 @@ public class FileController {
             @PathVariable("fileId") Long fileId
     ) {
         String signedUrl = fileService.downloadById(fileId);
-        return signedUrl != null
-                ? new ResponseEntity<>(signedUrl, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(signedUrl, HttpStatus.OK);
     }
 
     @GetMapping("/download-all/signed-url")
@@ -64,23 +55,9 @@ public class FileController {
             @RequestParam(value = "context") String context,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        if (!context.equals("user") && !context.equals("user-avatar")) {
-            throw new InvalidUploadContextException("There is no such context");
-        }
+        fileService.upload(file, context, userPrincipal.userId());
 
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
-
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-
-        Long authId = userPrincipal.getUserId();
-        String transformedContext = context.replaceAll("-.*", "");
-        String uniqueUrl = transformedContext + "-" + authId + "/" + UUID.randomUUID() + extension;
-
-        fileService.uploadFile(uniqueUrl, file, context, authId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
 }
