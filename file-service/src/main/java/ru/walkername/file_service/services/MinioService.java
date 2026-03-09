@@ -4,6 +4,7 @@ import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import ru.walkername.file_service.exceptions.UrlGenerationException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MinioService {
@@ -34,6 +36,7 @@ public class MinioService {
                         .build());
             }
         } catch (Exception e) {
+            log.error("Failed to initialize Minio Bucket: bucketName={}", bucketName);
             throw new RuntimeException("Could not initialize bucket", e);
         }
     }
@@ -49,6 +52,7 @@ public class MinioService {
                             .build()
             );
         } catch (Exception e) {
+            log.error("Failed to upload file: filename={}", filename);
             throw new FileUploadFailException("Failed to upload file to MinIO");
         }
     }
@@ -64,6 +68,7 @@ public class MinioService {
                             .build()
             );
         } catch (Exception e) {
+            log.error("Failed to generate pre-signed url for objectName(filename)={}", objectName);
             throw new UrlGenerationException("Error generating signed URL: " + e.getMessage());
         }
     }
@@ -75,6 +80,7 @@ public class MinioService {
                     .object(filename)
                     .build());
         } catch (Exception e) {
+            log.error("Failed to delete file: filename={}", filename);
             throw new RuntimeException("Error deleting file", e);
         }
     }
@@ -87,6 +93,7 @@ public class MinioService {
                         .build())) {
             return is.readAllBytes();
         } catch (Exception e) {
+            log.error("Failed to download file: filename={}", filename);
             throw new RuntimeException("Error downloading file", e);
         }
     }
