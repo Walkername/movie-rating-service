@@ -31,6 +31,7 @@ public class SecurityConfig {
                                 "/files/download-by-id/signed-url/{fileId}", "/files/download-all/signed-url",
                                 "/files/download-by-array/signed-url"
                         ).permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
