@@ -20,8 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.walkername.movie_catalog.dto.*;
@@ -44,7 +42,6 @@ public class MoviesService {
     private final String RATING_SERVICE_URL;
     private final String FILE_SERVICE_URL;
     private final RestTemplate restTemplate;
-    private final KafkaProducerService kafkaProducerService;
     private final MovieMapper movieMapper;
 
     private static final String MOVIE_POSTER = "movie-poster";
@@ -56,13 +53,12 @@ public class MoviesService {
             @Value("${rating.service.url}") String RATING_SERVICE_URL,
             @Value("${file.service.url}") String FILE_SERVICE_URL,
             RestTemplate restTemplate,
-            KafkaProducerService kafkaProducerService,
-            MovieMapper movieMapper, MovieRatingUpdateBuffer movieRatingUpdateBuffer) {
+            MovieMapper movieMapper, MovieRatingUpdateBuffer movieRatingUpdateBuffer
+    ) {
         this.moviesRepository = moviesRepository;
         this.RATING_SERVICE_URL = RATING_SERVICE_URL;
         this.FILE_SERVICE_URL = FILE_SERVICE_URL;
         this.restTemplate = restTemplate;
-        this.kafkaProducerService = kafkaProducerService;
         this.movieMapper = movieMapper;
         this.movieRatingUpdateBuffer = movieRatingUpdateBuffer;
     }
@@ -105,9 +101,6 @@ public class MoviesService {
             value.setScores(scores + 1);
             value.setAverageRating(newAverageRating);
 
-            // Publish Kafka event to UserLibrary
-//            registerMovieRatingUpdatedEvent(value);
-
             movieRatingUpdateBuffer.markDirty(ratingCreated.movieId());
         });
     }
@@ -143,9 +136,6 @@ public class MoviesService {
             double newAverageRating = (averageRating * scores - oldRating + newRating) / scores;
 
             value.setAverageRating(newAverageRating);
-
-            // Publish Kafka event to UserLibrary
-//            registerMovieRatingUpdatedEvent(value);
 
             movieRatingUpdateBuffer.markDirty(ratingUpdated.movieId());
         });
@@ -188,25 +178,7 @@ public class MoviesService {
                 value.setAverageRating(newAverageRating);
             }
 
-            // Publish Kafka event to UserLibrary
-//            registerMovieRatingUpdatedEvent(value);
-
             movieRatingUpdateBuffer.markDirty(ratingDeleted.movieId());
-        });
-    }
-
-    private void registerMovieRatingUpdatedEvent(Movie movie) {
-        MovieRatingUpdated movieRatingUpdated = new MovieRatingUpdated(
-                movie.getId(),
-                movie.getAverageRating(),
-                movie.getScores()
-        );
-
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                kafkaProducerService.publishMovieRatingUpdated(movieRatingUpdated);
-            }
         });
     }
 
@@ -220,8 +192,8 @@ public class MoviesService {
      * @param sort          defines what field will be used in order to sort movies list
      * @return list of movies
      */
-//    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
-//            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
+    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
+            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
     public PageResponse<MovieResponse> getAllMoviesWithPagination(int page, int moviesPerPage, String[] sort) {
         Sort sorting = Sort.by(createOrders(sort));
         Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
