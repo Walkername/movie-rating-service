@@ -1,6 +1,6 @@
 package ru.walkername.user_library.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,17 +8,12 @@ import ru.walkername.user_library.dto.PageResponse;
 import ru.walkername.user_library.dto.UserRatedMovieResponse;
 import ru.walkername.user_library.services.UserRatedMoviesService;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user-movies")
-@CrossOrigin
 public class UserRatedMoviesController {
 
     private final UserRatedMoviesService userRatedMoviesService;
-
-    @Autowired
-    public UserRatedMoviesController(UserRatedMoviesService userRatedMoviesService) {
-        this.userRatedMoviesService = userRatedMoviesService;
-    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<PageResponse<UserRatedMovieResponse>> getUserRatedMovies(

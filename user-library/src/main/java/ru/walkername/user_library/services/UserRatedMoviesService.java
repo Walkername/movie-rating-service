@@ -12,17 +12,18 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.walkername.user_library.dto.MovieResponse;
 import ru.walkername.user_library.dto.PageResponse;
 import ru.walkername.user_library.dto.UserRatedMovieResponse;
 import ru.walkername.user_library.events.*;
-import ru.walkername.user_library.exceptions.UserRatedMovieNotFound;
+import ru.walkername.user_library.exceptions.UserRatedMovieNotFoundException;
+import ru.walkername.user_library.mapper.UserRatingMapper;
 import ru.walkername.user_library.models.UserRatedMovie;
 import ru.walkername.user_library.repositories.UserRatedMoviesRepository;
 
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class UserRatedMoviesService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     private final IndexCoordinates indexCoordinates;
-    private final RetryTemplate retryTemplate;
+    private final UserRatingMapper userRatingMapper;
 
     @Autowired
     public UserRatedMoviesService(
@@ -47,13 +48,13 @@ public class UserRatedMoviesService {
             ElasticsearchOperations elasticsearchOperations,
             @Value("${spring.elasticsearch.index.user-rated-movies}")
             String indexName,
-            RetryTemplate retryTemplate) {
+            UserRatingMapper userRatingMapper) {
         this.userRatedMoviesRepository = userRatedMoviesRepository;
         this.restTemplate = restTemplate;
         this.MOVIE_CATALOG_SERVICE_API = MOVIE_CATALOG_SERVICE_API;
         this.elasticsearchOperations = elasticsearchOperations;
         this.indexCoordinates = IndexCoordinates.of(indexName);
-        this.retryTemplate = retryTemplate;
+        this.userRatingMapper = userRatingMapper;
     }
 
     @KafkaListener(
@@ -62,32 +63,29 @@ public class UserRatedMoviesService {
             containerFactory = "ratingCreatedContainerFactory"
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
-        System.out.println("RatingCreated: movieId=" + ratingCreated.getMovieId());
+//        System.out.println("RatingCreated: movieId=" + ratingCreated.movieId());
         // Getting movie data
-        String movieCatalogEndpoint = MOVIE_CATALOG_SERVICE_API + "/movies/" + ratingCreated.getMovieId();
+        String movieCatalogEndpoint = MOVIE_CATALOG_SERVICE_API + "/movies/" + ratingCreated.movieId();
         MovieResponse movieResponse = restTemplate.getForObject(movieCatalogEndpoint, MovieResponse.class);
 
         if (movieResponse == null) {
-            throw new UserRatedMovieNotFound("Could not find movie with id: " + ratingCreated.getMovieId());
+            throw new UserRatedMovieNotFoundException("Could not find movie with id: " + ratingCreated.movieId());
         }
 
         UserRatedMovie userRatedMovie = new UserRatedMovie(
-                UserRatedMovie.generateId(ratingCreated.getUserId(), ratingCreated.getMovieId()),
-                ratingCreated.getUserId(),
-                ratingCreated.getMovieId(),
-                ratingCreated.getRating(),
-                ratingCreated.getRatedAt(),
-                movieResponse.getTitle(),
-                movieResponse.getReleaseYear(),
-                movieResponse.getAverageRating(),
-                movieResponse.getScores(),
-                movieResponse.getCreatedAt()
+                UserRatedMovie.generateId(ratingCreated.userId(), ratingCreated.movieId()),
+                ratingCreated.userId(),
+                ratingCreated.movieId(),
+                ratingCreated.rating(),
+                ratingCreated.ratedAt().truncatedTo(ChronoUnit.MILLIS),
+                movieResponse.title(),
+                movieResponse.releaseYear(),
+                movieResponse.averageRating(),
+                movieResponse.scores(),
+                movieResponse.createdAt()
         );
 
-        retryTemplate.execute(context -> {
-            userRatedMoviesRepository.save(userRatedMovie);
-            return null;
-        });
+        userRatedMoviesRepository.save(userRatedMovie);
     }
 
     @KafkaListener(
@@ -96,12 +94,12 @@ public class UserRatedMoviesService {
             containerFactory = "ratingUpdatedContainerFactory"
     )
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
-        System.out.println("RatingUpdated: movieId=" + ratingUpdated.getMovieId());
+//        System.out.println("RatingUpdated: movieId=" + ratingUpdated.movieId());
 
-        String docId = UserRatedMovie.generateId(ratingUpdated.getUserId(), ratingUpdated.getMovieId());
+        String docId = UserRatedMovie.generateId(ratingUpdated.userId(), ratingUpdated.movieId());
         Map<String, Object> params = new HashMap<>();
-        params.put("rating", ratingUpdated.getRating());
-        params.put("ratedAt", ratingUpdated.getRatedAt());
+        params.put("rating", ratingUpdated.rating());
+        params.put("ratedAt", ratingUpdated.ratedAt().truncatedTo(ChronoUnit.MILLIS).toString());
 
         String script = """
                     if (ctx._source.rating != params.rating) {
@@ -112,25 +110,7 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        try {
-            updateWithScript(docId, params, script);
-        } catch (Exception e) {
-            updateUserRatingWithFullDocument(docId, ratingUpdated);
-        }
-    }
-
-    private void updateUserRatingWithFullDocument(String docId, RatingUpdated ratingUpdated) {
-        UserRatedMovie existingDoc = userRatedMoviesRepository.findById(docId).orElseThrow(
-                () -> new UserRatedMovieNotFound("Document not found: " + docId)
-        );
-
-        existingDoc.setRating(ratingUpdated.getRating());
-        existingDoc.setRatedAt(ratingUpdated.getRatedAt());
-
-        retryTemplate.execute(context -> {
-            userRatedMoviesRepository.save(existingDoc);
-            return null;
-        });
+        updateWithScript(docId, params, script);
     }
 
     @KafkaListener(
@@ -139,9 +119,9 @@ public class UserRatedMoviesService {
             containerFactory = "ratingDeletedContainerFactory"
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
-        System.out.println("RatingDeleted: movieId=" + ratingDeleted.getMovieId());
+//        System.out.println("RatingDeleted: movieId=" + ratingDeleted.movieId());
 
-        String docId = UserRatedMovie.generateId(ratingDeleted.getUserId(), ratingDeleted.getMovieId());
+        String docId = UserRatedMovie.generateId(ratingDeleted.userId(), ratingDeleted.movieId());
 
         Map<String, Object> params = new HashMap<>();
         params.put("deleted", true);
@@ -152,33 +132,18 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        try {
-            updateWithScript(docId, params, script);
-        } catch (Exception e) {
-            updateRatingDeletedWithFullDocument(docId);
-        }
+        updateWithScript(docId, params, script);
     }
 
     private void updateWithScript(String docId, Map<String, Object> params, String script) {
         UpdateQuery updateQuery = UpdateQuery.builder(docId)
-                .withScriptType(ScriptType.INLINE)
                 .withScript(script)
                 .withParams(params)
+                .withAbortOnVersionConflict(false)
+                .withRetryOnConflict(5)
                 .build();
 
         elasticsearchOperations.update(updateQuery, indexCoordinates);
-    }
-
-    private void updateRatingDeletedWithFullDocument(String docId) {
-        UserRatedMovie existingDoc = userRatedMoviesRepository.findById(docId)
-                .orElseThrow(() -> new UserRatedMovieNotFound("Document not found: " + docId));
-
-        existingDoc.setDeleted(true);
-
-        retryTemplate.execute(context -> {
-            userRatedMoviesRepository.save(existingDoc);
-            return null;
-        });
     }
 
     @KafkaListener(
@@ -187,14 +152,14 @@ public class UserRatedMoviesService {
             containerFactory = "movieUpdatedContainerFactory"
     )
     public void handleMovieUpdated(MovieUpdated movieUpdated) {
-        System.out.println("MovieUpdated: movieId=" + movieUpdated.getId());
+//        System.out.println("MovieUpdated: movieId=" + movieUpdated.id());
 
-        Criteria criteria = new Criteria("movieId").is(movieUpdated.getId());
+        Criteria criteria = new Criteria("movieId").is(movieUpdated.id());
         CriteriaQuery query = new CriteriaQuery(criteria);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("title", movieUpdated.getTitle());
-        params.put("releaseYear", movieUpdated.getReleaseYear());
+        params.put("title", movieUpdated.title());
+        params.put("releaseYear", movieUpdated.releaseYear());
 
         String script = """
                     if (ctx._source.movieTitle != params.title) {
@@ -208,12 +173,11 @@ public class UserRatedMoviesService {
         UpdateQuery updateQuery = UpdateQuery.builder(query)
                 .withScript(script)
                 .withParams(params)
+                .withAbortOnVersionConflict(false)
+                .withRetryOnConflict(5)
                 .build();
 
-        retryTemplate.execute(context -> {
-            elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
-            return null;
-        });
+        elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
     }
 
     @KafkaListener(
@@ -222,14 +186,14 @@ public class UserRatedMoviesService {
             containerFactory = "movieRatingUpdatedContainerFactory"
     )
     public void handleMovieRatingUpdated(MovieRatingUpdated movieRatingUpdated) {
-        System.out.println("MovieRatingUpdated: movieId=" + movieRatingUpdated.getId());
+//        System.out.println("MovieRatingUpdated: movieId=" + movieRatingUpdated.id());
 
-        Criteria criteria = new Criteria("movieId").is(movieRatingUpdated.getId());
+        Criteria criteria = new Criteria("movieId").is(movieRatingUpdated.id());
         CriteriaQuery query = new CriteriaQuery(criteria);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("averageRating", movieRatingUpdated.getAverageRating());
-        params.put("scores", movieRatingUpdated.getScores());
+        params.put("averageRating", movieRatingUpdated.averageRating());
+        params.put("scores", movieRatingUpdated.scores());
 
         String script = """
                     if (ctx._source.movieAverageRating != params.averageRating) {
@@ -241,15 +205,13 @@ public class UserRatedMoviesService {
                 """;
 
         UpdateQuery updateQuery = UpdateQuery.builder(query)
-                .withScriptType(ScriptType.INLINE)
                 .withScript(script)
                 .withParams(params)
+                .withAbortOnVersionConflict(false)
+                .withRetryOnConflict(5)
                 .build();
 
-        retryTemplate.execute(context -> {
-            elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
-            return null;
-        });
+        elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
     }
 
     @KafkaListener(
@@ -258,16 +220,13 @@ public class UserRatedMoviesService {
             containerFactory = "movieDeletedContainerFactory"
     )
     public void handleMovieDeleted(MovieDeleted movieDeleted) {
-        System.out.println("MovieDeleted: movieId=" + movieDeleted.getMovieId());
+//        System.out.println("MovieDeleted: movieId=" + movieDeleted.movieId());
 
-        Criteria criteria = new Criteria("movieId").is(movieDeleted.getMovieId());
+        Criteria criteria = new Criteria("movieId").is(movieDeleted.movieId());
         CriteriaQuery criteriaQuery = new CriteriaQuery(criteria);
         DeleteQuery deleteQuery = DeleteQuery.builder(criteriaQuery).build();
 
-        retryTemplate.execute(context -> {
-            elasticsearchOperations.delete(deleteQuery, UserRatedMovie.class);
-            return null;
-        });
+        elasticsearchOperations.delete(deleteQuery, UserRatedMovie.class);
     }
 
     public PageResponse<UserRatedMovieResponse> getUserRatedMovies(
@@ -292,17 +251,19 @@ public class UserRatedMoviesService {
         SearchHits<UserRatedMovie> hits = elasticsearchOperations.search(query, UserRatedMovie.class, indexCoordinates);
 
         List<UserRatedMovieResponse> responses = hits.getSearchHits().stream()
-                .map(hit -> toResponse(hit.getContent()))
+                .map(hit ->
+                        userRatingMapper.toUserRatedMovieResponse(hit.getContent()))
                 .toList();
 
         long totalHits = hits.getTotalHits();
+        int totalPages = (int) Math.ceil((double) totalHits / limit);
 
         return new PageResponse<>(
                 responses,
                 page,
                 limit,
                 totalHits,
-                (int) Math.ceil((double) totalHits / limit)
+                totalPages
         );
     }
 
@@ -320,21 +281,6 @@ public class UserRatedMoviesService {
         } else {
             return Sort.by(fieldSort).descending();
         }
-    }
-
-    private UserRatedMovieResponse toResponse(UserRatedMovie doc) {
-        return new UserRatedMovieResponse(
-                doc.getId(),
-                doc.getUserId(),
-                doc.getMovieId(),
-                doc.getRating(),
-                doc.getRatedAt(),
-                doc.getMovieTitle(),
-                doc.getMovieReleaseYear(),
-                doc.getMovieAverageRating(),
-                doc.getMovieScores(),
-                doc.getMovieCreatedAt()
-        );
     }
 
     public PageResponse<UserRatedMovieResponse> searchUserRatedMoviesByTitle(Long userId, String query) {
@@ -380,17 +326,18 @@ public class UserRatedMoviesService {
         SearchHits<UserRatedMovie> hits = elasticsearchOperations.search(nativeQuery, UserRatedMovie.class, indexCoordinates);
 
         List<UserRatedMovieResponse> responses = hits.getSearchHits().stream()
-                .map(hit -> toResponse(hit.getContent()))
+                .map(hit -> userRatingMapper.toUserRatedMovieResponse(hit.getContent()))
                 .toList();
 
         long totalHits = hits.getTotalHits();
+        int totalPages = (int) Math.ceil((double) totalHits / limit);
 
         return new PageResponse<>(
                 responses,
                 page,
                 limit,
                 totalHits,
-                (int) Math.ceil((double) totalHits / limit)
+                totalPages
         );
     }
 

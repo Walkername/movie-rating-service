@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(UserRatedMovieNotFound ex) {
+    public ResponseEntity<ErrorResponse> handleException(UserRatedMovieNotFoundException ex) {
         ErrorResponse response = new ErrorResponse(
                 ex.getMessage(),
                 System.currentTimeMillis()

@@ -1,11 +1,22 @@
 package ru.walkername.user_library.models;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Date;
+import java.time.Instant;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 @Document(indexName = "#{@environment.getProperty('spring.elasticsearch.index.user-rated-movies')}")
 public class UserRatedMovie {
 
@@ -23,7 +34,8 @@ public class UserRatedMovie {
 
     private int rating;
 
-    private Date ratedAt;
+    @Field(type = FieldType.Date, format = DateFormat.date_time)
+    private Instant ratedAt;
 
     // Movie Fields
 
@@ -35,22 +47,20 @@ public class UserRatedMovie {
 
     private int movieScores;
 
-    private Date movieCreatedAt;
-
-    public UserRatedMovie() {
-    }
+    @Field(type = FieldType.Date, format = DateFormat.date_time)
+    private Instant movieCreatedAt;
 
     public UserRatedMovie(
             String id,
             Long userId,
             Long movieId,
             int rating,
-            Date ratedAt,
+            Instant ratedAt,
             String movieTitle,
             int movieReleaseYear,
             double movieAverageRating,
             int movieScores,
-            Date movieCreatedAt
+            Instant movieCreatedAt
     ) {
         this.id = id;
         this.userId = userId;
@@ -64,121 +74,7 @@ public class UserRatedMovie {
         this.movieCreatedAt = movieCreatedAt;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getMovieId() {
-        return movieId;
-    }
-
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
-    }
-
     public static String generateId(Long userId, Long movieId) {
         return userId + ":" + movieId;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public Date getRatedAt() {
-        return ratedAt;
-    }
-
-    public void setRatedAt(Date ratedAt) {
-        this.ratedAt = ratedAt;
-    }
-
-    public String getMovieTitle() {
-        return movieTitle;
-    }
-
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
-    }
-
-    public int getMovieReleaseYear() {
-        return movieReleaseYear;
-    }
-
-    public void setMovieReleaseYear(int movieReleaseYear) {
-        this.movieReleaseYear = movieReleaseYear;
-    }
-
-    public double getMovieAverageRating() {
-        return movieAverageRating;
-    }
-
-    public void setMovieAverageRating(double movieAverageRating) {
-        this.movieAverageRating = movieAverageRating;
-    }
-
-    public int getMovieScores() {
-        return movieScores;
-    }
-
-    public void setMovieScores(int movieScores) {
-        this.movieScores = movieScores;
-    }
-
-    public Date getMovieCreatedAt() {
-        return movieCreatedAt;
-    }
-
-    public void setMovieCreatedAt(Date movieCreatedAt) {
-        this.movieCreatedAt = movieCreatedAt;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
-    @Override
-    public String toString() {
-        return "UserRatedMovie{" +
-                "id='" + id + '\'' +
-                ", version=" + version +
-                ", deleted=" + deleted +
-                ", userId=" + userId +
-                ", movieId=" + movieId +
-                ", rating=" + rating +
-                ", ratedAt=" + ratedAt +
-                ", movieTitle='" + movieTitle + '\'' +
-                ", movieReleaseYear=" + movieReleaseYear +
-                ", movieAverageRating=" + movieAverageRating +
-                ", movieScores=" + movieScores +
-                ", movieCreatedAt=" + movieCreatedAt +
-                '}';
     }
 }
