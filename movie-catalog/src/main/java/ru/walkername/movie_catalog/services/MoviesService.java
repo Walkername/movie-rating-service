@@ -48,6 +48,7 @@ public class MoviesService {
     private final MovieMapper movieMapper;
 
     private static final String MOVIE_POSTER = "movie-poster";
+    private final MovieRatingUpdateBuffer movieRatingUpdateBuffer;
 
     @Autowired
     public MoviesService(
@@ -56,13 +57,14 @@ public class MoviesService {
             @Value("${file.service.url}") String FILE_SERVICE_URL,
             RestTemplate restTemplate,
             KafkaProducerService kafkaProducerService,
-            MovieMapper movieMapper) {
+            MovieMapper movieMapper, MovieRatingUpdateBuffer movieRatingUpdateBuffer) {
         this.moviesRepository = moviesRepository;
         this.RATING_SERVICE_URL = RATING_SERVICE_URL;
         this.FILE_SERVICE_URL = FILE_SERVICE_URL;
         this.restTemplate = restTemplate;
         this.kafkaProducerService = kafkaProducerService;
         this.movieMapper = movieMapper;
+        this.movieRatingUpdateBuffer = movieRatingUpdateBuffer;
     }
 
     @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
@@ -104,7 +106,9 @@ public class MoviesService {
             value.setAverageRating(newAverageRating);
 
             // Publish Kafka event to UserLibrary
-            registerMovieRatingUpdatedEvent(value);
+//            registerMovieRatingUpdatedEvent(value);
+
+            movieRatingUpdateBuffer.markDirty(ratingCreated.movieId());
         });
     }
 
@@ -141,7 +145,9 @@ public class MoviesService {
             value.setAverageRating(newAverageRating);
 
             // Publish Kafka event to UserLibrary
-            registerMovieRatingUpdatedEvent(value);
+//            registerMovieRatingUpdatedEvent(value);
+
+            movieRatingUpdateBuffer.markDirty(ratingUpdated.movieId());
         });
     }
 
@@ -183,7 +189,9 @@ public class MoviesService {
             }
 
             // Publish Kafka event to UserLibrary
-            registerMovieRatingUpdatedEvent(value);
+//            registerMovieRatingUpdatedEvent(value);
+
+            movieRatingUpdateBuffer.markDirty(ratingDeleted.movieId());
         });
     }
 
