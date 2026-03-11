@@ -18,15 +18,15 @@ public class KafkaProducerService {
     private final NewTopic ratingDeletedTopic;
 
     public void publishRatingCreated(RatingCreated ratingCreated) {
-        kafkaTemplate.send(ratingCreatedTopic.name(), ratingCreated);
+        kafkaTemplate.send(ratingCreatedTopic.name(), String.valueOf(ratingCreated.movieId()), ratingCreated);
     }
 
     public void publishRatingUpdated(RatingUpdated ratingUpdated) {
-        kafkaTemplate.send(ratingUpdatedTopic.name(), ratingUpdated);
+        kafkaTemplate.send(ratingUpdatedTopic.name(), String.valueOf(ratingUpdated.movieId()), ratingUpdated);
     }
 
     public void publishRatingDeleted(RatingDeleted ratingDeleted) {
-        kafkaTemplate.send(ratingDeletedTopic.name(), ratingDeleted);
+        kafkaTemplate.send(ratingDeletedTopic.name(), String.valueOf(ratingDeleted.movieId()), ratingDeleted);
     }
 
 }
