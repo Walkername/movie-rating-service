@@ -1,6 +1,7 @@
 package ru.walkername.notification_service.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,15 +27,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-
     private final UserNotificationRepository userNotificationRepository;
-
     private final WebSocketService webSocketService;
     private final NotificationMapper notificationMapper;
 
@@ -66,7 +66,10 @@ public class NotificationService {
     @Transactional
     public void markAsRead(Long id, Long userId) {
         UserNotification userNotification = userNotificationRepository.findByNotificationIdAndUserId(id, userId).orElseThrow(
-                () -> new NotificationNotFound("UserNotification not found")
+                () -> {
+                    log.warn("Marking as read attempt for non-existent notification with id {}", id);
+                    return new NotificationNotFound("UserNotification not found");
+                }
         );
         userNotification.setRead(true);
         userNotification.setReadAt(Instant.now());
