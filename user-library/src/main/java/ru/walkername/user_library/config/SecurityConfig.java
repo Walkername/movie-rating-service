@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/user-movies/{userId}", "/user-movies/{userId}/search"
                         ).permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
