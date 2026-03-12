@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.walkername.feed_service.dto.PageResponse;
 import ru.walkername.feed_service.dto.PostResponse;
+import ru.walkername.feed_service.mapper.PostMapper;
 import ru.walkername.feed_service.models.Post;
 import ru.walkername.feed_service.services.PostService;
-import ru.walkername.feed_service.util.PostModelMapper;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,14 +20,14 @@ import ru.walkername.feed_service.util.PostModelMapper;
 public class PostController {
 
     private final PostService postService;
-    private final PostModelMapper postModelMapper;
+    private final PostMapper postMapper;
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> get(
             @PathVariable Long id
     ) {
         Post post = postService.findOne(id);
-        PostResponse postResponse = postModelMapper.toResponse(post);
+        PostResponse postResponse = postMapper.toPostResponse(post);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 

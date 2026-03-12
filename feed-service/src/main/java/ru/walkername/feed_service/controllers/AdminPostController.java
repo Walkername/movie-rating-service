@@ -3,7 +3,6 @@ package ru.walkername.feed_service.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.walkername.feed_service.dto.PostRequest;
 import ru.walkername.feed_service.dto.PostResponse;
-import ru.walkername.feed_service.exceptions.PostWrongValidationException;
+import ru.walkername.feed_service.mapper.PostMapper;
 import ru.walkername.feed_service.models.Post;
 import ru.walkername.feed_service.services.AdminPostService;
-import ru.walkername.feed_service.util.DTOValidator;
-import ru.walkername.feed_service.util.PostModelMapper;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,20 +22,18 @@ import ru.walkername.feed_service.util.PostModelMapper;
 public class AdminPostController {
 
     private final AdminPostService adminPostService;
-    private final PostModelMapper postModelMapper;
+    private final PostMapper postMapper;
 
     @PostMapping("")
     public ResponseEntity<PostResponse> save(
-            @RequestBody PostRequest postRequest,
-            BindingResult bindingResult
+            @RequestBody PostRequest postRequest
     ) {
-        DTOValidator.validate(bindingResult, PostWrongValidationException::new);
 
-        Post postToSave = postModelMapper.toPost(postRequest);
+        Post postToSave = postMapper.toPost(postRequest);
 
         Post post = adminPostService.save(postToSave);
 
-        PostResponse postResponse = postModelMapper.toResponse(post);
+        PostResponse postResponse = postMapper.toPostResponse(post);
 
         return new ResponseEntity<>(postResponse, HttpStatus.CREATED);
     }
@@ -46,16 +41,14 @@ public class AdminPostController {
     @PatchMapping("/{id}")
     public ResponseEntity<PostResponse> update(
             @PathVariable Long id,
-            @RequestBody PostRequest postRequest,
-            BindingResult bindingResult
+            @RequestBody PostRequest postRequest
     ) {
-        DTOValidator.validate(bindingResult, PostWrongValidationException::new);
 
-        Post newData = postModelMapper.toPost(postRequest);
+        Post newData = postMapper.toPost(postRequest);
 
         Post post = adminPostService.update(id, newData);
 
-        PostResponse postResponse = postModelMapper.toResponse(post);
+        PostResponse postResponse = postMapper.toPostResponse(post);
 
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }

@@ -17,10 +17,10 @@ import org.springframework.web.client.RestTemplate;
 import ru.walkername.feed_service.dto.CommentResponse;
 import ru.walkername.feed_service.dto.PageResponse;
 import ru.walkername.feed_service.dto.UserResponse;
+import ru.walkername.feed_service.mapper.CommentMapper;
 import ru.walkername.feed_service.models.Comment;
 import ru.walkername.feed_service.models.Post;
 import ru.walkername.feed_service.repositories.CommentRepository;
-import ru.walkername.feed_service.util.CommentModelMapper;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final RestTemplate restTemplate;
-    private final CommentModelMapper commentModelMapper;
+    private final CommentMapper commentMapper;
 
     @Value("${user-profile-service.url}")
     private String USER_PROFILE_SERVICE_URL;
@@ -76,17 +76,14 @@ public class CommentService {
         List<CommentResponse> commentResponses = new ArrayList<>();
         Map<Long, UserResponse> userMap = new HashMap<>();
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            List<UserResponse> users = response.getBody().getContent();
+            List<UserResponse> users = response.getBody().content();
             userMap = users.stream()
-                    .collect(Collectors.toMap(UserResponse::getId, Function.identity()));
+                    .collect(Collectors.toMap(UserResponse::id, Function.identity()));
         }
 
         for (Comment comment : commentPage.getContent()) {
-            CommentResponse commentResponse = commentModelMapper.toResponse(comment);
-
-            String username = userMap.get(comment.getUserId()).getUsername();
-            commentResponse.setUsername(username);
-
+            String username = userMap.get(comment.getUserId()).username();
+            CommentResponse commentResponse = commentMapper.toCommentResponse(comment, username);
             commentResponses.add(commentResponse);
         }
 

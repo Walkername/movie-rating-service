@@ -24,27 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(PostWrongValidationException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleException(PostNotFoundException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(CommentWrongValidationException ex) {
         ErrorResponse response = new ErrorResponse(
                 ex.getMessage(),
                 System.currentTimeMillis()

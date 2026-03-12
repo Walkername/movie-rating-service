@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.walkername.feed_service.dto.CommentRequest;
 import ru.walkername.feed_service.dto.CommentResponse;
 import ru.walkername.feed_service.dto.PageResponse;
-import ru.walkername.feed_service.exceptions.CommentWrongValidationException;
+import ru.walkername.feed_service.mapper.CommentMapper;
 import ru.walkername.feed_service.models.Comment;
 import ru.walkername.feed_service.security.UserPrincipal;
 import ru.walkername.feed_service.services.CommentService;
-import ru.walkername.feed_service.util.CommentModelMapper;
-import ru.walkername.feed_service.util.DTOValidator;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,24 +25,20 @@ import ru.walkername.feed_service.util.DTOValidator;
 public class CommentController {
 
     private final CommentService commentService;
-    private final CommentModelMapper commentModelMapper;
+    private final CommentMapper commentMapper;
 
     @PostMapping("")
     public ResponseEntity<CommentResponse> save(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable("postId") Long postId,
-            @RequestBody CommentRequest commentRequest,
-            BindingResult bindingResult
+            @RequestBody CommentRequest commentRequest
     ) {
-        DTOValidator.validate(bindingResult, CommentWrongValidationException::new);
+        Comment commentToSave = commentMapper.toComment(commentRequest);
 
-        Comment commentToSave = commentModelMapper.toComment(commentRequest);
-
-        Long userId = userPrincipal.getUserId();
+        Long userId = userPrincipal.userId();
         Comment comment = commentService.save(postId, userId, commentToSave);
 
-        CommentResponse commentResponse = commentModelMapper.toResponse(comment);
-        commentResponse.setPostId(postId);
+        CommentResponse commentResponse = commentMapper.toCommentResponse(comment);
 
         return new ResponseEntity<>(commentResponse, HttpStatus.CREATED);
     }

@@ -10,11 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.feed_service.dto.PageResponse;
 import ru.walkername.feed_service.dto.PostResponse;
 import ru.walkername.feed_service.exceptions.PostNotFoundException;
+import ru.walkername.feed_service.mapper.PostMapper;
 import ru.walkername.feed_service.models.Post;
 import ru.walkername.feed_service.repositories.PostRepository;
-import ru.walkername.feed_service.util.PostModelMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostModelMapper postModelMapper;
+    private final PostMapper postMapper;
 
     public Post findOne(Long id) {
         return postRepository.findById(id).orElseThrow(
@@ -36,12 +35,9 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, limit, sorting);
         Page<Post> postsPage = postRepository.findAll(pageable);
 
-        List<PostResponse> postResponses = new ArrayList<>();
-
-        for (Post post : postsPage.getContent()) {
-            PostResponse postResponse = postModelMapper.toResponse(post);
-            postResponses.add(postResponse);
-        }
+        List<PostResponse> postResponses = postsPage.getContent().stream()
+                .map(postMapper::toPostResponse)
+                .toList();
 
         return new PageResponse<>(
                 postResponses,
