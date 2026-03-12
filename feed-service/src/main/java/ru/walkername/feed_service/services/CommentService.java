@@ -1,6 +1,7 @@
 package ru.walkername.feed_service.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -59,28 +61,17 @@ public class CommentService {
 
         Set<Long> userIds = commentPage.getContent().stream().map(Comment::getUserId).collect(Collectors.toSet());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<PageResponse<UserResponse>> response = getUserDataByIds(userIds, page, limit);
 
-        HttpEntity<List<Long>> requestEntity = new HttpEntity<>(new ArrayList<>(userIds), headers);
-
-        String url = USER_PROFILE_SERVICE_URL + "/users/batch?page=" + page + "&limit=" + limit;
-
-        ResponseEntity<PageResponse<UserResponse>> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                requestEntity,
-                new ParameterizedTypeReference<>() {}
-        );
-
-        List<CommentResponse> commentResponses = new ArrayList<>();
         Map<Long, UserResponse> userMap = new HashMap<>();
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             List<UserResponse> users = response.getBody().content();
-            userMap = users.stream()
-                    .collect(Collectors.toMap(UserResponse::id, Function.identity()));
+            userMap = users.stream().collect(Collectors.toMap(UserResponse::id, Function.identity()));
+        } else {
+            log.error("Failed to fetch user data ({}: by batch) of comments from post with id={}", USER_PROFILE_SERVICE_URL, postId);
         }
 
+        List<CommentResponse> commentResponses = new ArrayList<>();
         for (Comment comment : commentPage.getContent()) {
             String username = userMap.get(comment.getUserId()).username();
             CommentResponse commentResponse = commentMapper.toCommentResponse(comment, username);
@@ -93,6 +84,22 @@ public class CommentService {
                 limit,
                 commentPage.getTotalElements(),
                 commentPage.getTotalPages()
+        );
+    }
+
+    private ResponseEntity<PageResponse<UserResponse>> getUserDataByIds(Set<Long> userIds, int page, int limit) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<List<Long>> requestEntity = new HttpEntity<>(new ArrayList<>(userIds), headers);
+
+        String url = USER_PROFILE_SERVICE_URL + "/users/batch?page=" + page + "&limit=" + limit;
+
+        return restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                new ParameterizedTypeReference<>() {}
         );
     }
 

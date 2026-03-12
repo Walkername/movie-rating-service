@@ -1,6 +1,7 @@
 package ru.walkername.feed_service.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -12,6 +13,7 @@ import ru.walkername.feed_service.repositories.PostRepository;
 
 import java.time.Instant;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -44,7 +46,10 @@ public class AdminPostService {
     @Transactional
     public Post update(Long id, Post post) {
         Post dbPost = postRepository.findById(id).orElseThrow(
-                () -> new PostNotFoundException("Post not found")
+                () -> {
+                    log.warn("Update attempt for non-existent post with id={}", id);
+                    return new PostNotFoundException("Post not found");
+                }
         );
 
         post.setId(id);
@@ -57,6 +62,7 @@ public class AdminPostService {
     public void delete(Long id) {
         boolean postsExists = postRepository.existsById(id);
         if (!postsExists) {
+            log.warn("Delete attempt for non-existent post with id={}", id);
             throw new PostNotFoundException("Post not found");
         }
 
