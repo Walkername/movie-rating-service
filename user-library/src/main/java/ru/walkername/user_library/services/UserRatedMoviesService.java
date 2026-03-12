@@ -2,6 +2,7 @@ package ru.walkername.user_library.services;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class UserRatedMoviesService {
 
@@ -63,12 +65,11 @@ public class UserRatedMoviesService {
             containerFactory = "ratingCreatedContainerFactory"
     )
     public void handleRatingCreated(RatingCreated ratingCreated) {
-//        System.out.println("RatingCreated: movieId=" + ratingCreated.movieId());
-        // Getting movie data
         String movieCatalogEndpoint = MOVIE_CATALOG_SERVICE_API + "/movies/" + ratingCreated.movieId();
         MovieResponse movieResponse = restTemplate.getForObject(movieCatalogEndpoint, MovieResponse.class);
 
         if (movieResponse == null) {
+            log.error("Error while fetching movie rated movies: {}",  ratingCreated.movieId());
             throw new UserRatedMovieNotFoundException("Could not find movie with id: " + ratingCreated.movieId());
         }
 
@@ -85,7 +86,13 @@ public class UserRatedMoviesService {
                 movieResponse.createdAt()
         );
 
-        userRatedMoviesRepository.save(userRatedMovie);
+        try {
+            userRatedMoviesRepository.save(userRatedMovie);
+        } catch (Exception e) {
+            log.error("Failed to create document for: userId={}, movieId={}", ratingCreated.userId(), ratingCreated.movieId());
+            throw e;
+        }
+
     }
 
     @KafkaListener(
@@ -94,8 +101,6 @@ public class UserRatedMoviesService {
             containerFactory = "ratingUpdatedContainerFactory"
     )
     public void handleRatingUpdated(RatingUpdated ratingUpdated) {
-//        System.out.println("RatingUpdated: movieId=" + ratingUpdated.movieId());
-
         String docId = UserRatedMovie.generateId(ratingUpdated.userId(), ratingUpdated.movieId());
         Map<String, Object> params = new HashMap<>();
         params.put("rating", ratingUpdated.rating());
@@ -110,7 +115,12 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        updateWithScript(docId, params, script);
+        try {
+            updateWithScript(docId, params, script);
+        } catch (Exception e) {
+            log.error("Failed to update rating for document with id: {}", docId, e);
+            throw e;
+        }
     }
 
     @KafkaListener(
@@ -119,8 +129,6 @@ public class UserRatedMoviesService {
             containerFactory = "ratingDeletedContainerFactory"
     )
     public void handleRatingDeleted(RatingDeleted ratingDeleted) {
-//        System.out.println("RatingDeleted: movieId=" + ratingDeleted.movieId());
-
         String docId = UserRatedMovie.generateId(ratingDeleted.userId(), ratingDeleted.movieId());
 
         Map<String, Object> params = new HashMap<>();
@@ -132,7 +140,12 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        updateWithScript(docId, params, script);
+        try {
+            updateWithScript(docId, params, script);
+        } catch (Exception e) {
+            log.error("Failed to delete rating for document with id: {}", docId, e);
+            throw e;
+        }
     }
 
     private void updateWithScript(String docId, Map<String, Object> params, String script) {
@@ -152,8 +165,6 @@ public class UserRatedMoviesService {
             containerFactory = "movieUpdatedContainerFactory"
     )
     public void handleMovieUpdated(MovieUpdated movieUpdated) {
-//        System.out.println("MovieUpdated: movieId=" + movieUpdated.id());
-
         Criteria criteria = new Criteria("movieId").is(movieUpdated.id());
         CriteriaQuery query = new CriteriaQuery(criteria);
 
@@ -170,14 +181,12 @@ public class UserRatedMoviesService {
                     }
                 """;
 
-        UpdateQuery updateQuery = UpdateQuery.builder(query)
-                .withScript(script)
-                .withParams(params)
-                .withAbortOnVersionConflict(false)
-                .withRetryOnConflict(5)
-                .build();
-
-        elasticsearchOperations.updateByQuery(updateQuery, indexCoordinates);
+        try {
+            updateWithScriptByQuery(query, params, script);
+        } catch (Exception e) {
+            log.error("Failed to update movie for documents with movieId: {}", movieUpdated.id(), e);
+            throw e;
+        }
     }
 
     @KafkaListener(
@@ -186,8 +195,6 @@ public class UserRatedMoviesService {
             containerFactory = "movieRatingUpdatedContainerFactory"
     )
     public void handleMovieRatingUpdated(MovieRatingUpdated movieRatingUpdated) {
-//        System.out.println("MovieRatingUpdated: movieId=" + movieRatingUpdated.id());
-
         Criteria criteria = new Criteria("movieId").is(movieRatingUpdated.id());
         CriteriaQuery query = new CriteriaQuery(criteria);
 
@@ -204,6 +211,15 @@ public class UserRatedMoviesService {
                     }
                 """;
 
+        try {
+            updateWithScriptByQuery(query, params, script);
+        } catch (Exception e) {
+            log.error("Failed to update movie avg rating for documents with movieId: {}", movieRatingUpdated.id(), e);
+            throw e;
+        }
+    }
+
+    private void updateWithScriptByQuery(CriteriaQuery query, Map<String, Object> params, String script) {
         UpdateQuery updateQuery = UpdateQuery.builder(query)
                 .withScript(script)
                 .withParams(params)
@@ -220,13 +236,16 @@ public class UserRatedMoviesService {
             containerFactory = "movieDeletedContainerFactory"
     )
     public void handleMovieDeleted(MovieDeleted movieDeleted) {
-//        System.out.println("MovieDeleted: movieId=" + movieDeleted.movieId());
-
         Criteria criteria = new Criteria("movieId").is(movieDeleted.movieId());
         CriteriaQuery criteriaQuery = new CriteriaQuery(criteria);
         DeleteQuery deleteQuery = DeleteQuery.builder(criteriaQuery).build();
 
-        elasticsearchOperations.delete(deleteQuery, UserRatedMovie.class);
+        try {
+            elasticsearchOperations.delete(deleteQuery, UserRatedMovie.class);
+        } catch (Exception e) {
+            log.error("Failed to update movie (set deleted) for documents with movieId: {}", movieDeleted.movieId(), e);
+            throw e;
+        }
     }
 
     public PageResponse<UserRatedMovieResponse> getUserRatedMovies(
