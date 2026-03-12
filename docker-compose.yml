@@ -248,6 +248,25 @@ services:
             - kafka
         networks:
             - moviecluster
+
+    user-library:
+        build:
+            context: ./user-library
+            dockerfile: Dockerfile
+        container_name: user-library
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_ELASTICSEARCH_URIS=http://esearch-storage:9200
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
+            - MOVIE_CATALOG_SERVICE_URL=http://movie-catalog:8080
+        ports:
+            - "8084:8080"
+        depends_on:
+            - esearch-storage
+            - postgresql
+            - kafka
+        networks:
+            - moviecluster
         
     
 volumes:
