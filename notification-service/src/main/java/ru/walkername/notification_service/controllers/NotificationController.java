@@ -29,7 +29,7 @@ public class NotificationController {
     public ResponseEntity<PageResponse<UserNotificationResponse>> getNotifications(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        PageResponse<UserNotificationResponse> notifications = notificationService.getUserNotifications(userPrincipal.getUserId());
+        PageResponse<UserNotificationResponse> notifications = notificationService.getUserNotifications(userPrincipal.userId());
 
         return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
@@ -39,7 +39,7 @@ public class NotificationController {
         @PathVariable("id") Long id,
         @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        notificationService.markAsRead(id, userPrincipal.getUserId());
+        notificationService.markAsRead(id, userPrincipal.userId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

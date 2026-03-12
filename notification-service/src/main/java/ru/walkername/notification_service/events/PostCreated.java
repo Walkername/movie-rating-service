@@ -1,12 +1,8 @@
 package ru.walkername.notification_service.events;
 
-import lombok.Getter;
-
-@Getter
-public class PostCreated {
-
-    private Long id;
-
-    private String title;
+public record PostCreated(
+        Long id,
+        String title
+) {
 
 }

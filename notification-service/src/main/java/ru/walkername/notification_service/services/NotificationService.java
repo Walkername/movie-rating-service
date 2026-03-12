@@ -13,13 +13,13 @@ import ru.walkername.notification_service.dto.PageResponse;
 import ru.walkername.notification_service.dto.UserNotificationResponse;
 import ru.walkername.notification_service.events.PostCreated;
 import ru.walkername.notification_service.exceptions.NotificationNotFound;
+import ru.walkername.notification_service.mapper.NotificationMapper;
 import ru.walkername.notification_service.models.EntityType;
 import ru.walkername.notification_service.models.Notification;
 import ru.walkername.notification_service.models.TargetType;
 import ru.walkername.notification_service.models.UserNotification;
 import ru.walkername.notification_service.repositories.NotificationRepository;
 import ru.walkername.notification_service.repositories.UserNotificationRepository;
-import ru.walkername.notification_service.util.NotificationModelMapper;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -35,9 +35,8 @@ public class NotificationService {
 
     private final UserNotificationRepository userNotificationRepository;
 
-    private final NotificationModelMapper mapper;
-
     private final WebSocketService webSocketService;
+    private final NotificationMapper notificationMapper;
 
     @Transactional
     public PageResponse<UserNotificationResponse> getUserNotifications(Long userId) {
@@ -88,20 +87,20 @@ public class NotificationService {
         Notification notification = new Notification();
         notification.setTargetType(TargetType.ALL);
         notification.setTitle("New post published");
-        notification.setMessage("New post from admin: " + postCreated.getTitle());
+        notification.setMessage("New post from admin: " + postCreated.title());
         notification.setEntityType(EntityType.POST);
         notification.setCreatedAt(Instant.now());
         notification.setExpiresAt(Instant.now().plus(14, ChronoUnit.DAYS));
         notification.setMetadata(
                 Map.of(
-                        "postId", postCreated.getId(),
-                        "postTitle", postCreated.getTitle()
+                        "postId", postCreated.id(),
+                        "postTitle", postCreated.title()
                 )
         );
 
         notificationRepository.save(notification);
 
-        NotificationResponse notificationResponse = mapper.toResponse(notification);
+        NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
 
         webSocketService.broadcastToAll(notificationResponse);
     }
