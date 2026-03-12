@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/posts", "/posts/{id}"
                         ).permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/{postId}/comments").permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 )
