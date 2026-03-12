@@ -170,7 +170,7 @@ services:
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
-            - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
             - SPRING_DATA_REDIS_HOST=redis-cache
             - SPRING_DATA_REDIS_PORT=6379
         ports:
@@ -194,7 +194,7 @@ services:
             - SPRING_DATASOURCE_PASSWORD=postgres
             - RATING_SERVICE_URL=http://rating-system:8080
             - FILE_SERVICE_URL=http://file-service:8080
-            - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
             - SPRING_DATA_REDIS_HOST=redis-cache
             - SPRING_DATA_REDIS_PORT=6379
         ports:
@@ -216,7 +216,7 @@ services:
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
-            - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:19092
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
         ports:
             - "8082:8080"
         depends_on:
@@ -240,6 +240,7 @@ services:
             - MINIO_ACCESS_KEY=minioadmin
             - MINIO_SECRET_KEY=minioadmin123
             - MINIO_BUCKET_NAME=mc-bucket
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
         ports:
             - "8083:8080"
         depends_on:
@@ -267,7 +268,68 @@ services:
             - kafka
         networks:
             - moviecluster
-        
+    
+    feed-service:
+        build:
+            context: ./feed-service
+            dockerfile: Dockerfile
+        container_name: feed-service
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=postgres
+            - USER_PROFILE_SERVICE_URL=http://user-profile:8080
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
+        ports:
+            - "8086:8080"
+        depends_on:
+            - esearch-storage
+            - postgresql
+            - kafka
+        networks:
+            - moviecluster
+    
+    notification-service:
+        build:
+            context: ./notification-service
+            dockerfile: Dockerfile
+        container_name: notification-service
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=postgres
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
+        ports:
+            - "8087:8080"
+        depends_on:
+            - esearch-storage
+            - postgresql
+            - kafka
+        networks:
+            - moviecluster
+    
+    conversation-service:
+        build:
+            context: ./conversation-service
+            dockerfile: Dockerfile
+        container_name: conversation-service
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=postgres
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
+        ports:
+            - "8088:8080"
+        depends_on:
+            - esearch-storage
+            - postgresql
+            - kafka
+        networks:
+            - moviecluster
+
     
 volumes:
     postgre-data:
