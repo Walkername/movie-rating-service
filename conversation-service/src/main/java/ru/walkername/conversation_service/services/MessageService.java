@@ -1,6 +1,7 @@
 package ru.walkername.conversation_service.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import ru.walkername.conversation_service.security.UserPrincipal;
 import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -33,11 +35,15 @@ public class MessageService {
     @Transactional
     public Message send(Message message, Long chatId, UserPrincipal userPrincipal) {
         Chat chat = chatRepository.findById(chatId).orElseThrow(
-                () -> new ChatNotFoundException("Chat not found")
+                () -> {
+                    log.warn("Send message attempt for non-existent chat with id {}", chatId);
+                    return new ChatNotFoundException("Chat not found");
+                }
         );
 
         // Check If user has access to chat
         if (!chatService.canAccessChat(chatId, userPrincipal)) {
+            log.warn("Access attempt by userId={} to chatId={}", userPrincipal.userId(), chatId);
             throw new ChatNotFoundException("Chat not found");
         }
 
@@ -59,7 +65,10 @@ public class MessageService {
 
     public List<Message> findMessagesByChatId(Long chatId) {
         Chat chat = chatRepository.findById(chatId).orElseThrow(
-                () -> new ChatNotFoundException("Chat not found")
+                () -> {
+                    log.warn("Find messages attempt for non-existent chat with id {}", chatId);
+                    return new ChatNotFoundException("Chat not found");
+                }
         );
 
         return chat.getMessages();

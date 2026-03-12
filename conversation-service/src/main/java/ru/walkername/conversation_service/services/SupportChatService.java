@@ -1,6 +1,7 @@
 package ru.walkername.conversation_service.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import ru.walkername.conversation_service.repositories.ChatRepository;
 import java.time.Instant;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SupportChatService {
@@ -43,7 +45,10 @@ public class SupportChatService {
             return chatService.save(chat, userId);
         } catch (DataIntegrityViolationException ex) {
             return chatRepository.findOneByUserIdWithTypeSupport(userId).orElseThrow(
-                    () -> new ChatNotFoundException("Chat not found")
+                    () -> {
+                        log.warn("Find attempt for non-existent support chat with userId={}", userId);
+                        return new ChatNotFoundException("Chat not found");
+                    }
             );
         }
     }

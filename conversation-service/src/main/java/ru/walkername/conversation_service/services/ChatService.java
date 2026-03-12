@@ -1,6 +1,7 @@
 package ru.walkername.conversation_service.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.walkername.conversation_service.exceptions.ChatNotFoundException;
@@ -12,6 +13,7 @@ import ru.walkername.conversation_service.security.UserPrincipal;
 
 import java.time.Instant;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -59,7 +61,10 @@ public class ChatService {
     @Transactional
     public Chat update(Long id, Chat updatedChat) {
         Chat chat = chatRepository.findById(id).orElseThrow(
-                () -> new ChatNotFoundException("Chat not found")
+                () -> {
+                    log.warn("Update attempt for non-existent chat with id {}", id);
+                    return new ChatNotFoundException("Chat not found");
+                }
         );
 
         chat.setName(updatedChat.getName());
@@ -70,7 +75,10 @@ public class ChatService {
     @Transactional
     public void delete(Long id) {
         Chat chat = chatRepository.findById(id).orElseThrow(
-                () -> new ChatNotFoundException("Chat not found")
+                () -> {
+                    log.warn("Delete attempt for non-existent chat with id {}", id);
+                    return new ChatNotFoundException("Chat not found");
+                }
         );
 
         chatRepository.delete(chat);
