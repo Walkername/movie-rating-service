@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.walkername.conversation_service.dto.ChatResponse;
+import ru.walkername.conversation_service.mapper.ChatMapper;
 import ru.walkername.conversation_service.models.Chat;
 import ru.walkername.conversation_service.security.UserPrincipal;
 import ru.walkername.conversation_service.services.SupportChatService;
-import ru.walkername.conversation_service.util.ChatModelMapper;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,14 +20,14 @@ import ru.walkername.conversation_service.util.ChatModelMapper;
 public class SupportChatController {
 
     private final SupportChatService supportChatService;
-    private final ChatModelMapper chatModelMapper;
+    private final ChatMapper chatMapper;
 
     @GetMapping()
     public ResponseEntity<ChatResponse> get(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        Chat chat = supportChatService.get(userPrincipal.getUserId());
-        ChatResponse chatResponse = chatModelMapper.toChatResponse(chat);
+        Chat chat = supportChatService.get(userPrincipal.userId());
+        ChatResponse chatResponse = chatMapper.toChatResponse(chat);
         return new ResponseEntity<>(chatResponse, HttpStatus.OK);
     }
 
@@ -35,8 +35,8 @@ public class SupportChatController {
     public ResponseEntity<ChatResponse> create(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        Chat chat = supportChatService.create(userPrincipal.getUserId());
-        ChatResponse chatResponse = chatModelMapper.toChatResponse(chat);
+        Chat chat = supportChatService.create(userPrincipal.userId());
+        ChatResponse chatResponse = chatMapper.toChatResponse(chat);
         return new ResponseEntity<>(chatResponse, HttpStatus.CREATED);
     }
 

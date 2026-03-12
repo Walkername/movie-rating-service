@@ -49,11 +49,11 @@ public class ChatService {
             return false;
         }
 
-        if (userPrincipal.getRole().equals("ADMIN")) {
+        if (userPrincipal.role().equals("ADMIN")) {
             return true;
         }
 
-        return chatParticipantRepository.existsByChatIdAndUserId(chatId, userPrincipal.getUserId());
+        return chatParticipantRepository.existsByChatIdAndUserId(chatId, userPrincipal.userId());
     }
 
     @Transactional

@@ -24,24 +24,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(ChatWrongValidationException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(MessageWrongValidationException ex) {
-        ErrorResponse response = new ErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(ChatNotFoundException ex) {
         ErrorResponse response = new ErrorResponse(
                 ex.getMessage(),
