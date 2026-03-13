@@ -9,9 +9,8 @@ import ru.walkername.movie_catalog.dto.MovieResponse;
 import ru.walkername.movie_catalog.dto.PageResponse;
 import ru.walkername.movie_catalog.mapper.MovieMapper;
 import ru.walkername.movie_catalog.models.Movie;
+import ru.walkername.movie_catalog.services.MovieDocumentService;
 import ru.walkername.movie_catalog.services.MoviesService;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +19,7 @@ public class MoviesController {
 
     private final MoviesService moviesService;
     private final MovieMapper movieMapper;
+    private final MovieDocumentService movieDocumentService;
 
     @GetMapping()
     public ResponseEntity<PageResponse<MovieResponse>> index(
@@ -56,12 +56,10 @@ public class MoviesController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<MovieResponse>> search(
+    public ResponseEntity<PageResponse<MovieResponse>> search(
         @RequestParam(value = "query") String query
     ) {
-        List<Movie> movies = moviesService.findByTitleStartingWith(query);
-
-        List<MovieResponse> movieResponses = movies.stream().map(movieMapper::toMovieResponse).toList();
+        PageResponse<MovieResponse> movieResponses = movieDocumentService.searchMoviesByTitle(query);
 
         return new ResponseEntity<>(movieResponses, HttpStatus.OK);
     }

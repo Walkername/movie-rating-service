@@ -25,6 +25,7 @@ public class AdminMoviesService {
     private final MoviesRepository moviesRepository;
     private final KafkaProducerService kafkaProducerService;
     private final MovieMapper movieMapper;
+    private final MovieDocumentService movieDocumentService;
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
@@ -34,6 +35,8 @@ public class AdminMoviesService {
         movie.setCreatedAt(Instant.now());
 
         moviesRepository.save(movie);
+
+        movieDocumentService.create(movieMapper.toMovieDocument(movie));
 
         log.info("Movie added successfully: id={}, title={}", movie.getId(), movie.getTitle());
     }
@@ -50,7 +53,13 @@ public class AdminMoviesService {
 
         movieMapper.toMovie(updatedMovie, movie);
 
-        moviesRepository.save(movie);
+        System.out.println(movie);
+
+        Movie dbMovie = moviesRepository.save(movie);
+
+        System.out.println(dbMovie);
+
+        movieDocumentService.update(movieMapper.toMovieDocument(dbMovie));
 
         registerMovieUpdatedEvent(movie);
 
@@ -58,6 +67,7 @@ public class AdminMoviesService {
     }
 
     private void registerMovieUpdatedEvent(Movie movie) {
+        System.out.println(movie);
         MovieUpdated movieUpdated = new MovieUpdated(
                 movie.getId(),
                 movie.getTitle(),
@@ -94,6 +104,8 @@ public class AdminMoviesService {
     @Transactional
     public void delete(Long id) {
         moviesRepository.deleteById(id);
+
+        movieDocumentService.delete(id);
 
         registerMovieDeletedEvent(id);
 
