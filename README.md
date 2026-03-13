@@ -5,4 +5,4 @@
 - **Frontend**: JavaScript, React
 - Kubernetes, Docker, Docker Compose, PostgreSQL, Kafka, Redis, Elasticsearch, MinIO (S3), Nginx
 
-<img width="1287" height="824" alt="Architecture_v4" src="https://github.com/user-attachments/assets/d46ced03-b9b3-45e1-a7a5-406f58a579a7" />
+<img width="1193" height="787" alt="image" src="https://github.com/user-attachments/assets/e074b8df-378e-4820-844d-1d7d43d9beb6" />
