@@ -6,7 +6,13 @@ import "./search-field.css";
 export default function SearchField() {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [isPopupRendered, setIsPopupRendered] = useState(false);
-    const [foundMovies, setFoundMovies] = useState([]);
+    const [foundMovies, setFoundMovies] = useState({
+        content: [],
+        page: 0,
+        limit: 10,
+        totalElements: 0,
+        totalPages: 0
+    });
     const [isLoading, setIsLoading] = useState(false);
 
     const inputRef = useRef(null);
@@ -36,7 +42,13 @@ export default function SearchField() {
     const handleSearch = debounce((e) => {
         const query = e.target.value.trim();
         if (query.length < 2) {
-            setFoundMovies([]);
+            setFoundMovies({
+                content: [],
+                page: 0,
+                limit: 10,
+                totalElements: 0,
+                totalPages: 0
+            });
             return;
         }
 
@@ -93,8 +105,8 @@ export default function SearchField() {
                             <div className="search__loader">
                                 <span>Searching...</span>
                             </div>
-                        ) : foundMovies.length > 0 ? (
-                            foundMovies.map((movie) => (
+                        ) : foundMovies.content.length > 0 ? (
+                            foundMovies.content.map((movie) => (
                                 <Link
                                     className="search__movie-card"
                                     key={movie.id}
