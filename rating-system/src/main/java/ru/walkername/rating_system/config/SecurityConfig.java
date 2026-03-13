@@ -1,6 +1,7 @@
 package ru.walkername.rating_system.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,7 @@ import ru.walkername.rating_system.logging.LoggingFilter;
 import ru.walkername.rating_system.security.JWTFilter;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -22,8 +24,13 @@ public class SecurityConfig {
 
     private final JWTFilter jwtFilter;
 
+    private final LoggingFilter loggingFilter;
+
+    @Value("${cors.allowed.origins}")
+    private List<String> corsAllowedOrigins;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, LoggingFilter loggingFilter) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -47,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(corsAllowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
