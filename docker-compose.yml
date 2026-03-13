@@ -167,6 +167,7 @@ services:
         container_name: user-profile
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -189,6 +190,7 @@ services:
         container_name: movie-catalog
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -213,6 +215,7 @@ services:
         container_name: rating-system
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -233,6 +236,7 @@ services:
         container_name: file-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -257,6 +261,7 @@ services:
         container_name: user-library
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_ELASTICSEARCH_URIS=http://esearch-storage:9200
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
             - MOVIE_CATALOG_SERVICE_URL=http://movie-catalog:8080
@@ -276,6 +281,7 @@ services:
         container_name: feed-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -297,6 +303,7 @@ services:
         container_name: notification-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -317,6 +324,7 @@ services:
         container_name: conversation-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
+            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
