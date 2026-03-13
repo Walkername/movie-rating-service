@@ -62,7 +62,7 @@ export default function NotificationPanel({
     }, [isOpen]);
 
     useEffect(() => {
-        const unread = notifications.filter((n) => !n.read).length;
+        const unread = notifications.filter((n) => !n.isRead).length;
         setUnreadCount(unread);
     }, [notifications]);
 
@@ -70,7 +70,7 @@ export default function NotificationPanel({
         getNotifications()
             .then((data) => {
                 setNotifications(data.content);
-                const unread = data.content.filter((n) => !n.read).length;
+                const unread = data.content.filter((n) => !n.isRead).length;
                 setUnreadCount(unread);
             })
             .catch((error) => {
@@ -86,7 +86,7 @@ export default function NotificationPanel({
                         notification.notificationId === id
                             ? {
                                   ...notification,
-                                  read: true,
+                                  isRead: true,
                                   readAt: new Date().toISOString(),
                               }
                             : notification,
@@ -100,7 +100,7 @@ export default function NotificationPanel({
     };
 
     const markAllAsRead = () => {
-        const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+        const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n.id);
         
         markNotificationsAsBatchRead(unreadIds)
             .then(() => {
@@ -164,7 +164,7 @@ export default function NotificationPanel({
 
     const displayedNotifications = isOpen
         ? notifications.slice(0, maxNotifications)
-        : notifications.filter((n) => !n.read).slice(0, maxNotifications);
+        : notifications.filter((n) => !n.isRead).slice(0, maxNotifications);
 
     return (
         <>
@@ -223,22 +223,22 @@ export default function NotificationPanel({
                                             <Link
                                                 to="/feed"
                                                 key={index}
-                                                className={`notification-item ${notification.read ? "read" : "unread"}`}
+                                                className={`notification-item ${notification.isRead ? "read" : "unread"}`}
                                                 onMouseEnter={() => {
-                                                    !notification.read &&
+                                                    !notification.isRead &&
                                                     markAsRead(notification.notificationId)
                                                 }
                                                     
                                                 }
                                                 // onClick={() =>
-                                                //     !notification.read &&
+                                                //     !notification.isRead &&
                                                 //     markAsRead(notification.id)
                                                 // }
                                             >
                                                 <div className="notification-item-header">
                                                     <span className="notification-item-title">
                                                         {notification.title}
-                                                        {!notification.read && (
+                                                        {!notification.isRead && (
                                                             <span className="unread-dot" />
                                                         )}
                                                     </span>

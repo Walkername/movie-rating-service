@@ -176,7 +176,7 @@ const NotificationSystem = () => {
             {/* Индикатор очереди (только в development) */}
             {process.env.NODE_ENV === "development" && queueLength > 0 && (
                 <div className="queue-indicator">
-                    В очереди: {queueLength} уведомлений
+                    Queued: {queueLength} notifications
                 </div>
             )}
 
