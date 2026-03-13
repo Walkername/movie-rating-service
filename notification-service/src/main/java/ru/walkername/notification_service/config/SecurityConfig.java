@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.walkername.notification_service.logging.LoggingFilter;
 import ru.walkername.notification_service.security.JWTFilter;
 
 import java.util.Arrays;
@@ -22,6 +23,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JWTFilter jwtFilter;
+
+    private final LoggingFilter loggingFilter;
 
     @Value("${cors.allowed.origins}")
     private List<String> corsAllowedOrigins;
@@ -41,6 +44,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterAfter(loggingFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
