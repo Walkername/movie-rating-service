@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +47,7 @@ public class MoviesService {
 
     private static final String MOVIE_POSTER = "movie-poster";
     private final MovieRatingUpdateBuffer movieRatingUpdateBuffer;
+    private final ApplicationContext applicationContext;
 
     @Autowired
     public MoviesService(
@@ -53,14 +55,15 @@ public class MoviesService {
             @Value("${rating.service.url}") String RATING_SERVICE_URL,
             @Value("${file.service.url}") String FILE_SERVICE_URL,
             RestTemplate restTemplate,
-            MovieMapper movieMapper, MovieRatingUpdateBuffer movieRatingUpdateBuffer
-    ) {
+            MovieMapper movieMapper, MovieRatingUpdateBuffer movieRatingUpdateBuffer,
+            ApplicationContext applicationContext) {
         this.moviesRepository = moviesRepository;
         this.RATING_SERVICE_URL = RATING_SERVICE_URL;
         this.FILE_SERVICE_URL = FILE_SERVICE_URL;
         this.restTemplate = restTemplate;
         this.movieMapper = movieMapper;
         this.movieRatingUpdateBuffer = movieRatingUpdateBuffer;
+        this.applicationContext = applicationContext;
     }
 
     @Cacheable(cacheNames = "movie", key = "#id", unless = "#result == null")
@@ -183,7 +186,7 @@ public class MoviesService {
     }
 
     /**
-     * Method to get all movies from DB with pagination
+     * Method to get all movies from DB with pagination and get for each of them poster url
      * Method is need to do lists of movies on the site
      *
      * @param page          number of page
@@ -192,15 +195,12 @@ public class MoviesService {
      * @param sort          defines what field will be used in order to sort movies list
      * @return list of movies
      */
-    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
-            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
     public PageResponse<MovieResponse> getAllMoviesWithPagination(int page, int moviesPerPage, String[] sort) {
-        Sort sorting = Sort.by(createOrders(sort));
-        Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
+        MoviesService self = applicationContext.getBean(MoviesService.class);
+        PageResponse<Movie> moviesPageResponse = self.getMovies(page, moviesPerPage, sort);
 
-        Page<Movie> moviesPage = moviesRepository.findAll(pageable);
-
-        List<Long> fileIds = moviesPage.getContent().stream().map(Movie::getPosterPicId).toList();
+        List<Long> movieIds = moviesPageResponse.content().stream().map(Movie::getId).toList();
+        List<Long> fileIds = moviesRepository.findAllPosterPicIdsByIds(movieIds);
 
         List<FileAttachmentResponse> files = getAllPosterUrls(fileIds);
 
@@ -211,7 +211,7 @@ public class MoviesService {
                         (existing, _) -> existing)
                 );
 
-        List<MovieResponse> movieResponses = moviesPage.getContent().stream()
+        List<MovieResponse> movieResponses = moviesPageResponse.content().stream()
                 .map(movie -> {
                     String posterUrl = posterUrlMap.get(movie.getId());
                     return movieMapper.toMovieResponse(movie, posterUrl);
@@ -219,6 +219,28 @@ public class MoviesService {
 
         return new PageResponse<>(
                 movieResponses,
+                page,
+                moviesPerPage,
+                moviesPageResponse.totalElements(),
+                moviesPageResponse.totalPages()
+        );
+    }
+
+    /**
+     * Method to get all movies from DB with pagination or get cache from redis
+     *
+     * @return list of movies
+     */
+    @Cacheable(cacheNames = "movies-with-pagination", key = "#page + '-' + #moviesPerPage + '-' " +
+            "+ (#sort != null ? T(String).join(',', #sort) : 'default')")
+    public PageResponse<Movie> getMovies(int page, int moviesPerPage, String[] sort) {
+        Sort sorting = Sort.by(createOrders(sort));
+        Pageable pageable = PageRequest.of(page, moviesPerPage, sorting);
+
+        Page<Movie> moviesPage = moviesRepository.findAll(pageable);
+
+        return new PageResponse<>(
+                moviesPage.getContent(),
                 page,
                 moviesPerPage,
                 moviesPage.getTotalElements(),
@@ -327,19 +349,10 @@ public class MoviesService {
         );
     }
 
-    public List<Movie> findByTitleStartingWith(String title) {
-        if (title.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return moviesRepository.findByTitleStartingWithIgnoreCase(title);
-    }
-
     @Caching(evict = {
             @CacheEvict(cacheNames = "movie", key = "#fileUploaded.contextId()",
-                    condition = "#fileUploaded.context() != null && #fileUploaded.context().equals('movie-poster')"),
-            @CacheEvict(cacheNames = "movies-with-pagination", allEntries = true)
+                    condition = "#fileUploaded.context() != null && #fileUploaded.context().equals('movie-poster')")
     })
-
     @Transactional
     @KafkaListener(
             topics = "file-uploaded",
