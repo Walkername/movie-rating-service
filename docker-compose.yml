@@ -167,15 +167,13 @@ services:
         container_name: user-profile
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
             - SPRING_DATA_REDIS_HOST=redis-cache
             - SPRING_DATA_REDIS_PORT=6379
-        ports:
-            - "8080:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -190,17 +188,16 @@ services:
         container_name: movie-catalog
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
+            - SPRING_ELASTICSEARCH_URIS=esearch-storage:9200
             - RATING_SERVICE_URL=http://rating-system:8080
             - FILE_SERVICE_URL=http://file-service:8080
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
             - SPRING_DATA_REDIS_HOST=redis-cache
             - SPRING_DATA_REDIS_PORT=6379
-        ports:
-            - "8081:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -215,13 +212,11 @@ services:
         container_name: rating-system
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
-        ports:
-            - "8082:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -236,7 +231,7 @@ services:
         container_name: file-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
@@ -245,8 +240,6 @@ services:
             - MINIO_SECRET_KEY=minioadmin123
             - MINIO_BUCKET_NAME=mc-bucket
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
-        ports:
-            - "8083:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -261,12 +254,10 @@ services:
         container_name: user-library
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
-            - SPRING_ELASTICSEARCH_URIS=http://esearch-storage:9200
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
+            - SPRING_ELASTICSEARCH_URIS=esearch-storage:9200
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
             - MOVIE_CATALOG_SERVICE_URL=http://movie-catalog:8080
-        ports:
-            - "8084:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -281,14 +272,12 @@ services:
         container_name: feed-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
             - USER_PROFILE_SERVICE_URL=http://user-profile:8080
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
-        ports:
-            - "8086:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -303,13 +292,11 @@ services:
         container_name: notification-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
-        ports:
-            - "8087:8080"
         depends_on:
             - esearch-storage
             - postgresql
@@ -324,17 +311,54 @@ services:
         container_name: conversation-service
         environment:
             - SPRING_PROFILES_ACTIVE=prod
-            - CORS_ALLOWED_ORIGINS=http://movie-rating-frontend:3000
+            - CORS_ALLOWED_ORIGINS=http://localhost:3000
             - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/moviecluster_db
             - SPRING_DATASOURCE_USERNAME=postgres
             - SPRING_DATASOURCE_PASSWORD=postgres
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:19092
-        ports:
-            - "8088:8080"
         depends_on:
             - esearch-storage
             - postgresql
             - kafka
+        networks:
+            - moviecluster
+    
+    frontend:
+        build:
+            context: ./movie-rating-frontend
+            dockerfile: Dockerfile
+            args:
+                - REACT_APP_USER_SERVICE_URL=http://localhost/api/users
+                - REACT_APP_MOVIE_SERVICE_URL=http://localhost/api/movies
+                - REACT_APP_RATING_SERVICE_URL=http://localhost/api/ratings
+                - REACT_APP_FILE_SERVICE_URL=http://localhost/api/files
+                - REACT_APP_USER_LIBRARY_URL=http://localhost/api/library
+                - REACT_APP_FEED_SERVICE_URL=http://localhost/api/feed
+                - REACT_APP_NOTIFICATION_SERVICE_URL=http://localhost/api/notifications
+                - REACT_APP_CONVERSATION_SERVICE_URL=http://localhost/api/conversations
+                - REACT_APP_NOTIFICATION_WEBSOCKET_URL=ws://localhost/ws/notifications
+                - REACT_APP_CONVERSATION_WEBSOCKET_URL=ws://localhost/ws/conversations
+        container_name: frontend
+        networks:
+            - moviecluster
+    
+    nginx:
+        image: nginx:1.27-alpine
+        container_name: nginx
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - frontend
+            - user-profile
+            - movie-catalog
+            - rating-system
+            - file-service
+            - user-library
+            - feed-service
+            - notification-service
+            - conversation-service
         networks:
             - moviecluster
 
