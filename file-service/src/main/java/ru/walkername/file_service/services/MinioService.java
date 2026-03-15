@@ -24,6 +24,12 @@ public class MinioService {
     @Value("${minio.bucket-name}")
     private String bucketName;
 
+    @Value("${minio.internal.endpoint}")
+    private String internalEndpoint;
+
+    @Value("${minio.public.url}")
+    private String publicUrl;
+
     @PostConstruct
     public void initBucket() {
         try {
@@ -59,7 +65,7 @@ public class MinioService {
 
     public String generatePreSignedUrl(String objectName, int expirationMinutes) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            String presignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
                             .bucket(bucketName)
@@ -67,6 +73,8 @@ public class MinioService {
                             .expiry(expirationMinutes, TimeUnit.MINUTES)
                             .build()
             );
+
+            return presignedUrl.replace(internalEndpoint, publicUrl);
         } catch (Exception e) {
             log.error("Failed to generate pre-signed url for objectName(filename)={}", objectName);
             throw new UrlGenerationException("Error generating signed URL: " + e.getMessage());
